@@ -5,6 +5,12 @@
 </template>
 
 <style scoped>
+
+  /* used to prevent a build error for missing variable declaration */
+  :root {
+    --v-theme-on-surface-variant: --v-theme-on-surface-variant
+  }
+
   .container {
     display: block;
     position: relative;
@@ -15,7 +21,7 @@
   }
 
   .transaction:nth-child(odd) {
-    //background-color: rgba(var(--v-theme-on-surface-variant));
+    background-color: rgba(var(--v-theme-on-surface-variant));
   }
 </style>
 
