@@ -17,9 +17,6 @@
     overflow: auto;
   }
 
-  .transaction {
-  }
-
   .transaction:nth-child(odd) {
     background-color: rgba(var(--v-theme-on-surface-variant));
   }
@@ -34,7 +31,7 @@
   const accountViewStore = useAccountViewStore();
 
   const transactions = computed(() => {
-    return accountViewStore.viewTransactions;
+    return accountViewStore.accountView.transactions;
   });
 
 </script>

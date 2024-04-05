@@ -62,8 +62,8 @@
 
 
 <script setup lang="ts">
-  import {useRoute} from 'vue-router';
-  import {computed} from 'vue';
+  import {onBeforeRouteLeave, useRoute} from 'vue-router';
+  import {computed, watchEffect} from 'vue';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
   import {useAccountViewStore} from '@/stores/accountView-store';
   import AccountViewTransactionList from '@/components/accountView/AccountViewTransactionList.vue';
@@ -87,6 +87,13 @@
 
   }
 
-  accountViewStore.addBankAccount(account.value);
+  watchEffect(() => {
+    accountViewStore.addBankAccount(account.value);
+  });
+
+  onBeforeRouteLeave((to, from, next) => {
+    accountViewStore.clearAccountView();
+    next();
+  });
 
 </script>
