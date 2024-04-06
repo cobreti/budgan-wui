@@ -15,12 +15,7 @@ const router = createRouter({
       component: () => import('../views/AddStatementView.vue'),
       meta: { transition: 'slide-right' }
     },
-    {
-      path: '/accounts',
-      name: 'accounts',
-      component: () => import('../views/AccountsView.vue')
-    },
-    {
+   {
       path: '/account/:id',
       name: 'account',
       component: () => import('../views/AccountView.vue')
