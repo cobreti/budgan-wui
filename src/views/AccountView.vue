@@ -17,7 +17,7 @@
       </div>
     </v-card>
 
-    <v-card class="transactions-list-container ma-2">
+    <v-card class="transactions-list-container ma-2 pa-2">
       <div class="transactions-list">
         <account-view-transaction-list></account-view-transaction-list>
       </div>

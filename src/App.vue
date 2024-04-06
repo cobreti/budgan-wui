@@ -8,12 +8,12 @@
           ></v-img>
         </template>
         <template v-slot:prepend>
-          <v-app-bar-nav-icon @click.stop="showDrawer = !showDrawer"></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon @click.stop="onToggleDrawer"></v-app-bar-nav-icon>
         </template>
       </v-app-bar>
-      <navigation-drawer :show-drawer="showDrawer"/>
+      <navigation-drawer/>
       <v-main :scrollable="false">
-        <RouterView v-slot="{Component, route}">
+        <RouterView>
         </RouterView>
       </v-main>
     </v-app>
@@ -27,7 +27,14 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import NavigationDrawer from '@/components/NavigationDrawer.vue';
+import { useAppSettingsStore } from '@/stores/appSettings-store'
 
-let showDrawer = defineModel<boolean>({default: false});
+const appSettingsStore = useAppSettingsStore();
+
+function onToggleDrawer() {
+  appSettingsStore.appSettings.drawerVisible = !appSettingsStore.appSettings.drawerVisible;
+}
+
+// let showDrawer = defineModel<boolean>({default: true});
 
 </script>

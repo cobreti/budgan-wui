@@ -12,6 +12,7 @@
             :disabled = "addStatementStore.loadedAccount.loading"
             @update:modelValue="onFileNameUpdated"
             accept=".ofx"
+            :multiple="false"
         ></v-file-input>
       </v-card>
       <v-card class="action-card" v-show="statementPresent">
@@ -53,10 +54,10 @@
 <script setup lang="ts">
   import {useAddStatementStore} from '@/stores/add-statement-store';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
+  import AddStatementAccount from '@/components/add-statement/AddStatementAccount.vue';
+  import {computed, defineModel} from 'vue';
 
   const ofxFileName = defineModel<File[]>();
-  import AddStatementAccount from '@/components/add-statement/AddStatementAccount.vue';
-  import {computed} from 'vue';
   const addStatementStore = useAddStatementStore();
 
   const filename = computed(() => {
