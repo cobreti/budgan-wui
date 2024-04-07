@@ -13,15 +13,22 @@
 
 <script setup lang="ts">
 
-  import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import { computed } from 'vue'
-
-  const store = useBankAccountsStore();
+  import { ServicesTypes } from '@/services/types'
+  import { container } from '@/setupInversify'
+  import type { IExportService } from '@/services/ExportService'
 
   const filename = "test-2.json"
 
   const accountsDataObjecTUrl = computed(() => {
-    const json = JSON.stringify(store.accounts);
+
+    const exportService: IExportService = container.get(ServicesTypes.ExportService)
+
+    const SavedData = {
+      accounts: exportService.getSaveBankAccountDataForAllAccounts()
+    };
+
+    const json = JSON.stringify(SavedData);
     const blob = new Blob([json], { type: 'application/json' });
     return URL.createObjectURL(blob);
   });

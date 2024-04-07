@@ -22,4 +22,8 @@ export type BankAccount = {
     transactions: BankAccountTransactionsGroup[];
 }
 
+// export type SaveBankAccountFormat = BankAccount & {
+//     transactionsId: undefined;
+// }
+
 export type BankAccountsDictionary = {[key: string]: BankAccount};
