@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import {type Ref, ref} from 'vue';
+import { computed, type ComputedRef, type Ref, ref } from 'vue'
 import type {
     BankAccount, BankAccountsDictionary,
     BankAccountTransaction,
@@ -12,11 +12,16 @@ export type BankAccountsStore = {
     accounts: Ref<BankAccountsDictionary>
     getAccountById: (accountId: string) => BankAccount;
     addWithBankAccount: (account: BankAccount) => void;
+    hasAccounts: ComputedRef<boolean>;
 }
 
 export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bankTransactions',  () => {
 
     const accounts = ref<BankAccountsDictionary>({});
+
+    const hasAccounts = computed(() => {
+        return Object.keys(accounts.value).length > 0;
+    });
 
     function getAccountById(accountId: string) {
             return accounts.value[accountId];
@@ -68,7 +73,8 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
     return {
         accounts,
         getAccountById,
-        addWithBankAccount
+        addWithBankAccount,
+        hasAccounts
     }
 }, {
     persist: {

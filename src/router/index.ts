@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +34,18 @@ const router = createRouter({
     {
       path: '/export',
       name: 'export',
-      component: () => import('../views/ExportAccountData.vue')
+      component: () => import('../views/ExportAccountData.vue'),
+      beforeEnter: (to, from, next) => {
+
+        const bankAccountsStore = useBankAccountsStore();
+
+        if (bankAccountsStore.hasAccounts) {
+          next();
+        }
+        else {
+          next({path: '/'});
+        }
+      }
     }
   ]
 })
