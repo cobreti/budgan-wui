@@ -10,15 +10,14 @@
           ]"
           ></v-text-field>
       </div>
-      <div class="d-flex flex-row justify-end">
-        <div class="d-flex mr-10 align-center">
-          <span>
-            {{computedFilename}}
-          </span>
-        </div>
+      <div class="ml-4 mt-4">
+        <div class="mb-4">Accounts</div>
+        <accounts-selector></accounts-selector>
+      </div>
+      <div class="d-flex flex-row justify-center">
         <v-btn
           :href="accountsDataObjecTUrl"
-          :download="filename"
+          :download="computedFilename"
           :disabled="!filename"
         >Download data</v-btn>
       </div>
@@ -37,6 +36,7 @@
   import { ServicesTypes } from '@/services/types'
   import { container } from '@/setupInversify'
   import type { IExportService } from '@/services/ExportService'
+  import AccountsSelector from '@/components/accountsSelector.vue'
 
   const filename = defineModel<string>();
   filename.value = ""

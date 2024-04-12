@@ -104,6 +104,7 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
             const bankAccountTransactions = document.transactions.map(OfxToBankAccountTransaction);
 
             const account : BankAccount = {
+                name: document.accountId,
                 accountId: document.accountId,
                 accountType: document.accountType || '',
                 transactionsId: bankAccountTransactions.map(transaction => transaction.transactionId)

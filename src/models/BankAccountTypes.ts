@@ -16,6 +16,7 @@ export type BankAccountTransactionsGroup = {
 }
 
 export type BankAccount = {
+    name: string;
     accountId: string;
     accountType: string | undefined;
     transactionsId: TransactionIdsTable
