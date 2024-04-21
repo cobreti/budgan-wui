@@ -10,9 +10,9 @@
           ]"
           ></v-text-field>
       </div>
-      <div class="ml-4 mt-4">
-        <div class="mb-4">Accounts</div>
-        <accounts-selector v-model:selected-accounts="selection"></accounts-selector>
+      <div class="ml-2 mt-4">
+        <div class="mb-4 font-weight-black">Accounts</div>
+        <accounts-selector class="ml-2" v-model:selected-accounts="selection"></accounts-selector>
       </div>
       <div class="d-flex flex-row justify-center">
         <v-btn
