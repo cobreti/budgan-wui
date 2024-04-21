@@ -2,18 +2,22 @@
   <div class="page-container pa-2">
     <div class="d-flex flex-column align-content-start h-100">
       <v-card class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2" :class="{'d-none': statementPresent}">
-        <label for="ofx-file-input">
-          Choose an OFX file
-        </label>
-        <v-file-input
-            id="ofx-file-input"
-            class=""
-            v-model="ofxFileName"
-            :disabled = "addStatementStore.loadedAccount.loading"
-            @update:modelValue="onFileNameUpdated"
-            accept=".ofx"
-            :multiple="false"
-        ></v-file-input>
+        <div class="d-flex flex-row">
+          <div class="d-flex flex-column justify-center mr-4 mb-4">
+            <label for="ofx-file-input">
+              OFX file
+            </label>
+          </div>
+          <v-file-input
+              id="ofx-file-input"
+              class=""
+              v-model="ofxFileName"
+              :disabled = "addStatementStore.loadedAccount.loading"
+              @update:modelValue="onFileNameUpdated"
+              accept=".ofx"
+              :multiple="false"
+          ></v-file-input>
+        </div>
       </v-card>
       <v-card class="action-card" v-show="statementPresent">
         <div class="ml-5 mt-1">{{filename}}</div>
