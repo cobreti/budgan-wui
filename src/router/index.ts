@@ -46,6 +46,11 @@ const router = createRouter({
           next({path: '/'});
         }
       }
+    },
+    {
+      path: '/import',
+      name: 'import',
+      component: () => import('../views/ImportAccountData.vue'),
     }
   ]
 })
