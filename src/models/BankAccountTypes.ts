@@ -9,6 +9,7 @@ export type BankAccountTransaction = {
 }
 
 export type BankAccountTransactionsGroup = {
+    name: string;
     id: string;
     dateStart: Date;
     dateEnd: Date;

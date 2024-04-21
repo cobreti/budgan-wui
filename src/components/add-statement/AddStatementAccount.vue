@@ -5,6 +5,12 @@
       </div>
       <div class="d-flex flex-row justify-space-between">
         <div>
+          <span class="title">Statement Name : </span>
+          <span>{{name}}</span>
+        </div>
+      </div>
+      <div class="d-flex flex-row justify-space-between mt-2">
+        <div>
           <span class="title">Account # : </span>
           <span>{{accountId}}</span>
         </div>
@@ -38,5 +44,13 @@
   const accountType = computed(() => {
     return addStatementStore.loadedAccount.account?.accountType;
   })
+
+  const transactions = computed(() => {
+    return addStatementStore.loadedAccount.account?.transactions;
+  });
+
+  const name = computed(() => {
+    return (transactions.value) ? transactions.value[0].name : '';
+  });
 
 </script>
