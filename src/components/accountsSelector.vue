@@ -14,9 +14,10 @@
 
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import { computed } from 'vue'
+  import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
 
   const bankAccountsStore = useBankAccountsStore();
-  const selection = defineModel();
+  const selection = defineModel<BankAccountsSelection>('selectedAccounts');
 
   const accounts = computed(() => {
     return Object.values(bankAccountsStore.accounts).map(account => {
@@ -27,7 +28,6 @@
       }
     });
   });
-
 
 </script>
 

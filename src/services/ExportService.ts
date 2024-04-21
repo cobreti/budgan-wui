@@ -13,7 +13,7 @@ export type BankAccountsExportDictionary = {[key: string]: BankAccountExportForm
 export interface IExportService {
 
   getSaveBankAccountData(accountId: string): BankAccountExportFormat;
-  getSaveBankAccountDataForAllAccounts(): { [key: string] : BankAccountsExportDictionary };
+  getSaveBankAccountDataForAllAccounts(accountsIds: Array<string>): { [key: string] : BankAccountsExportDictionary };
 }
 
 
@@ -35,12 +35,14 @@ export class ExportService implements IExportService {
   }
 
 
-  getSaveBankAccountDataForAllAccounts() : { [key: string] : BankAccountsExportDictionary } {
+  getSaveBankAccountDataForAllAccounts(accountsIds: Array<string>) : { [key: string] : BankAccountsExportDictionary } {
     const accounts = this.accountsStore_.accounts;
     const saveData : BankAccountsExportDictionary = {};
 
     for (const accountId in accounts) {
-      saveData[accountId] = this.getSaveBankAccountData(accountId);
+      if (accountsIds.includes(accountId)) {
+        saveData[accountId] = this.getSaveBankAccountData(accountId);
+      }
     }
 
     return saveData;

@@ -2,7 +2,7 @@
   <div>
     <v-card class="d-flex flex-column ma-2 pa-2">
       <div class="d-flex flex-row mb-2">
-        <v-text-field class="filename-input" label="Filename" v-model="filename"
+        <v-text-field class="filename-input" label="Name" v-model="filename"
           :rules="[
             v => !!v || 'Field is required',
             v => /^[\w-]+$/.test(v) || 'Name must only contain alphabets, numeric, _ and -',
@@ -12,13 +12,13 @@
       </div>
       <div class="ml-4 mt-4">
         <div class="mb-4">Accounts</div>
-        <accounts-selector></accounts-selector>
+        <accounts-selector v-model:selected-accounts="selection"></accounts-selector>
       </div>
       <div class="d-flex flex-row justify-center">
         <v-btn
-          :href="accountsDataObjecTUrl"
+          :href="accountsDataObjectUrl"
           :download="computedFilename"
-          :disabled="!filename"
+          :disabled="!canDownload"
         >Download data</v-btn>
       </div>
     </v-card>
@@ -32,11 +32,19 @@
 
 <script setup lang="ts">
 
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { ServicesTypes } from '@/services/types'
   import { container } from '@/setupInversify'
   import type { IExportService } from '@/services/ExportService'
   import AccountsSelector from '@/components/accountsSelector.vue'
+  import type { BankAccountsSelection } from '@/models/BankAccountSelectorTypes'
+  import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+
+  const bankAccountsStore = useBankAccountsStore();
+
+  const selection = ref<BankAccountsSelection>(
+    Object.values(bankAccountsStore.accounts).map(account => account.accountId)
+  );
 
   const filename = defineModel<string>();
   filename.value = ""
@@ -47,15 +55,18 @@
       return "";
 
     return `${filename.value}.json`;
-  })
+  });
 
+  const canDownload = computed(() => {
+    return filename.value != "" && selection.value.length > 0
+  });
 
-  const accountsDataObjecTUrl = computed(() => {
+  const accountsDataObjectUrl = computed(() => {
 
     const exportService: IExportService = container.get(ServicesTypes.ExportService)
 
     const SavedData = {
-      accounts: exportService.getSaveBankAccountDataForAllAccounts()
+      accounts: exportService.getSaveBankAccountDataForAllAccounts(selection.value)
     };
 
     const json = JSON.stringify(SavedData);

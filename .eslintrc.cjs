@@ -10,7 +10,7 @@ module.exports = {
     '@vue/eslint-config-prettier/skip-formatting'
   ],
   'rules': {
-    'ignoreRestSiblings': 0
+    'ignoreRestSiblings': 1
   },
   overrides: [
     {
