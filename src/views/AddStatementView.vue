@@ -58,7 +58,7 @@
 <script setup lang="ts">
   import {useAddStatementStore} from '@/stores/add-statement-store';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
-  import AddStatementAccount from '@/components/add-statement/AddStatementAccount.vue';
+  import AddStatementAccount from '@components/add-statement/AddStatementAccount.vue';
   import {computed, defineModel} from 'vue';
 
   const ofxFileName = defineModel<File[]>();

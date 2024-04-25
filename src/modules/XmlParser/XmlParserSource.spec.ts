@@ -4,7 +4,7 @@ import {XmlParserSource} from '@XmlParser/XmlParserSource';
 describe('XmlParserSource', () => {
 
     const xmlData = '<root>text</root>';
-    var parserSource : XmlParserSource;
+    let parserSource : XmlParserSource;
 
     beforeEach(() => {
         parserSource = new XmlParserSource(xmlData);

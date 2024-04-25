@@ -42,7 +42,7 @@
 
   import type {AccountViewTransaction} from '@/stores/accountView-store';
 
-  const props = defineProps<{
+  defineProps<{
     transaction: AccountViewTransaction
   }>();
 

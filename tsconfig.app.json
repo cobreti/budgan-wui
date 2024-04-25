@@ -9,7 +9,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@XmlParser/*": ["./src/modules/XmlParser/*"],
-      "@models/*": ["./src/models/*"]
+      "@models/*": ["./src/core/models/*"],
+      "@services/*": ["./src/core/services/*"],
+      "@components/*": ["./src/components/*"]
     },
     "types": ["reflect-metadata"],
     "experimentalDecorators": true,

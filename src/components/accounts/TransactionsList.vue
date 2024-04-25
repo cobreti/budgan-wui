@@ -42,7 +42,7 @@
 
 import type {BankAccountTransaction} from '@models/BankAccountTypes';
 
-const props = defineProps<{
+defineProps<{
   transactions: BankAccountTransaction[]
 }>();
 </script>

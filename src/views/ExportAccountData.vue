@@ -33,11 +33,11 @@
 <script setup lang="ts">
 
   import { computed, ref } from 'vue'
-  import { ServicesTypes } from '@/services/types'
+  import { ServicesTypes } from '@services/types'
   import { container } from '@/setupInversify'
-  import type { IExportService } from '@/services/ExportService'
-  import AccountsSelector from '@/components/accountsSelector.vue'
-  import type { BankAccountsSelection } from '@/models/BankAccountSelectorTypes'
+  import type { IExportService } from '@services/ExportService'
+  import AccountsSelector from '@components/accountsSelector.vue'
+  import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
   const bankAccountsStore = useBankAccountsStore();

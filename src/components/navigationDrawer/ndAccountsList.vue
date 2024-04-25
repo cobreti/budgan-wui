@@ -15,7 +15,7 @@
 </style>
 
 <script setup lang="ts">
-    import type { BankAccountsDictionary } from '@/models/BankAccountTypes';
+    import type { BankAccountsDictionary } from '@models/BankAccountTypes';
     import { useBankAccountsStore } from '@/stores/bankAccounts-store';
     import { computed, type ComputedRef } from 'vue';
 

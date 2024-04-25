@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
   import 'vuetify/styles'
-  import AccountViewTransaction from '@/components/accountView/AccountViewTransaction.vue';
+  import AccountViewTransaction from '@components/accountView/AccountViewTransaction.vue';
   import {useAccountViewStore} from '@/stores/accountView-store';
   import {computed} from 'vue';
 

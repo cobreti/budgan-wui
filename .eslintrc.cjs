@@ -11,7 +11,7 @@ module.exports = {
   ],
   'rules': {
     "no-unused-vars": [
-      "error",
+      "off",
       {
         "ignoreRestSiblings": true,
         "args": "none"

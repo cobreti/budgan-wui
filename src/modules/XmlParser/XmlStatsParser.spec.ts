@@ -5,8 +5,8 @@ import {XmlStatsParser} from '@XmlParser/XmlStatsParser';
 describe('XmlStatsParser', () => {
 
     const xmlValue = "<tag>value</tag>";
-    var xmlSource : XmlParserSource;
-    var xmlStatsParser : XmlStatsParser;
+    let xmlSource : XmlParserSource;
+    let xmlStatsParser : XmlStatsParser;
 
     beforeEach(() => {
 

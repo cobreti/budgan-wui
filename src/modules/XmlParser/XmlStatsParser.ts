@@ -43,7 +43,7 @@ export class XmlStatsParser extends XmlSyntaxParser {
     onTagContent(tagContent: string): void { }
 
     onPostProcessing() {
-        for (var k in this.tagsStats_)
+        for (const k in this.tagsStats_)
         {
             const stats = this.tagsStats_[k];
             const diff = stats.openingCount - stats.closingCount;

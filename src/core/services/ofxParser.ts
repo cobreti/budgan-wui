@@ -101,7 +101,7 @@ export class OfxParser implements IOfxParser {
             this.ofxDoc_ = this.createOfxDocument(xmlParser.headerContent);
 
             if (xmlParser.xmlTree.root) {
-                let context: NodeHandlerContext = {
+                const context: NodeHandlerContext = {
                     ofxDoc: this.ofxDoc_
                 };
                 this.iterateOfxNodeContent(context, xmlParser.xmlTree.root);
@@ -170,7 +170,7 @@ export class OfxParser implements IOfxParser {
     }
 
     getRegexStringMatch(regex: RegExp, line: string) : string {
-        var match = regex.exec(line);
+        const match = regex.exec(line);
         if (match) {
             return match[1];
         }

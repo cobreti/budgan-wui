@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import {Container} from 'inversify';
-import {ServicesTypes} from '@/services/types';
-import {OfxParser} from '@/services/ofxParser';
-import { ExportService } from '@/services/ExportService'
+import {ServicesTypes} from '@services/types';
+import {OfxParser} from '@services/ofxParser';
+import { ExportService } from '@services/ExportService'
 
 const container = new Container();
 

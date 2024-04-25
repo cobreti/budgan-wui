@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import NavigationDrawer from '@/components/NavigationDrawer.vue';
+import NavigationDrawer from '@components/NavigationDrawer.vue';
 import { useAppSettingsStore } from '@/stores/appSettings-store'
 
 const appSettingsStore = useAppSettingsStore();

@@ -45,14 +45,8 @@
 <script setup lang="ts">
 
 import {useBankAccountsStore} from '@/stores/bankAccounts-store';
-import {computed} from 'vue';
-import TransactionsBlock from '@/components/accounts/TransactionsBlock.vue';
+import TransactionsBlock from '@components/accounts/TransactionsBlock.vue';
 
 const bankAccountsStore = useBankAccountsStore();
-
-const bankAccountsLength = computed(() => {
-  return Object.keys(bankAccountsStore.accounts).length;
-});
-
 
 </script>

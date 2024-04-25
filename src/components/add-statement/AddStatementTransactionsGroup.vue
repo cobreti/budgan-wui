@@ -13,7 +13,7 @@
     <div class="list h-100 pa-2">
       <div class="transactions-list-container h-100">
         <div class="d-flex flex-column justify-start h-100">
-          <add-statement-transaction class="pt-1 pb-1 transaction" v-for="transaction in transactionsGroup.transactions" :key="transaction.transactionId" :transaction="transaction"></add-statement-transaction>
+          <add-statement-transaction class="pt-1 pb-1 transaction" v-for="transaction in props.transactionsGroup.transactions" :key="transaction.transactionId" :transaction="transaction"></add-statement-transaction>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
   import { type BankAccountTransactionsGroup } from '@models/BankAccountTypes';
-  import AddStatementTransaction from '@/components/add-statement/AddStatementTransaction.vue';
+  import AddStatementTransaction from '@components/add-statement/AddStatementTransaction.vue';
 
   const props = defineProps<{
     transactionsGroup: BankAccountTransactionsGroup

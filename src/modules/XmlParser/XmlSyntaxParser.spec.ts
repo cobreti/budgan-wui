@@ -7,8 +7,8 @@ import {XmlSyntaxParser} from '@XmlParser/XmlSyntaxParser';
 describe('XmlSyntaxParser', async () => {
 
     const xmlData = '<xml>some value</xml>';
-    var source: XmlParserSource;
-    var parser: XmlSyntaxParser;
+    let source: XmlParserSource;
+    let parser: XmlSyntaxParser;
 
     beforeEach( async() => {
         source = new XmlParserSource(xmlData);
@@ -107,13 +107,14 @@ describe('XmlSyntaxParser', async () => {
 
     test('parse', async() => {
 
-            var nowValue = 0;
+            let nowValue = 0;
 
             const onOpeningTagSpy = vi.spyOn(parser, 'onOpeningTag');
             const onClosingTagSpy = vi.spyOn(parser, 'onClosingTag');
             const onTagContentSpy = vi.spyOn(parser, 'onTagContent');
             const onPostProcessingSpy = vi.spyOn(parser, 'onPostProcessing');
-            const perfNowSpy = vi.spyOn(performance, 'now').mockImplementation(() => {
+
+            vi.spyOn(performance, 'now').mockImplementation(() => {
                 return nowValue ++;
             });
 

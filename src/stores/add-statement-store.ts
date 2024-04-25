@@ -1,8 +1,8 @@
 import {defineStore} from 'pinia';
 import {ref, type Ref} from 'vue';
 import type {BankAccount, BankAccountTransaction, TransactionIdsTable} from '@models/BankAccountTypes';
-import type {IOfxParser} from '@/services/ofxParser';
-import {ServicesTypes} from '@/services/types';
+import type {IOfxParser} from '@services/ofxParser';
+import {ServicesTypes} from '@services/types';
 import {container} from '@/setupInversify';
 import type {OfxDocument, OfxTransaction} from '@models/ofxDocument';
 

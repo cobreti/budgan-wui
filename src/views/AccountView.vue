@@ -66,7 +66,7 @@
   import {computed, watchEffect} from 'vue';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
   import {useAccountViewStore} from '@/stores/accountView-store';
-  import AccountViewTransactionList from '@/components/accountView/AccountViewTransactionList.vue';
+  import AccountViewTransactionList from '@components/accountView/AccountViewTransactionList.vue';
 
   const bankAccountStore = useBankAccountsStore();
   const accountViewStore = useAccountViewStore();
