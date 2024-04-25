@@ -1,6 +1,6 @@
 <template>
   <div class="transactions-block-panel">
-    <div v-for="transactionsblock in props.bankAccountTransactions" v-bind:key="transactionsblock.id">
+    <div v-for="transactionsblock in bankAccountTransactions" :key="transactionsblock.id">
       <transactions-list :transactions="transactionsblock.transactions"></transactions-list>
     </div>
   </div>
@@ -37,7 +37,7 @@
   import TransactionsList from '@components/accounts/TransactionsList.vue';
   import type {BankAccountTransactionsGroup} from '@models/BankAccountTypes';
 
-  const props = defineProps<{
+  defineProps<{
     bankAccountTransactions: BankAccountTransactionsGroup[]
   }>();
 </script>
