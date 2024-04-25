@@ -32,19 +32,21 @@
 
 <script setup lang="ts">
 
-  import { computed, ref } from 'vue'
-  import { ServicesTypes } from '@services/types'
-  import { container } from '@/core/setupInversify'
-  import type { IExportService } from '@services/ExportService'
+import { computed, ref, watchEffect } from 'vue'
   import AccountsSelector from '@components/accountsSelector.vue'
   import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+  import { useExportAccountsStore } from '@/stores/exportAccounts-store'
+  import { onBeforeRouteLeave } from 'vue-router'
 
   const bankAccountsStore = useBankAccountsStore();
+  const exportAccountsStore = useExportAccountsStore();
 
   const selection = ref<BankAccountsSelection>(
     Object.values(bankAccountsStore.accounts).map(account => account.accountId)
   );
+
+  const accountsDataObjectUrl = ref<string>("");
 
   const filename = defineModel<string>();
   filename.value = ""
@@ -58,20 +60,22 @@
   });
 
   const canDownload = computed(() => {
-    return filename.value != "" && selection.value.length > 0
+    return filename.value != "" && selection.value.length > 0 && accountsDataObjectUrl.value != "";
   });
 
-  const accountsDataObjectUrl = computed(() => {
+  const selectionUnwatch = watchEffect( async () => {
+    accountsDataObjectUrl.value = "";
+    exportAccountsStore.getSaveBankAccountDataForAllAccounts(selection.value);
 
-    const exportService: IExportService = container.get(ServicesTypes.ExportService)
-
-    const SavedData = {
-      accounts: exportService.getSaveBankAccountDataForAllAccounts(selection.value)
-    };
-
-    const json = JSON.stringify(SavedData);
+    const json = JSON.stringify(exportAccountsStore.accounts);
     const blob = new Blob([json], { type: 'application/json' });
-    return URL.createObjectURL(blob);
+    accountsDataObjectUrl.value = URL.createObjectURL(blob);
+  });
+
+  onBeforeRouteLeave((to, from, next) => {
+    selectionUnwatch();
+    exportAccountsStore.clear();
+    next();
   });
 
 </script>
