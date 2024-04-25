@@ -34,7 +34,7 @@
 
   import { computed, ref } from 'vue'
   import { ServicesTypes } from '@services/types'
-  import { container } from '@/setupInversify'
+  import { container } from '@/core/setupInversify'
   import type { IExportService } from '@services/ExportService'
   import AccountsSelector from '@components/accountsSelector.vue'
   import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
