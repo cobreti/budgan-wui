@@ -19,7 +19,7 @@
           :href="accountsDataObjectUrl"
           :download="computedFilename"
           :disabled="!canDownload"
-        >Download data</v-btn>
+        >Export</v-btn>
       </div>
     </v-card>
   </div>
@@ -67,7 +67,7 @@ import { computed, ref, watchEffect } from 'vue'
     accountsDataObjectUrl.value = "";
     exportAccountsStore.getSaveBankAccountDataForAllAccounts(selection.value);
 
-    const json = JSON.stringify(exportAccountsStore.accounts);
+    const json = JSON.stringify(exportAccountsStore.exportContent);
     const blob = new Blob([json], { type: 'application/json' });
     accountsDataObjectUrl.value = URL.createObjectURL(blob);
   });

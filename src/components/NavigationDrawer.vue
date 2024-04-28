@@ -6,8 +6,8 @@
       <v-list-item title="Accounts" :hidden="!bankAccountsStore.hasAccounts">
         <nd-accounts-list class="mt-2"></nd-accounts-list>
       </v-list-item>
-      <v-list-item title="export" :to="{path: '/export'}" :hidden="!bankAccountsStore.hasAccounts"></v-list-item>
-      <v-list-item title="import" :to="{path: '/import'}"></v-list-item>
+      <v-list-item title="Save" :to="{path: '/save'}" :hidden="!bankAccountsStore.hasAccounts"></v-list-item>
+      <v-list-item title="Open" :to="{path: '/open'}"></v-list-item>
     </v-navigation-drawer>
   </div>
 </template>

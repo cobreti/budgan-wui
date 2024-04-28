@@ -1,37 +1,58 @@
 import type { BankAccountsDictionary } from '@models/BankAccountTypes'
-import { ref, type Ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 
 
 export type ImportAccountsStore = {
-  accounts: Ref<BankAccountsDictionary>,
-  importAccountFromFile: (file: File) => void
+  accounts: Ref<BankAccountsDictionary>;
+  hasAccounts: Ref<boolean>;
+  importAccountFromFile: (file: File) => Promise<void>;
+  clear: () => void;
 }
 
 export const useImportAccountsStore = defineStore<string, ImportAccountsStore>('importAccounts', () => {
 
   const accounts = ref<BankAccountsDictionary>({});
 
-  function importAccountFromFile(file: File) {
-    const reader = new FileReader();
+  const hasAccounts = computed(() => {
+    return Object.keys(accounts.value).length > 0;
+  });
 
-    reader.onload = () => onJsonLoaded(reader.result as string);
+  function importAccountFromFile(file: File) : Promise<void> {
+    return new Promise((resolve) => {
 
-    reader.readAsText(file);
+      function onJsonLoaded(content: string) {
+        const json = JSON.parse(content);
+
+        const loadedAccounts : BankAccountsDictionary = {};
+
+        if (json.accounts) {
+          for (const accountId of Object.keys(json.accounts)) {
+            loadedAccounts[accountId] = json.accounts[accountId];
+          }
+        }
+
+        accounts.value = loadedAccounts;
+        resolve();
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = () => onJsonLoaded(reader.result as string);
+
+      reader.readAsText(file);
+    });
   }
 
-  function onJsonLoaded(content: string) {
-    const json = JSON.parse(content);
-
-    if (json.accounts) {
-      for (const accountId of Object.keys(json.accounts)) {
-        accounts.value[accountId] = json.accounts[accountId];
-      }
-    }
+  function clear()
+  {
+    accounts.value = {};
   }
 
   return {
     accounts,
-    importAccountFromFile
+    hasAccounts,
+    importAccountFromFile,
+    clear
   }
 });

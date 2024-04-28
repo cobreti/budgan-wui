@@ -9,8 +9,12 @@ export type BankAccountExportFormat = BankAccount & {
 
 export type BankAccountsExportDictionary = {[key: string]: BankAccountExportFormat};
 
+export type BankAccountsExportFile = {
+  accounts: BankAccountsExportDictionary
+};
+
 export type ExportAccountsStore = {
-  accounts: Ref<BankAccountsExportDictionary>,
+  exportContent: Ref<BankAccountsExportFile>,
   getSaveBankAccountDataForAllAccounts: (accountsIds: Array<string>) => void,
   clear: () => void
 }
@@ -19,7 +23,7 @@ export const useExportAccountsStore = defineStore<string, ExportAccountsStore>('
 
   const accountsStore = useBankAccountsStore();
 
-  const accounts = ref<BankAccountsExportDictionary>({});
+  const exportContent = ref<BankAccountsExportFile>({ accounts: {} });
 
   function getSaveBankAccountData(accountId: string) : BankAccountExportFormat {
     const account = accountsStore.accounts[accountId];
@@ -43,15 +47,15 @@ export const useExportAccountsStore = defineStore<string, ExportAccountsStore>('
       }
     }
 
-    accounts.value = tmpAccount;
+    exportContent.value.accounts = tmpAccount;
   }
 
   function clear() {
-    accounts.value = {};
+    exportContent.value.accounts = {};
   }
 
   return {
-    accounts,
+    exportContent,
     getSaveBankAccountDataForAllAccounts,
     clear
   }

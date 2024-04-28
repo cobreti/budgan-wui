@@ -32,8 +32,8 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/export',
-      name: 'export',
+      path: '/save',
+      name: 'save',
       component: () => import('../views/ExportAccountData.vue'),
       beforeEnter: (to, from, next) => {
 
@@ -48,8 +48,8 @@ const router = createRouter({
       }
     },
     {
-      path: '/import',
-      name: 'import',
+      path: '/open',
+      name: 'open',
       component: () => import('../views/ImportAccountData.vue'),
     }
   ]

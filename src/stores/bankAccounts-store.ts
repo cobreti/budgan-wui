@@ -13,6 +13,7 @@ export type BankAccountsStore = {
     getAccountById: (accountId: string) => BankAccount;
     addWithBankAccount: (account: BankAccount) => void;
     hasAccounts: ComputedRef<boolean>;
+    clear: () => void;
 }
 
 export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bankTransactions',  () => {
@@ -70,11 +71,16 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
         }
     }
 
+    function clear() {
+        accounts.value = {};
+    }
+
     return {
         accounts,
         getAccountById,
         addWithBankAccount,
-        hasAccounts
+        hasAccounts,
+        clear
     }
 }, {
     persist: {
