@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref, type Ref} from 'vue';
-import type {BankAccount, BankAccountTransaction, TransactionIdsTable} from '@models/BankAccountTypes';
+import type {BankAccount, BankAccountTransaction} from '@models/BankAccountTypes';
 import type {IOfxParser} from '@services/ofxParser';
 import {ServicesTypes} from '@services/types';
 import {container} from '@/core/setupInversify';
@@ -107,11 +107,6 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
                 name: document.accountId,
                 accountId: document.accountId,
                 accountType: document.accountType || '',
-                transactionsId: bankAccountTransactions.map(transaction => transaction.transactionId)
-                    .reduce((acc: TransactionIdsTable, id) => {
-                        acc[id] = {};
-                        return acc;
-                    }, {}),
                 transactions: [{
                     name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
                     id: crypto.randomUUID(),

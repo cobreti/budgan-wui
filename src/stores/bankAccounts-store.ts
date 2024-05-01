@@ -8,8 +8,13 @@ import type {
 } from '@models/BankAccountTypes';
 
 
+type BankAccountsTransactionIdsIndex = {[accountId: string]: TransactionIdsTable};
+
 export type BankAccountsStore = {
-    accounts: Ref<BankAccountsDictionary>
+    accounts: Ref<BankAccountsDictionary>;
+    transactionsIdsIndex: Ref<BankAccountsTransactionIdsIndex>;
+    totalTransactionsPerAccount: ComputedRef<{[key:string]: number }>;
+    totalTransactionIdsPerAccount: ComputedRef<{[key:string]: number }>;
     getAccountById: (accountId: string) => BankAccount;
     addWithBankAccount: (account: BankAccount) => void;
     hasAccounts: ComputedRef<boolean>;
@@ -19,19 +24,44 @@ export type BankAccountsStore = {
 export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bankTransactions',  () => {
 
     const accounts = ref<BankAccountsDictionary>({});
+    const transactionsIdsIndex = ref<BankAccountsTransactionIdsIndex>({});
 
     const hasAccounts = computed(() => {
         return Object.keys(accounts.value).length > 0;
+    });
+
+    const totalTransactionsPerAccount: ComputedRef<{[key: string]: number}> = computed(() => {
+        return Object.values(accounts.value)
+          .map((account) => {
+              const count = account.transactions.map((transactionsGroup) => {
+                  return transactionsGroup.transactions.length;
+              })
+                .reduce((acc, count) => acc + count, 0);
+              return { [account.accountId]: count}
+          })
+          .reduce((acc, count) => {
+              return {...acc, ...count};
+          }, {});
+    });
+
+    const totalTransactionIdsPerAccount = computed(() => {
+        return Object.keys(transactionsIdsIndex.value)
+          .map((accountId) => {
+              return { [accountId]: Object.keys(transactionsIdsIndex.value[accountId]).length};
+          })
+          .reduce((acc, count) => {
+              return {...acc, ...count};
+          }, {});
     });
 
     function getAccountById(accountId: string) {
             return accounts.value[accountId];
     }
 
-    function sanitizeTransactionsGroup(destAccount: BankAccount, transactionsGroup: BankAccountTransactionsGroup) {
+    function sanitizeTransactionsGroup(accountTransactionsIds: TransactionIdsTable, transactionsGroup: BankAccountTransactionsGroup) {
 
         const newTransactions = transactionsGroup.transactions.filter((transaction) => {
-            return !(transaction.transactionId in destAccount.transactionsId);
+            return !(transaction.transactionId in accountTransactionsIds);
         });
 
         return {
@@ -45,30 +75,40 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
     function addWithBankAccount(account: BankAccount) {
 
         const existingAccount = getAccountById(account.accountId);
+        const accountTransactionsIds = transactionsIdsIndex.value[account.accountId] || {};
+
         if (!existingAccount) {
             accounts.value[account.accountId] = account;
-            return;
         }
-
-        const sanitizedTransactionsGroup = account.transactions.map((transactionsGroup) => {
-                return sanitizeTransactionsGroup(existingAccount, transactionsGroup);
+        else {
+            const sanitizedTransactionsGroup = account.transactions.map((transactionsGroup) => {
+                return sanitizeTransactionsGroup(accountTransactionsIds, transactionsGroup);
             })
-            .filter((transactionsGroup) => transactionsGroup.transactions.length > 0);
+              .filter((transactionsGroup) => transactionsGroup.transactions.length > 0);
 
-        if (sanitizedTransactionsGroup.length > 0) {
-            const newIds = sanitizedTransactionsGroup
-                .reduce((acc: TransactionIdsTable, transactionGroup) => {
-                    const ids = transactionGroup.transactions.map(transaction => transaction.transactionId)
-                        .reduce((idsAcc:TransactionIdsTable, id) => {
-                            idsAcc[id] = {};
-                            return idsAcc;
-                        }, {});
-                    return {...acc, ...ids};
-                }, {});
-
-            existingAccount.transactionsId = {...existingAccount.transactionsId, ...newIds};
-            existingAccount.transactions = [...existingAccount.transactions, ...sanitizedTransactionsGroup];
+            if (sanitizedTransactionsGroup.length > 0) {
+                existingAccount.transactions = [...existingAccount.transactions, ...sanitizedTransactionsGroup];
+            }
         }
+
+        const ids = getTransactionIdsForAccount(account);
+
+        transactionsIdsIndex.value[account.accountId] = {...accountTransactionsIds, ...ids};
+    }
+
+    function getTransactionIdsForAccount(account: BankAccount) : TransactionIdsTable {
+        return account.transactions.map((transactionsGroup) => {
+            return transactionsGroup.transactions.map((transaction) => {
+                return transaction.transactionId;
+            })
+              .reduce((acc: TransactionIdsTable, id) => {
+                acc[id] = {};
+                return acc;
+            }, {});
+        })
+          .reduce((acc: TransactionIdsTable, ids) => {
+            return {...acc, ...ids};
+        }, {});
     }
 
     function clear() {
@@ -77,6 +117,9 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
 
     return {
         accounts,
+        transactionsIdsIndex,
+        totalTransactionsPerAccount,
+        totalTransactionIdsPerAccount,
         getAccountById,
         addWithBankAccount,
         hasAccounts,

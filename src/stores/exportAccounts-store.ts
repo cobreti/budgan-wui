@@ -3,9 +3,7 @@ import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
-export type BankAccountExportFormat = BankAccount & {
-  transactionsId: undefined
-}
+export type BankAccountExportFormat = BankAccount;
 
 export type BankAccountsExportDictionary = {[key: string]: BankAccountExportFormat};
 
@@ -32,9 +30,7 @@ export const useExportAccountsStore = defineStore<string, ExportAccountsStore>('
       throw new Error(`undefined account ${accountId}`);
     }
 
-    const { transactionsId, ...other } = account;
-
-    return { ...other } as BankAccountExportFormat;
+    return account as BankAccountExportFormat;
   }
 
   function getSaveBankAccountDataForAllAccounts(accountsIds: Array<string>) {
