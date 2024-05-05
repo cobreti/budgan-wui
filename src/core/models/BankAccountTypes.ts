@@ -20,7 +20,6 @@ export type BankAccount = {
     name: string;
     accountId: string;
     accountType: string | undefined;
-    // transactionsId: TransactionIdsTable
     transactions: BankAccountTransactionsGroup[];
 }
 

@@ -26,8 +26,35 @@
           <v-btn @click="onDiscard()">Discard</v-btn>
         </v-card-actions>
       </v-card>
-      <v-card class="pt-4 pr-4 pl-4 pb-4 mt-2 h-100" v-show="statementPresent">
-        <add-statement-account></add-statement-account>
+
+      <v-card class="pt-4 pr-4 pl-4 pb-4 mt-2" v-show="statementPresent">
+        <div class="d-flex flex-column align-content-start ma-1 h-100">
+          <div class="d-flex flex-row justify-center">
+          </div>
+          <div class="d-flex flex-row justify-space-between mt-2">
+            <div>
+              <span class="title">Account # : </span>
+              <span>{{accountId}}</span>
+            </div>
+            <div v-show="accountType != ''">
+              <span class="title">Account type : </span>
+              <span>{{accountType}}</span>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-space-between mt-2">
+            <div v-show="filteredTransactions && filteredTransactions.dateStart">
+              <span class="title">Start date : </span>
+              <span>{{dateStart}}</span>
+            </div>
+            <div v-show="filteredTransactions && filteredTransactions.dateEnd">
+              <span class="title">End date : </span>
+              <span>{{dateEnd}}</span>
+            </div>
+          </div>
+          <div class="mt-2">
+            <filtered-transactions-list :filtered-transactions="filteredTransactions"></filtered-transactions-list>
+          </div>
+        </div>
       </v-card>
     </div>
   </div>
@@ -58,8 +85,11 @@
 <script setup lang="ts">
   import {useAddStatementStore} from '@/stores/add-statement-store';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
-  import AddStatementAccount from '@components/add-statement/AddStatementAccount.vue';
+  // import AddStatementAccount from '@components/add-statement/AddStatementAccount.vue';
   import {computed, defineModel} from 'vue';
+  import { IdentityFilter } from '@/core/filters/IdentityFilter'
+  import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
+  // import AddStatementTransactionsGroups from '@components/add-statement/AddStatementTransactionsGroups.vue'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -69,7 +99,27 @@
   });
 
   const statementPresent = computed(() => {
-    return addStatementStore.loadedAccount.account != undefined;
+    return addStatementStore.loadedAccount.account != undefined && filteredTransactions.value.transactions.length > 0;
+  });
+
+  const accountId = computed(() => {
+    return addStatementStore.loadedAccount.account?.accountId;
+  })
+
+  const accountType = computed(() => {
+    return addStatementStore.loadedAccount.account?.accountType;
+  })
+
+  const filteredTransactions = computed(() => {
+    return addStatementStore.getFilteredTransactions(IdentityFilter);
+  });
+
+  const dateStart = computed(() => {
+      return filteredTransactions.value.dateStart?.toDateString()
+  });
+
+  const dateEnd = computed(() => {
+    return filteredTransactions.value.dateEnd?.toDateString();
   });
 
   function onFileNameUpdated(files: File[]) {

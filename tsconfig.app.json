@@ -11,7 +11,8 @@
       "@XmlParser/*": ["./src/core/modules/XmlParser/*"],
       "@models/*": ["./src/core/models/*"],
       "@services/*": ["./src/core/services/*"],
-      "@components/*": ["./src/components/*"]
+      "@components/*": ["./src/components/*"],
+      "@filters/*": ["./src/core/models/filters/*"],
     },
     "types": ["reflect-metadata"],
     "experimentalDecorators": true,
