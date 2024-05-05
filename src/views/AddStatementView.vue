@@ -22,7 +22,7 @@
       <v-card class="action-card" v-show="statementPresent">
         <div class="ml-5 mt-1">{{filename}}</div>
         <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
-          <v-btn @click="onAdd()">Add</v-btn>
+          <v-btn @click="onAdd()" v-show="!noNewTransactions">Add</v-btn>
           <v-btn @click="onDiscard()">Discard</v-btn>
         </v-card-actions>
       </v-card>
@@ -41,18 +41,13 @@
               <span>{{accountType}}</span>
             </div>
           </div>
-          <div class="d-flex flex-row justify-space-between mt-2">
-            <div v-show="filteredTransactions && filteredTransactions.dateStart">
-              <span class="title">Start date : </span>
-              <span>{{dateStart}}</span>
-            </div>
-            <div v-show="filteredTransactions && filteredTransactions.dateEnd">
-              <span class="title">End date : </span>
-              <span>{{dateEnd}}</span>
-            </div>
-          </div>
           <div class="mt-2">
             <filtered-transactions-list :filtered-transactions="filteredTransactions"></filtered-transactions-list>
+          </div>
+          <div class="d-flex flex-row justify-center mt-8" v-if="noNewTransactions">
+            <div>
+              <span>No new transactions</span>
+            </div>
           </div>
         </div>
       </v-card>
@@ -99,7 +94,11 @@
   });
 
   const statementPresent = computed(() => {
-    return addStatementStore.loadedAccount.account != undefined && filteredTransactions.value.transactions.length > 0;
+    return addStatementStore.loadedAccount.account != undefined;
+  });
+
+  const noNewTransactions = computed(() => {
+    return filteredTransactions.value.transactions.length == 0;
   });
 
   const accountId = computed(() => {
@@ -110,17 +109,23 @@
     return addStatementStore.loadedAccount.account?.accountType;
   })
 
+  const existingTransactionsIds = computed(() => {
+    if (!accountId.value) {
+      return {};
+    }
+    return useBankAccountsStore().getTransactionsIdsForAccountId(accountId.value);
+  });
+
   const filteredTransactions = computed(() => {
-    return addStatementStore.getFilteredTransactions(IdentityFilter);
+    const result = IdentityFilter(addStatementStore.loadedAccount.account);
+
+    const transactions = result.transactions.filter(t => !existingTransactionsIds.value[t.transactionId]);
+    return {
+      ...result,
+      transactions
+    }
   });
 
-  const dateStart = computed(() => {
-      return filteredTransactions.value.dateStart?.toDateString()
-  });
-
-  const dateEnd = computed(() => {
-    return filteredTransactions.value.dateEnd?.toDateString();
-  });
 
   function onFileNameUpdated(files: File[]) {
 

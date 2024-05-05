@@ -19,6 +19,7 @@ export type BankAccountsStore = {
     addWithBankAccount: (account: BankAccount) => void;
     hasAccounts: ComputedRef<boolean>;
     clear: () => void;
+    getTransactionsIdsForAccountId: (accountId: string) => TransactionIdsTable;
 }
 
 export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bankTransactions',  () => {
@@ -91,12 +92,12 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
             }
         }
 
-        const ids = getTransactionIdsForAccount(account);
+        const ids = buildTransactionIdsForAccount(account);
 
         transactionsIdsIndex.value[account.accountId] = {...accountTransactionsIds, ...ids};
     }
 
-    function getTransactionIdsForAccount(account: BankAccount) : TransactionIdsTable {
+    function buildTransactionIdsForAccount(account: BankAccount) : TransactionIdsTable {
         return account.transactions.map((transactionsGroup) => {
             return transactionsGroup.transactions.map((transaction) => {
                 return transaction.transactionId;
@@ -111,6 +112,14 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
         }, {});
     }
 
+    function getTransactionsIdsForAccountId(accountId: string) : TransactionIdsTable {
+        if ( !(accountId in transactionsIdsIndex.value) ) {
+            return {};
+        }
+
+        return transactionsIdsIndex.value[accountId];
+    }
+
     function clear() {
         accounts.value = {};
     }
@@ -123,7 +132,8 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
         getAccountById,
         addWithBankAccount,
         hasAccounts,
-        clear
+        clear,
+        getTransactionsIdsForAccountId
     }
 }, {
     persist: {

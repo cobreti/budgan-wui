@@ -12,4 +12,4 @@ export type FilteredTransactions = {
   transactionsIds?: TransactionIdsTable;
 }
 
-export type TransactionsFilterFct = (account: BankAccount) => FilteredTransactions;
+export type TransactionsFilterFct = (account: BankAccount | undefined) => FilteredTransactions;

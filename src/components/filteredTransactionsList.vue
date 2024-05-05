@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div class="d-flex flex-row justify-space-between mt-2">
+      <div v-show="filteredTransactions && filteredTransactions.dateStart">
+        <span class="title">Start date : </span>
+        <span>{{dateStart}}</span>
+      </div>
+      <div v-show="filteredTransactions && filteredTransactions.dateEnd">
+        <span class="title">End date : </span>
+        <span>{{dateEnd}}</span>
+      </div>
+    </div>
     <div class="transaction" v-for="transaction in filteredTransactions.transactions" :key="transaction.transactionId">
       <div class="d-flex flex-row justify-start">
         <div class="date mr-4">
@@ -51,10 +61,19 @@
 
 <script setup lang="ts">
   import type { FilteredTransactions } from '@models/FilterTypes'
+  import { computed } from 'vue'
 
-  defineProps<{
+  const props = defineProps<{
     filteredTransactions: FilteredTransactions
   }>();
+
+  const dateStart = computed(() => {
+    return props.filteredTransactions.dateStart?.toDateString()
+  });
+
+  const dateEnd = computed(() => {
+    return props.filteredTransactions.dateEnd?.toDateString();
+  });
 
 
 </script>

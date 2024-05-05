@@ -5,7 +5,6 @@ import type {IOfxParser} from '@services/ofxParser';
 import {ServicesTypes} from '@services/types';
 import {container} from '@/core/setupInversify';
 import type {OfxDocument, OfxTransaction} from '@models/ofxDocument';
-import type { FilteredTransactions, TransactionsFilterFct } from '@models/FilterTypes'
 
 export declare type LoadedAccount = {
     loading: boolean,
@@ -17,7 +16,6 @@ export type AddStatementStore = {
     loadedAccount: Ref<LoadedAccount>;
     loadOfxFile: (file: File) => void;
     clear: () => void;
-    getFilteredTransactions: (filter: TransactionsFilterFct) => FilteredTransactions;
 };
 
 export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
@@ -126,20 +124,9 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         }
     }
 
-    function getFilteredTransactions(filter: TransactionsFilterFct): FilteredTransactions {
-        if (loadedAccount.value.account) {
-            return filter(loadedAccount.value.account);
-        }
-
-        return {
-            transactions: []
-        }
-    }
-
     return {
         loadedAccount,
         loadOfxFile,
-        clear,
-        getFilteredTransactions
+        clear
     }
 });
