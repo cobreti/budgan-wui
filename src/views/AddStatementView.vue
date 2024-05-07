@@ -80,11 +80,12 @@
 <script setup lang="ts">
   import {useAddStatementStore} from '@/stores/add-statement-store';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
-  // import AddStatementAccount from '@components/add-statement/AddStatementAccount.vue';
   import {computed, defineModel} from 'vue';
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
   import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
-  // import AddStatementTransactionsGroups from '@components/add-statement/AddStatementTransactionsGroups.vue'
+  import { container } from '@/core/setupInversify'
+  import { type IOfxToBankAccount } from '@/core/services/OfxToBankAccount';
+  import { ServicesTypes } from '@services/types'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -127,11 +128,24 @@
   });
 
 
-  function onFileNameUpdated(files: File[]) {
+  async function onFileNameUpdated(files: File[]) {
 
-    if (files.length > 0) {
-      addStatementStore.loadOfxFile(files[0]);
+    if (files.length == 0) {
+      throw new Error('No file selected');
     }
+
+    const ofxToBankAccount = container.get<IOfxToBankAccount>(ServicesTypes.OfxToBankAccount);
+    if (!ofxToBankAccount) {
+      throw new Error('No OfxToBankAccount service found');
+    }
+
+    const file = files[0];
+
+    addStatementStore.setLoadingFile(file.name);
+
+    const account = await ofxToBankAccount.loadOfxFile(file);
+
+    addStatementStore.setBankAccount(account);
   }
 
   function clear() {

@@ -1,10 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref, type Ref} from 'vue';
-import type {BankAccount, BankAccountTransaction} from '@models/BankAccountTypes';
-import type {IOfxParser} from '@services/ofxParser';
-import {ServicesTypes} from '@services/types';
-import {container} from '@/core/setupInversify';
-import type {OfxDocument, OfxTransaction} from '@models/ofxDocument';
+import type {BankAccount} from '@models/BankAccountTypes';
 
 export declare type LoadedAccount = {
     loading: boolean,
@@ -14,8 +10,9 @@ export declare type LoadedAccount = {
 
 export type AddStatementStore = {
     loadedAccount: Ref<LoadedAccount>;
-    loadOfxFile: (file: File) => void;
     clear: () => void;
+    setLoadingFile: (filename: string) => void;
+    setBankAccount: (account: BankAccount) => void;
 };
 
 export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
@@ -26,20 +23,6 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         filename: undefined
     });
 
-    function loadOfxFile(file: File) : void {
-        loadedAccount.value = {
-            loading: true,
-            account: undefined,
-            filename: file.name
-        };
-
-        const reader = new FileReader();
-
-        reader.onload = () => onOfxLoaded(reader.result as string);
-
-        reader.readAsText(file);
-    }
-
     function clear() {
         loadedAccount.value = {
             loading: false,
@@ -48,85 +31,26 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         };
     }
 
-    function onOfxLoaded(content: string) {
-        const ofxParser : IOfxParser = container.get(ServicesTypes.OfxParser);
-
-        if (ofxParser) {
-            const result = ofxParser.parse(content);
-
-            if (result.document) {
-                loadAccount(result.document);
-            }
-        }
+    function setLoadingFile(filename: string) {
+        loadedAccount.value = {
+            loading: true,
+            account: undefined,
+            filename: filename
+        };
     }
 
-    function OfxToBankAccountTransaction(ofxTransaction: OfxTransaction) : BankAccountTransaction {
-        if (ofxTransaction.fitId == undefined) {
-            throw new Error('Transaction ID not found in OFX file.');
-        }
-
-        if (ofxTransaction.datePosted == undefined) {
-            throw new Error('Transaction date not found in OFX file.');
-        }
-
-        if (ofxTransaction.amount == undefined) {
-            throw new Error('Transaction amount not found in OFX file.');
-        }
-
-        if (ofxTransaction.type == undefined) {
-            throw new Error('Transaction type not found in OFX file.');
-        }
-
-        return {
-            transactionId: ofxTransaction.fitId,
-            date: ofxTransaction.datePosted,
-            amount: ofxTransaction.amount,
-            type: ofxTransaction.type,
-            description: ofxTransaction.name || ''
-        }
-    }
-
-    function loadAccount(document: OfxDocument) {
-        if (document.accountId == undefined) {
-            throw new Error('Account ID not found in OFX file.');
-        }
-
-        if (document.startDate == undefined) {
-            throw new Error('Start date not found in OFX file.');
-        }
-
-        if (document.endDate == undefined) {
-            throw new Error('End date not found in OFX file.');
-        }
-
-        if (document.transactions && document.transactions.length > 0) {
-
-            const bankAccountTransactions = document.transactions.map(OfxToBankAccountTransaction);
-
-            const account : BankAccount = {
-                name: document.accountId,
-                accountId: document.accountId,
-                accountType: document.accountType || '',
-                transactions: [{
-                    name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
-                    id: crypto.randomUUID(),
-                    dateStart: document.startDate,
-                    dateEnd: document.endDate,
-                    transactions: bankAccountTransactions
-                }]
-            }
-
-            loadedAccount.value = {
-                loading: false,
-                account: account,
-                filename: loadedAccount.value.filename
-            }
-        }
+    function setBankAccount(account: BankAccount) {
+        loadedAccount.value = {
+            ...loadedAccount.value,
+            loading: false,
+            account: account
+        };
     }
 
     return {
         loadedAccount,
-        loadOfxFile,
-        clear
+        clear,
+        setLoadingFile,
+        setBankAccount
     }
 });

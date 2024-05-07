@@ -1,4 +1,5 @@
 export const ServicesTypes = {
     OfxParser: 'OfxParser',
-    ExportService: 'ExportService'
+    ExportService: 'ExportService',
+    OfxToBankAccount: 'OfxToBankAccount'
 }
