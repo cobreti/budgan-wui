@@ -2,12 +2,19 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import '@/core/setupInversify'
 import { FileReaderFactory } from '@services/FileReaderFactory'
 import { OfxToBankAccount } from '@services/OfxToBankAccount'
+import { type IOfxParser, OfxParser } from '@services/ofxParser'
 
 
 describe('OfxToBankAccount', () => {
 
+  let fileReaderFactory = new FileReaderFactory();
+  let ofxParser: IOfxParser = new OfxParser();
+  let ofxToBankAccount = new OfxToBankAccount(fileReaderFactory, ofxParser);
 
   beforeEach( async() => {
+    fileReaderFactory = new FileReaderFactory();
+    ofxParser = new OfxParser();
+    ofxToBankAccount = new OfxToBankAccount(fileReaderFactory, ofxParser);
   });
 
   afterEach( async() => {
@@ -16,8 +23,7 @@ describe('OfxToBankAccount', () => {
 
 
   test('loadOfxFile calls ofxToBankAccount', async () => {
-    const fileReaderFactory = new FileReaderFactory();
-    const ofxToBankAccount = new OfxToBankAccount(fileReaderFactory);
+
     const file = new File([''], 'file.ofx');
     const fileReader = {
       result: "",
@@ -52,8 +58,6 @@ describe('OfxToBankAccount', () => {
   });
 
   test('loadOfxFile rejects if fileReader fails', async () => {
-    const fileReaderFactory = new FileReaderFactory();
-    const ofxToBankAccount = new OfxToBankAccount(fileReaderFactory);
     const file = new File([''], 'file.ofx');
     const fileReader = {
       result: "",
@@ -73,8 +77,6 @@ describe('OfxToBankAccount', () => {
   });
 
   test('loadOfxFile reject with not a text content', async () => {
-    const fileReaderFactory = new FileReaderFactory();
-    const ofxToBankAccount = new OfxToBankAccount(fileReaderFactory);
     const file = new File([''], 'file.ofx');
     const fileReader = {
       result: null,

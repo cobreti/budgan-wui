@@ -2,7 +2,6 @@ import { injectable, inject } from 'inversify'
 import type { OfxDocument, OfxTransaction } from '@models/ofxDocument'
 import type { BankAccount, BankAccountTransaction } from '@models/BankAccountTypes'
 import type { IOfxParser } from '@services/ofxParser'
-import { container } from '@/core/setupInversify'
 import { ServicesTypes } from '@services/types'
 import type { IReaderFactory } from '@services/FileReaderFactory'
 
@@ -14,7 +13,8 @@ export interface IOfxToBankAccount {
 export class OfxToBankAccount implements IOfxToBankAccount {
 
   constructor(
-    @inject(ServicesTypes.FileReaderFactory) private fileReaderFactory: IReaderFactory
+    @inject(ServicesTypes.FileReaderFactory) private fileReaderFactory: IReaderFactory,
+    @inject(ServicesTypes.OfxParser) private ofxParser: IOfxParser
   ) {
 
   }
@@ -43,13 +43,7 @@ export class OfxToBankAccount implements IOfxToBankAccount {
   }
 
   ofxToBankAccount(ofxContent: string) : BankAccount {
-    const ofxParser : IOfxParser = container.get(ServicesTypes.OfxParser);
-
-    if (!ofxParser) {
-      throw new Error('OFX Parser not found.');
-    }
-
-    const result = ofxParser.parse(ofxContent);
+    const result = this.ofxParser.parse(ofxContent);
 
     if (!result.document) {
       throw new Error('OFX document not found.');
