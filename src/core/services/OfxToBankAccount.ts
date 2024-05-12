@@ -1,9 +1,10 @@
-import { injectable } from 'inversify'
+import { injectable, inject } from 'inversify'
 import type { OfxDocument, OfxTransaction } from '@models/ofxDocument'
 import type { BankAccount, BankAccountTransaction } from '@models/BankAccountTypes'
 import type { IOfxParser } from '@services/ofxParser'
 import { container } from '@/core/setupInversify'
 import { ServicesTypes } from '@services/types'
+import type { IReaderFactory } from '@services/FileReaderFactory'
 
 export interface IOfxToBankAccount {
   loadOfxFile(file: File) : Promise<BankAccount>;
@@ -12,30 +13,29 @@ export interface IOfxToBankAccount {
 @injectable()
 export class OfxToBankAccount implements IOfxToBankAccount {
 
+  constructor(
+    @inject(ServicesTypes.FileReaderFactory) private fileReaderFactory: IReaderFactory
+  ) {
+
+  }
+
   async loadOfxFile(file: File) : Promise<BankAccount> {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+      const reader =  this.fileReaderFactory.createReader();
 
       reader.onload = () => {
-        try {
           console.log(`File ${file.name} loaded.`);
           const text = reader.result as string;
+          if (text == null) {
+            reject('Unable to read file content as text')
+          }
           const accountResult = this.ofxToBankAccount(text);
           resolve(accountResult);
-        }
-        catch {
-          console.log(`Error get file content as text for ${file.name}.`);
-          reject();
-        }
       }
 
       reader.onerror = () => {
         console.log(`File ${file.name} could not be loaded.`);
         reject();
-      }
-
-      reader.onloadend = () => {
-        console.log(`File ${file.name} loaded.`);
       }
 
       reader.readAsText(file);
