@@ -3,4 +3,5 @@ export const ServicesTypes = {
     ExportService: 'ExportService',
     OfxToBankAccount: 'OfxToBankAccount',
     FileReaderFactory: 'FileReaderFactory',
+    IdGenerator: 'IdGenerator'
 }

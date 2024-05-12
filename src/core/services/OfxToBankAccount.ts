@@ -4,6 +4,7 @@ import type { BankAccount, BankAccountTransaction } from '@models/BankAccountTyp
 import type { IOfxParser } from '@services/ofxParser'
 import { ServicesTypes } from '@services/types'
 import type { IReaderFactory } from '@services/FileReaderFactory'
+import type { IdGenerator } from '@services/IdGenerator'
 
 export interface IOfxToBankAccount {
   loadOfxFile(file: File) : Promise<BankAccount>;
@@ -14,7 +15,8 @@ export class OfxToBankAccount implements IOfxToBankAccount {
 
   constructor(
     @inject(ServicesTypes.FileReaderFactory) private fileReaderFactory: IReaderFactory,
-    @inject(ServicesTypes.OfxParser) private ofxParser: IOfxParser
+    @inject(ServicesTypes.OfxParser) private ofxParser: IOfxParser,
+    @inject(ServicesTypes.IdGenerator) private idGenerator: IdGenerator
   ) {
 
   }
@@ -29,7 +31,7 @@ export class OfxToBankAccount implements IOfxToBankAccount {
           if (text == null) {
             reject('Unable to read file content as text')
           }
-          const accountResult = this.ofxToBankAccount(text);
+          const accountResult = this.convertOfxToBankAccount(text);
           resolve(accountResult);
       }
 
@@ -42,7 +44,7 @@ export class OfxToBankAccount implements IOfxToBankAccount {
     });
   }
 
-  ofxToBankAccount(ofxContent: string) : BankAccount {
+  convertOfxToBankAccount(ofxContent: string) : BankAccount {
     const result = this.ofxParser.parse(ofxContent);
 
     if (!result.document) {
@@ -104,7 +106,7 @@ export class OfxToBankAccount implements IOfxToBankAccount {
 
       account.transactions = [{
         name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
-        id: crypto.randomUUID(),
+        id: this.idGenerator.generateId(),
         dateStart: document.startDate,
         dateEnd: document.endDate,
         transactions: bankAccountTransactions
