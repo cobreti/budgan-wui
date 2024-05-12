@@ -212,29 +212,35 @@ describe('OfxToBankAccount', () => {
   });
 
   test('createAccountFromOfxDocument success', () => {
+    const startDate = new Date();
+    const endDate = new Date(startDate.getDate() + 7);
+    const postedDates = [
+      new Date(startDate.getDate() + 1),
+      new Date(startDate.getDate() + 2)
+    ];
+
     const document : OfxDocument = {
       version: '1.0',
       security: 'security',
       encoding: 'utf',
       charset: 'ansi',
       compression: 'none',
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate,
+      endDate,
       transactions: [
         {
           type: 'type1',
-          datePosted: new Date(),
+          datePosted: postedDates[0],
           amount: 100,
           fitId: 'id1',
           name: 'name1'
         },
         {
           type: 'type2',
-          datePosted: new Date(),
+          datePosted: postedDates[1],
           amount: 200,
           fitId: 'id2',
           name: 'name2'
-
         }
       ],
       accountId: '1234',
@@ -275,4 +281,82 @@ describe('OfxToBankAccount', () => {
       ]
     });
   });
+
+  test('createAccountFromOfxDocument success with no transactions', () => {
+    const startDate = new Date();
+    const endDate = new Date(startDate.getDate() + 7);
+
+    const document : OfxDocument = {
+      version: '1.0',
+      security: 'security',
+      encoding: 'utf',
+      charset: 'ansi',
+      compression: 'none',
+      startDate,
+      endDate,
+      transactions: [],
+      accountId: '1234',
+      accountType: 'account-type'
+    };
+
+    vi.spyOn(idGenerator, 'generateId').mockReturnValue('id');
+
+    const result = ofxToBankAccount.createAccountFromOfxDocument(document);
+
+    expect(result).toEqual({
+      name: '1234',
+      accountId: '1234',
+      accountType: 'account-type',
+      transactions: []
+    });
+  });
+
+  test('createAccountFromOfxDocument throws error if accountId not found', () => {
+    const document : OfxDocument = {
+      version: '1.0',
+      security: 'security',
+      encoding: 'utf',
+      charset: 'ansi',
+      compression: 'none',
+      startDate: new Date(),
+      endDate: new Date(),
+      transactions: [],
+      accountType: 'account-type'
+    };
+
+    expect(() => ofxToBankAccount.createAccountFromOfxDocument(document)).toThrowError('Account ID not found in OFX file.');
+  });
+
+  test('createAccountFromOfxDocument throws error if startDate not found', () => {
+    const document : OfxDocument = {
+      version: '1.0',
+      security: 'security',
+      encoding: 'utf',
+      charset: 'ansi',
+      compression: 'none',
+      endDate: new Date(),
+      transactions: [],
+      accountId: '1234',
+      accountType: 'account-type'
+    };
+
+    expect(() => ofxToBankAccount.createAccountFromOfxDocument(document)).toThrowError('Start date not found in OFX file.');
+  });
+
+  test('createAccountFromOfxDocument throws error if endDate not found', () => {
+    const document : OfxDocument = {
+      version: '1.0',
+      security: 'security',
+      encoding: 'utf',
+      charset: 'ansi',
+      compression: 'none',
+      startDate: new Date(),
+      transactions: [],
+      accountId: '1234',
+      accountType: 'account-type'
+    };
+
+    expect(() => ofxToBankAccount.createAccountFromOfxDocument(document)).toThrowError('End date not found in OFX file.');
+  });
+
 });
