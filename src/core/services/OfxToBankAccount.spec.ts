@@ -359,4 +359,6 @@ describe('OfxToBankAccount', () => {
     expect(() => ofxToBankAccount.createAccountFromOfxDocument(document)).toThrowError('End date not found in OFX file.');
   });
 
+
+ 
 });

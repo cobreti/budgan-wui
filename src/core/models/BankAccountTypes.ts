@@ -1,3 +1,10 @@
+/**
+ * Defines transaction Ids table.
+ * 
+ * Using key to store ids and an empty object assigned to this id
+ * so it can be saved and restored automatically from browser session storage.
+ * 
+ */
 export declare type TransactionIdsTable = {[key: string]: object};
 
 export type BankAccountTransaction = {
@@ -24,3 +31,4 @@ export type BankAccount = {
 }
 
 export type BankAccountsDictionary = {[key: string]: BankAccount};
+
