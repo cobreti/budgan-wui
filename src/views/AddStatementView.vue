@@ -110,21 +110,8 @@
     return addStatementStore.loadedAccount.account?.accountType;
   })
 
-  const existingTransactionsIds = computed(() => {
-    if (!accountId.value) {
-      return {};
-    }
-    return useBankAccountsStore().getTransactionsIdsForAccountId(accountId.value);
-  });
-
   const filteredTransactions = computed(() => {
-    const result = IdentityFilter(addStatementStore.loadedAccount.account);
-
-    const transactions = result.transactions.filter(t => !existingTransactionsIds.value[t.transactionId]);
-    return {
-      ...result,
-      transactions
-    }
+    return IdentityFilter(addStatementStore.accountWithNewTransactionsOnly);
   });
 
 
@@ -158,7 +145,7 @@
   }
 
   function onAdd() {
-    const account = addStatementStore.loadedAccount.account;
+    const account = addStatementStore.accountWithNewTransactionsOnly;
     if (account != undefined) {
       useBankAccountsStore().addWithBankAccount(account);
       clear();

@@ -16,6 +16,7 @@ export type BankAccountsStore = {
     totalTransactionsPerAccount: ComputedRef<{[key:string]: number }>;
     totalTransactionIdsPerAccount: ComputedRef<{[key:string]: number }>;
     getAccountById: (accountId: string) => BankAccount;
+    getAccountByIdIfExist: (accountId: string) => BankAccount | undefined;
     addWithBankAccount: (account: BankAccount) => void;
     hasAccounts: ComputedRef<boolean>;
     clear: () => void;
@@ -57,6 +58,13 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
 
     function getAccountById(accountId: string) {
             return accounts.value[accountId];
+    }
+
+    function getAccountByIdIfExist(accountId: string) {
+        if (accountId in accounts.value) {
+            return accounts.value[accountId];
+        }
+        return undefined;
     }
 
     function sanitizeTransactionsGroup(accountTransactionsIds: TransactionIdsTable, transactionsGroup: BankAccountTransactionsGroup) {
@@ -130,6 +138,7 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
         totalTransactionsPerAccount,
         totalTransactionIdsPerAccount,
         getAccountById,
+        getAccountByIdIfExist,
         addWithBankAccount,
         hasAccounts,
         clear,
