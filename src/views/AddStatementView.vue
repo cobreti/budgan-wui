@@ -12,7 +12,7 @@
               id="ofx-file-input"
               class=""
               v-model="ofxFileName"
-              :disabled = "addStatementStore.loadedAccount.loading"
+              :disabled = "addStatementStore.loading"
               @update:modelValue="onFileNameUpdated"
               accept=".ofx"
               :multiple="false"
@@ -41,7 +41,7 @@
               <span>{{accountType}}</span>
             </div>
           </div>
-          <div class="mt-2">
+          <div class="mt-2" v-if="filteredTransactions">
             <filtered-transactions-list :filtered-transactions="filteredTransactions"></filtered-transactions-list>
           </div>
           <div class="d-flex flex-row justify-center mt-8" v-if="noNewTransactions">
@@ -78,7 +78,7 @@
 </style>
 
 <script setup lang="ts">
-  import {useAddStatementStore} from '@/stores/add-statement-store';
+  import {useAddStatementStore, type AccountToAdd} from '@/stores/add-statement-store';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
   import {computed, defineModel} from 'vue';
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
@@ -91,27 +91,35 @@
   const addStatementStore = useAddStatementStore();
 
   const filename = computed(() => {
-    return addStatementStore.loadedAccount.filename;
+    return 'no filename : to fill later';
   });
 
   const statementPresent = computed(() => {
-    return addStatementStore.loadedAccount.account != undefined;
+    return addStatementStore.accounts.length > 0;;
+  });
+
+  const accountToAdd = computed(() : AccountToAdd | undefined => {
+    if (addStatementStore.accounts.length == 0) {
+      return undefined;
+    }
+
+    return addStatementStore.accounts[0];
   });
 
   const noNewTransactions = computed(() => {
-    return filteredTransactions.value.transactions.length == 0;
+    return !accountToAdd.value || accountToAdd.value.account.transactions.length == 0;
   });
 
   const accountId = computed(() => {
-    return addStatementStore.loadedAccount.account?.accountId;
+    return accountToAdd.value ? accountToAdd.value.account.accountId : '';
   })
 
   const accountType = computed(() => {
-    return addStatementStore.loadedAccount.account?.accountType;
+    return accountToAdd.value ? accountToAdd.value.account.accountType : '';
   })
 
   const filteredTransactions = computed(() => {
-    return IdentityFilter(addStatementStore.accountWithNewTransactionsOnly);
+    return accountToAdd.value ? IdentityFilter(accountToAdd.value.account) : null;
   });
 
 
@@ -130,7 +138,7 @@
 
     addStatementStore.setLoadingFile(file.name);
 
-    const account = await ofxToBankAccount.loadOfxFile(file);
+    const account = await ofxToBankAccount.loadOfxFile(file); 
 
     addStatementStore.setBankAccount(account);
   }
@@ -145,7 +153,11 @@
   }
 
   function onAdd() {
-    const account = addStatementStore.accountWithNewTransactionsOnly;
+    if (accountToAdd.value == undefined) {
+      return;
+    }
+
+    const account = accountToAdd.value.account;
     if (account != undefined) {
       useBankAccountsStore().addWithBankAccount(account);
       clear();

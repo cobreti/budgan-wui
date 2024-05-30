@@ -347,9 +347,9 @@ describe('BankAccountOperations', () => {
 
         const transactionsToRemove = new Set(['1', '3']);
 
-        const result = bankAccountOperationService.removeTransactionsFromBankAccount(account, transactionsToRemove);
+        bankAccountOperationService.removeTransactionsFromBankAccount(account, transactionsToRemove);
     
-        expect(result).toEqual({
+        expect(account).toEqual({
             accountId: '1',
             name: 'Account 1',
             accountType: 'Checking',
@@ -488,9 +488,9 @@ describe('BankAccountOperations', () => {
                 ]
             };
     
-            const result = bankAccountOperationService.removeTransactionsFromBankAccount(account, transactionsToRemove);
+            bankAccountOperationService.removeTransactionsFromBankAccount(account, transactionsToRemove);
         
-            expect(result).toEqual(expectedResult);
+            expect(account).toEqual(expectedResult);
     });
 
     test('removeTransactionsFromBankAccount success with multiple groups and empty groups in the result', () => {
@@ -588,8 +588,8 @@ describe('BankAccountOperations', () => {
                 ]
             };
     
-            const result = bankAccountOperationService.removeTransactionsFromBankAccount(account, transactionsToRemove);
+            bankAccountOperationService.removeTransactionsFromBankAccount(account, transactionsToRemove);
         
-            expect(result).toEqual(expectedResult);
+            expect(account).toEqual(expectedResult);
     });
 });
