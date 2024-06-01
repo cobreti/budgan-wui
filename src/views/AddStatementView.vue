@@ -86,6 +86,7 @@
   import { container } from '@/core/setupInversify'
   import { type IOfxToBankAccount } from '@/core/services/OfxToBankAccount';
   import { ServicesTypes } from '@services/types'
+  import router from '@/router';
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -143,6 +144,8 @@
     const account = await ofxToBankAccount.loadOfxFile(file); 
 
     addStatementStore.setBankAccount('id', account);
+
+    router.push({name: 'addStatementAccountTransactions', params: {id: 'id'}});
   }
 
   function clear() {

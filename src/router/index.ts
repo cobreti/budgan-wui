@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
-
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -18,7 +16,13 @@ const router = createRouter({
       component: () => import('../views/AddStatementView.vue'),
       meta: { transition: 'slide-right' }
     },
-   {
+    {
+      path: '/add-statement/:id',
+      name: 'addStatementAccountTransactions',
+      component: () => import('../components/AddStatementView/AccountTransactions.vue'),
+      meta: { transition: 'slide-right' }
+    },
+    {
       path: '/account/:id',
       name: 'account',
       component: () => import('../views/AccountView.vue')
@@ -36,21 +40,19 @@ const router = createRouter({
       name: 'save',
       component: () => import('../views/ExportAccountData.vue'),
       beforeEnter: (to, from, next) => {
-
-        const bankAccountsStore = useBankAccountsStore();
+        const bankAccountsStore = useBankAccountsStore()
 
         if (bankAccountsStore.hasAccounts) {
-          next();
-        }
-        else {
-          next({path: '/'});
+          next()
+        } else {
+          next({ path: '/' })
         }
       }
     },
     {
       path: '/open',
       name: 'open',
-      component: () => import('../views/ImportAccountData.vue'),
+      component: () => import('../views/ImportAccountData.vue')
     }
   ]
 })
