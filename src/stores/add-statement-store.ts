@@ -17,12 +17,14 @@ export declare type AccountToAdd = {
     filename: string;
 }
 
+export declare type AccountToAddDictionary = {[key: string]: AccountToAdd};
+
 export type AddStatementStore = {
     loading: Ref<boolean>;
-    accounts: Ref<AccountToAdd[]>;
+    accounts: Ref<AccountToAddDictionary>;
     clear: () => void;
     setLoadingFile: (filename: string) => void;
-    setBankAccount: (account: BankAccount) => void;
+    setBankAccount: (id: string, account: BankAccount) => void;
 };
 
 export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
@@ -33,27 +35,27 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
 
     const accountWithNewTransactionsOnly = ref<BankAccount | undefined>(undefined);
 
-    const accounts = ref<AccountToAdd[]>([]);
+    const accounts = ref<AccountToAddDictionary>({});
 
     const loading = ref<boolean>(false);
 
     function clear() {
         loading.value = false;
-        accounts.value = [];
+        accounts.value = {};
     }
 
     function setLoadingFile(filename: string) {
         loading.value = true;
     }
 
-    function setBankAccount(account: BankAccount) {
-        accounts.value = [
+    function setBankAccount(id: string, account: BankAccount) {
+        accounts.value = {
             ...accounts.value,
-            {
+            id: {
                 account: account,
                 filename: ''
             }
-        ]
+        }
 
         const existingAccount = bankAccountStore.getAccountByIdIfExist(account.accountId);
         if (existingAccount) {

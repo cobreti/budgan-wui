@@ -95,15 +95,17 @@
   });
 
   const statementPresent = computed(() => {
-    return addStatementStore.accounts.length > 0;;
+    return Object.keys(addStatementStore.accounts).length > 0;;
   });
 
   const accountToAdd = computed(() : AccountToAdd | undefined => {
-    if (addStatementStore.accounts.length == 0) {
+    if (Object.keys(addStatementStore.accounts).length == 0) {
       return undefined;
     }
 
-    return addStatementStore.accounts[0];
+    const firstKey = Object.keys(addStatementStore.accounts)[0];
+
+    return addStatementStore.accounts[firstKey];
   });
 
   const noNewTransactions = computed(() => {
@@ -140,7 +142,7 @@
 
     const account = await ofxToBankAccount.loadOfxFile(file); 
 
-    addStatementStore.setBankAccount(account);
+    addStatementStore.setBankAccount('id', account);
   }
 
   function clear() {
