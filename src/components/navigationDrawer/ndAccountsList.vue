@@ -1,7 +1,7 @@
 <template>
     <div class="ml-4">
         <div class="account-line mb-2" v-for="(account) in accounts" :key="account.accountId">
-            <router-link :to="{path: `/account/${account.accountId}`}">{{ account.accountId }}</router-link>
+            <router-link :to="{path: `/account/${account.accountId}`, replace: true}">{{ account.accountId }}</router-link>
         </div>
     </div>
 </template>

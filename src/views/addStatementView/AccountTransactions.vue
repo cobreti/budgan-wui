@@ -1,6 +1,11 @@
 <template>
   <div class="page-container pa-2">
     <div class="d-flex flex-column align-content-start h-100">
+      <v-card>
+        <v-btn @click="onBack" flat>
+          <v-icon class="ma-0 pa-0" icon="mdi-chevron-left" size="large"></v-icon>
+        </v-btn>
+      </v-card>
       <v-card class="pt-4 pr-4 pl-4 pb-4 mt-2">
         <div class="d-flex flex-column align-content-start ma-1 h-100">
           <div class="d-flex flex-row justify-center"></div>
@@ -55,10 +60,11 @@
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
   import { useAddStatementStore, type AccountToAdd } from '@/stores/add-statement-store'
   import { computed } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
 
   const route = useRoute();
+  const router = useRouter();
   const id = route.params.id as string;
 
   const addStatementStore = useAddStatementStore()
@@ -82,4 +88,8 @@
   const filteredTransactions = computed(() => {
     return accountToAdd.value ? IdentityFilter(accountToAdd.value.account) : null
   })
+
+  function onBack() {
+    router.push({ name: 'addStatement', replace: true });
+  }
 </script>
