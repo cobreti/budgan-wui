@@ -84,9 +84,10 @@
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
   import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
   import { container } from '@/core/setupInversify'
-  import { type IOfxToBankAccount } from '@/core/services/OfxToBankAccount';
+  import { type IOfxToBankAccount } from '@services/OfxToBankAccount';
   import { ServicesTypes } from '@services/types'
   import router from '@/router';
+  import type { IIdGenerator } from '@services/IdGenerator'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -137,15 +138,21 @@
       throw new Error('No OfxToBankAccount service found');
     }
 
+    const idGenerator = container.get<IIdGenerator>(ServicesTypes.IdGenerator);
+    if (!idGenerator) {
+      throw new Error('No IdGenerator service found');
+    }
+
     const file = files[0];
 
     addStatementStore.setLoadingFile(file.name);
 
-    const account = await ofxToBankAccount.loadOfxFile(file); 
+    const account = await ofxToBankAccount.loadOfxFile(file);
+    const id = idGenerator.generateId();
 
-    addStatementStore.setBankAccount('id', account);
+    addStatementStore.setBankAccount(id, account);
 
-    router.push({name: 'addStatementAccountTransactions', params: {id: 'id'}});
+    await router.push({name: 'addStatementAccountTransactions', params: {id: id}, replace: true});
   }
 
   function clear() {

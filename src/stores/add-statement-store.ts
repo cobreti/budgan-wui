@@ -25,6 +25,8 @@ export type AddStatementStore = {
     clear: () => void;
     setLoadingFile: (filename: string) => void;
     setBankAccount: (id: string, account: BankAccount) => void;
+    accountExists: (id: string) => boolean;
+    getAccountById: (id: string) => AccountToAdd | undefined;
 };
 
 export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
@@ -49,13 +51,13 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
     }
 
     function setBankAccount(id: string, account: BankAccount) {
-        accounts.value = {
-            ...accounts.value,
-            id: {
-                account: account,
-                filename: ''
-            }
-        }
+        const updatedAccounts = {...accounts.value};
+        updatedAccounts[id] = {
+            account: account,
+            filename: ''
+        };
+
+        accounts.value = updatedAccounts;
 
         const existingAccount = bankAccountStore.getAccountByIdIfExist(account.accountId);
         if (existingAccount) {
@@ -67,11 +69,21 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         }
     }
 
+    function getAccountById(id: string): AccountToAdd | undefined {
+        return accounts.value[id];
+    }
+
+    function accountExists(id: string):boolean {
+        return id in accounts.value;
+    }
+
     return {
         loading,
         accounts,
         clear,
         setLoadingFile,
-        setBankAccount
+        setBankAccount,
+        accountExists,
+        getAccountById
     }
 });

@@ -13,6 +13,7 @@
       "@services/*": ["./src/core/services/*"],
       "@components/*": ["./src/components/*"],
       "@filters/*": ["./src/core/models/filters/*"],
+      "@views/*": ["./src/views/*"],
     },
     "types": ["reflect-metadata"],
     "experimentalDecorators": true,

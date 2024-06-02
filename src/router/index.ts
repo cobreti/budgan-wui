@@ -1,26 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+import { addStatementRoutes } from '@/router/addStatementRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    ...addStatementRoutes,
     {
       path: '/',
       name: 'home',
       component: HomeView
-    },
-    {
-      path: '/add-statement',
-      name: 'addStatement',
-      component: () => import('../views/AddStatementView.vue'),
-      meta: { transition: 'slide-right' }
-    },
-    {
-      path: '/add-statement/:id',
-      name: 'addStatementAccountTransactions',
-      component: () => import('../components/AddStatementView/AccountTransactions.vue'),
-      meta: { transition: 'slide-right' }
     },
     {
       path: '/account/:id',
