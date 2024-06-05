@@ -51,13 +51,17 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
     }
 
     function setBankAccount(id: string, account: BankAccount) {
-        const updatedAccounts = {...accounts.value};
-        updatedAccounts[id] = {
+        accounts.value[id] = {
             account: account,
             filename: ''
         };
-
-        accounts.value = updatedAccounts;
+        // const updatedAccounts = {...accounts.value};
+        // updatedAccounts[id] = {
+        //     account: account,
+        //     filename: ''
+        // };
+        //
+        // accounts.value = updatedAccounts;
 
         const existingAccount = bankAccountStore.getAccountByIdIfExist(account.accountId);
         if (existingAccount) {
