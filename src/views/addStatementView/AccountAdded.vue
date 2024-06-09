@@ -7,20 +7,21 @@
 
 <style scoped>
   .separator {
-    border-bottom: 1px dotted gray;
+    border-bottom: 1px dotted v-bind('Colors.separator');
   }
 </style>
 
 
 <script setup lang="ts">
-
   import { computed } from 'vue'
   import { useAddStatementStore } from '@/stores/add-statement-store'
+  import { useThemeColors } from '@/styles/Colors'
 
   const props = defineProps<{
     accountId: string
   }>();
 
+  const Colors = useThemeColors();
   const addStatementStore = useAddStatementStore();
 
   const accountGroup = computed(() => {

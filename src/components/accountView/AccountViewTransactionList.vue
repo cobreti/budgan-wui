@@ -5,12 +5,6 @@
 </template>
 
 <style scoped>
-
-  /* used to prevent a build error for missing variable declaration */
-  :root {
-    --v-theme-on-surface-variant: --v-theme-on-surface-variant
-  }
-
   .container {
     display: block;
     position: relative;

@@ -83,15 +83,11 @@
 </style>
 
 <script setup lang="ts">
-  import {useAddStatementStore, type AccountToAdd} from '@/stores/add-statement-store';
-  import {useBankAccountsStore} from '@/stores/bankAccounts-store';
+  import {useAddStatementStore} from '@/stores/add-statement-store';
   import {computed, defineModel} from 'vue';
-  // import { IdentityFilter } from '@/core/filters/IdentityFilter'
-  // import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
   import { container } from '@/core/setupInversify'
   import { type IOfxToBankAccount } from '@services/OfxToBankAccount';
   import { ServicesTypes } from '@services/types'
-  // import router from '@/router';
   import type { IIdGenerator } from '@services/IdGenerator'
   import AccountAdded from '@views/addStatementView/AccountAdded.vue'
 
@@ -183,17 +179,17 @@
     clear();
   }
 
-  function onAdd() {
-    if (accountToAdd.value == undefined) {
-      return;
-    }
-
-    const account = accountToAdd.value.account;
-    if (account != undefined) {
-      useBankAccountsStore().addWithBankAccount(account);
-      clear();
-    }
-  }
+  // function onAdd() {
+  //   // if (accountToAdd.value == undefined) {
+  //   //   return;
+  //   // }
+  //   //
+  //   // const account = accountToAdd.value.account;
+  //   // if (account != undefined) {
+  //   //   useBankAccountsStore().addWithBankAccount(account);
+  //   //   clear();
+  //   // }
+  // }
 
 </script>
 
