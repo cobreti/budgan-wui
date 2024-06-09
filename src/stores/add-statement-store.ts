@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {ref, type Ref} from 'vue';
+import { computed, ref, type Ref } from 'vue'
 import type {BankAccount} from '@models/BankAccountTypes';
 import { container } from '@/core/setupInversify';
 import { ServicesTypes } from '@/core/services/types';
@@ -24,9 +24,10 @@ export type AddStatementStore = {
     accounts: Ref<AccountToAddDictionary>;
     clear: () => void;
     setLoadingFile: (filename: string) => void;
-    setBankAccount: (id: string, account: BankAccount) => void;
+    setBankAccount: (id: string, filename: string, account: BankAccount) => void;
     accountExists: (id: string) => boolean;
     getAccountById: (id: string) => AccountToAdd | undefined;
+    accountsGroupedById: Ref<Record<string, AccountToAdd[]>>;
 };
 
 export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
@@ -41,6 +42,16 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
 
     const loading = ref<boolean>(false);
 
+    const accountsGroupedById = computed(() => {
+        return Object.values(accounts.value)
+          .reduce((acc, accountToAdd) => {
+              const accnt = acc[accountToAdd.account.name] || [];
+              acc[accountToAdd.account.name] = [...accnt, accountToAdd];
+              return acc;
+          }, {} as Record<string, AccountToAdd[]>);
+    });
+
+
     function clear() {
         loading.value = false;
         accounts.value = {};
@@ -50,10 +61,10 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         loading.value = true;
     }
 
-    function setBankAccount(id: string, account: BankAccount) {
+    function setBankAccount(id: string, filename: string, account: BankAccount) {
         accounts.value[id] = {
             account: account,
-            filename: ''
+            filename
         };
         // const updatedAccounts = {...accounts.value};
         // updatedAccounts[id] = {
@@ -84,6 +95,7 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
     return {
         loading,
         accounts,
+        accountsGroupedById,
         clear,
         setLoadingFile,
         setBankAccount,

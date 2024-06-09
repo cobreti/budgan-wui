@@ -22,7 +22,7 @@
       <v-card class="action-card" v-show="statementPresent">
         <div class="d-flex flex-column align-content-center w-100">
           <div v-for="id in accountsIds" :key="id">
-            {{id}}
+            <account-added :accountId="id"></account-added>
           </div>
         </div>
 <!--        <div class="ml-5 mt-1">{{filename}}</div>-->
@@ -93,25 +93,18 @@
   import { ServicesTypes } from '@services/types'
   // import router from '@/router';
   import type { IIdGenerator } from '@services/IdGenerator'
+  import AccountAdded from '@views/addStatementView/AccountAdded.vue'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
 
-  const filename = computed(() => {
-    return 'no filename : to fill later';
-  });
-
-  const accountsGroupedById = computed(() => {
-    return Object.values(addStatementStore.accounts)
-      .reduce((acc, accountToAdd) => {
-        const accnt = acc[accountToAdd.account.accountId] || [];
-        acc[accountToAdd.account.accountId] = [...accnt, accountToAdd];
-        return acc;
-      }, {} as Record<string, AccountToAdd[]>);
-  });
+  // const filename = computed(() => {
+  //   return 'no filename : to fill later';
+  // });
 
   const accountsIds = computed(() => {
-    return Object.keys(accountsGroupedById.value);
+    const accounts = addStatementStore.accountsGroupedById;
+    return Object.keys(accounts);
   });
 
   const statementPresent = computed(() => {
@@ -167,7 +160,7 @@
       const account = await ofxToBankAccount.loadOfxFile(file);
       const id = idGenerator.generateId();
 
-      addStatementStore.setBankAccount(id, account);
+      addStatementStore.setBankAccount(id, file.name, account);
     }
     // const file = files[0];
 
