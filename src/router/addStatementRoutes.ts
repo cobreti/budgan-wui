@@ -4,7 +4,7 @@ export const addStatementRoutes = [
   {
     path: '/add-statement',
     name: 'addStatement',
-    component: () => import('@views/addStatementView/add-statement.vue'),
+    component: () => import('@views/addStatementView/AddStatement.vue'),
     meta: { transition: 'slide-right' }
   },
   {

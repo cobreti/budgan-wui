@@ -26,6 +26,7 @@
           </v-expansion-panels>
         </div>
         <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
+          <v-btn @click="onAdd">Add</v-btn>
           <v-btn @click="onDiscard()">Discard</v-btn>
         </v-card-actions>
       </v-card>
@@ -55,9 +56,11 @@
   import { ServicesTypes } from '@services/types'
   import type { IIdGenerator } from '@services/IdGenerator'
   import AccountAdded from '@views/addStatementView/AccountAdded.vue'
+  import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
+  const bankAccountStore = useBankAccountsStore();
 
   // const filename = computed(() => {
   //   return 'no filename : to fill later';
@@ -144,17 +147,26 @@
     clear();
   }
 
-  // function onAdd() {
-  //   // if (accountToAdd.value == undefined) {
-  //   //   return;
-  //   // }
-  //   //
-  //   // const account = accountToAdd.value.account;
-  //   // if (account != undefined) {
-  //   //   useBankAccountsStore().addWithBankAccount(account);
-  //   //   clear();
-  //   // }
-  // }
+  function onAdd() {
+    const accounts = addStatementStore.accounts;
+
+    Object.values(accounts).forEach((accountBox) => {
+      const account = accountBox.account;
+
+      bankAccountStore.addWithBankAccount(account);
+    });
+
+    clear();
+    // if (accountToAdd.value == undefined) {
+    //   return;
+    // }
+    //
+    // const account = accountToAdd.value.account;
+    // if (account != undefined) {
+    //   useBankAccountsStore().addWithBankAccount(account);
+    //   clear();
+    // }
+  }
 
 </script>
 

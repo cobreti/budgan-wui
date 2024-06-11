@@ -152,7 +152,7 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
 
             for (const accountId in accounts) {
                 const account = accounts[accountId];
-                account.transactions = account.transactions.map((transactionsGroup : BankAccountTransactionsGroup) => {
+                account.transactionsGroups = account.transactionsGroups.map((transactionsGroup : BankAccountTransactionsGroup) => {
                     return {
                         ...transactionsGroup,
                         dateStart: new Date(transactionsGroup.dateStart),
