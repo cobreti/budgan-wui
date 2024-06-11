@@ -1,13 +1,62 @@
 <template>
-  <div class="ma-4 pb-2 w-100">
-    {{accountId}}
-    <div class="separator mt-4 ml-lg-10 w-25"></div>
-  </div>
+<!--  <div class="w-100">-->
+    <v-expansion-panel>
+      <v-expansion-panel-title>
+        {{accountId}}
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <div class="">
+          <div class="d-flex flex-row flex-wrap align-content-space-evenly">
+            <v-card class="trans-group" v-for="group in transactionsGroups" :key="group.id">
+              <div class="line-content">
+                <span class="title">Filename :</span>
+                <span class="content">{{group.filename}}</span>
+              </div>
+              <div class="line-content">
+                <span class="title">Date :</span>
+                <span class="content">{{group.dateStart.toDateString()}} - {{group.dateEnd.toDateString()}}</span>
+              </div>
+              <div class="line-content">
+                <span class="title">transactions count :</span>
+                <span class="content">{{group.transactions.length}}</span>
+              </div>
+            </v-card>
+          </div>
+        </div>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+<!--  </div>-->
 </template>
 
 <style scoped>
-  .separator {
-    border-bottom: 1px dotted v-bind('Colors.separator');
+  .line-content {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    font-size: 90%;
+    cursor: default;
+  }
+
+  .title {
+    font-weight: bold;
+    margin-right: 1em;
+    min-width: 12em;
+  }
+
+  .content {
+    font-weight: normal;
+  }
+
+  .trans-group {
+    display: block;
+    position: relative;
+    overflow: auto;
+    width: 45%;
+    margin: 1em;
+    padding: 1em;
   }
 </style>
 
@@ -15,13 +64,12 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useAddStatementStore } from '@/stores/add-statement-store'
-  import { useThemeColors } from '@/styles/Colors'
+  import type { BankAccountTransactionsGroup } from '@models/BankAccountTypes'
 
   const props = defineProps<{
     accountId: string
   }>();
 
-  const Colors = useThemeColors();
   const addStatementStore = useAddStatementStore();
 
   const accountGroup = computed(() => {
@@ -31,13 +79,13 @@
   const transactionsGroups = computed(() => {
     return Object.values(accountGroup.value)
       .reduce((acc: any[], curr) => {
-        const transactions = curr.account.transactions.flat()
-          .map((group: any) => ({
+        const transactionsGroup = curr.account.transactionsGroups
+          .map((group: BankAccountTransactionsGroup) => ({
             ...group,
             filename: curr.filename
           }));
 
-        return [...acc, ...transactions];
+        return [...acc, ...transactionsGroup];
       }, []);
   });
 

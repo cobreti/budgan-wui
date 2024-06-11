@@ -14,7 +14,7 @@ export const IdentityFilter : TransactionsFilterFct = (account: BankAccount | un
   let minDate: Date | undefined = undefined;
   let maxDate: Date | undefined = undefined;
   const transactionsIds : TransactionIdsTable = {};
-  const transactions = account.transactions.flatMap(group => {
+  const transactions = account.transactionsGroups.flatMap(group => {
     minDate = minDate ? (group.dateStart < minDate ? group.dateStart : minDate) : group.dateStart;
     maxDate = maxDate ? (group.dateEnd > maxDate ? group.dateEnd : maxDate) : group.dateEnd;
     return group.transactions.map(transaction => {

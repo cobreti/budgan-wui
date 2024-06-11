@@ -27,7 +27,7 @@ export const useAccountViewStore = defineStore<string, AccountViewStore>('accoun
 
     function addBankAccount(bankAccount: BankAccount) {
 
-        const transactions = bankAccount.transactions.reduce((acc: AccountViewTransaction[], group) => {
+        const transactions = bankAccount.transactionsGroups.reduce((acc: AccountViewTransaction[], group) => {
             const groupId = group.id;
 
             const viewTransactions = group.transactions.reduce((tacc: AccountViewTransaction[], transaction) => {

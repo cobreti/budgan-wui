@@ -2,8 +2,8 @@
   <div class="account-list-panel">
     <ul>
       <li v-for="account in bankAccountsStore.accounts" :key="account.accountId">
-        {{account.accountId}} - {{account.transactions.length}}
-        <transactions-block class="transactions-block" :bank-account-transactions="account.transactions"></transactions-block>
+        {{ account.accountId }} - {{ account.transactionsGroups.length }}
+        <transactions-block class="transactions-block" :bank-account-transactions="account.transactionsGroups"></transactions-block>
       </li>
     </ul>
   </div>

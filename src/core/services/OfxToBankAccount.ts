@@ -97,14 +97,14 @@ export class OfxToBankAccount implements IOfxToBankAccount {
       name: document.accountId,
       accountId: document.accountId,
       accountType: document.accountType || '',
-      transactions: []
+      transactionsGroups: []
     };
 
     if (document.transactions && document.transactions.length > 0) {
 
       const bankAccountTransactions = document.transactions.map(this.OfxToBankAccountTransaction);
 
-      account.transactions = [{
+      account.transactionsGroups = [{
         name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
         id: this.idGenerator.generateId(),
         dateStart: document.startDate,

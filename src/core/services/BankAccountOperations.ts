@@ -17,8 +17,8 @@ export class BankAccountOperations implements IBankAccountOperations {
             throw new Error('Account Ids do not match');
         }
 
-        const accountTransactions = account.transactions.flatMap((group) => group.transactions);
-        const otherAccountTransactions = otherAccount.transactions.flatMap((group) => group.transactions);
+        const accountTransactions = account.transactionsGroups.flatMap((group) => group.transactions);
+        const otherAccountTransactions = otherAccount.transactionsGroups.flatMap((group) => group.transactions);
     
         const otherAccountTransactionsIds = new Set(otherAccountTransactions.map((transaction) => transaction.transactionId));
     
@@ -30,11 +30,11 @@ export class BankAccountOperations implements IBankAccountOperations {
     }
     
     removeTransactionsFromBankAccount(account: BankAccount, transactionsToRemove: Set<string>) : void {
-        account.transactions.forEach((group) => {
+        account.transactionsGroups.forEach((group) => {
             group.transactions = group.transactions.filter((transaction) => !transactionsToRemove.has(transaction.transactionId));
         });
 
-        account.transactions = account.transactions.filter((group) => group.transactions.length > 0);
+        account.transactionsGroups = account.transactionsGroups.filter((group) => group.transactions.length > 0);
     }
 }
 

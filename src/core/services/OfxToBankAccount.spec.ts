@@ -47,7 +47,7 @@ describe('OfxToBankAccount', () => {
           name: 'account',
           accountId: '1234',
           accountType: 'account-type',
-          transactions: []
+          transactionsGroups: []
         };
       });
 
@@ -57,7 +57,7 @@ describe('OfxToBankAccount', () => {
       name: 'account',
       accountId: '1234',
       accountType: 'account-type',
-      transactions: []
+      transactionsGroups: []
     });
   });
 
@@ -255,7 +255,7 @@ describe('OfxToBankAccount', () => {
       name: '1234',
       accountId: '1234',
       accountType: 'account-type',
-      transactions: [
+      transactionsGroups: [
         {
           dateEnd: document.endDate,
           dateStart: document.startDate,
@@ -307,7 +307,7 @@ describe('OfxToBankAccount', () => {
       name: '1234',
       accountId: '1234',
       accountType: 'account-type',
-      transactions: []
+      transactionsGroups: []
     });
   });
 

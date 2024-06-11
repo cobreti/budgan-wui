@@ -74,7 +74,7 @@
   })
 
   const noNewTransactions = computed(() => {
-    return !accountToAdd.value || accountToAdd.value.account.transactions.length == 0
+    return !accountToAdd.value || accountToAdd.value.account.transactionsGroups.length == 0
   })
 
   const accountId = computed(() => {

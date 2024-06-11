@@ -20,42 +20,15 @@
         </div>
       </v-card>
       <v-card class="action-card" v-show="statementPresent">
-        <div class="d-flex flex-column align-content-center w-100">
-          <div v-for="id in accountsIds" :key="id">
-            <account-added :accountId="id"></account-added>
-          </div>
+        <div class="d-flex flex-column align-content-center ma-5">
+          <v-expansion-panels class="elevation-0">
+            <account-added v-for="id in accountsIds" :key="id" :accountId="id"></account-added>
+          </v-expansion-panels>
         </div>
-<!--        <div class="ml-5 mt-1">{{filename}}</div>-->
         <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
-<!--          <v-btn @click="onAdd()" v-show="!noNewTransactions">Add</v-btn>-->
           <v-btn @click="onDiscard()">Discard</v-btn>
         </v-card-actions>
       </v-card>
-
-<!--      <v-card class="pt-4 pr-4 pl-4 pb-4 mt-2" v-show="statementPresent">-->
-<!--        <div class="d-flex flex-column align-content-start ma-1 h-100">-->
-<!--          <div class="d-flex flex-row justify-center">-->
-<!--          </div>-->
-<!--          <div class="d-flex flex-row justify-space-between mt-2">-->
-<!--            <div>-->
-<!--              <span class="title">Account # : </span>-->
-<!--              <span>{{accountId}}</span>-->
-<!--            </div>-->
-<!--            <div v-show="accountType != ''">-->
-<!--              <span class="title">Account type : </span>-->
-<!--              <span>{{accountType}}</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="mt-2" v-if="filteredTransactions">-->
-<!--            <filtered-transactions-list :filtered-transactions="filteredTransactions"></filtered-transactions-list>-->
-<!--          </div>-->
-<!--          <div class="d-flex flex-row justify-center mt-8" v-if="noNewTransactions">-->
-<!--            <div>-->
-<!--              <span>No new transactions</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </v-card>-->
     </div>
   </div>
 
@@ -64,14 +37,6 @@
 <style>
   .page-container {
     height: 100%;
-  }
-
-  .action-card {
-    //flex: 1 1 0;
-    //display: block;
-    //position: relative;
-    //min-height: 5em;
-    //max-height: 5em;
   }
 
   .file-input-card {

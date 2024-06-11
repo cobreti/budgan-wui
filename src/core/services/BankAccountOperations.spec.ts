@@ -22,7 +22,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 1',
             accountType: 'Checking',
-            transactions: [{
+            transactionsGroups: [{
                 name: 'Group 1',
                 id: '1',
                 dateStart: new Date(),
@@ -57,7 +57,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 2',
             accountType: 'Checking',
-            transactions: [{
+            transactionsGroups: [{
                 name: 'Group 1',
                 id: '1',
                 dateStart: new Date(),
@@ -99,7 +99,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 1',
             accountType: 'Checking',
-            transactions: [
+            transactionsGroups: [
                 {
                     name: 'Group 1',
                     id: '1',
@@ -165,7 +165,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 2',
             accountType: 'Checking',
-            transactions: [
+            transactionsGroups: [
                 {
                     name: 'Group 1',
                     id: '1',
@@ -239,7 +239,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 1',
             accountType: 'Checking',
-            transactions: [{
+            transactionsGroups: [{
                 name: 'Group 1',
                 id: '1',
                 dateStart: new Date(),
@@ -274,7 +274,7 @@ describe('BankAccountOperations', () => {
             accountId: '2',
             name: 'Account 2',
             accountType: 'Checking',
-            transactions: [{
+            transactionsGroups: [{
                 name: 'Group 1',
                 id: '1',
                 dateStart: new Date(),
@@ -314,7 +314,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 1',
             accountType: 'Checking',
-            transactions: [{
+            transactionsGroups: [{
                 name: 'Group 1',
                 id: '1',
                 dateStart: new Date(),
@@ -353,7 +353,7 @@ describe('BankAccountOperations', () => {
             accountId: '1',
             name: 'Account 1',
             accountType: 'Checking',
-            transactions: [{
+            transactionsGroups: [{
                 name: 'Group 1',
                 id: '1',
                 dateStart: new Date(),
@@ -379,7 +379,7 @@ describe('BankAccountOperations', () => {
                 accountId: '1',
                 name: 'Account 1',
                 accountType: 'Checking',
-                transactions: [
+                transactionsGroups: [
                     {
                         name: 'Group 1',
                         id: '1',
@@ -447,7 +447,7 @@ describe('BankAccountOperations', () => {
                 accountId: '1',
                 name: 'Account 1',
                 accountType: 'Checking',
-                transactions: [
+                transactionsGroups: [
                     {
                         name: 'Group 1',
                         id: '1',
@@ -501,7 +501,7 @@ describe('BankAccountOperations', () => {
                 accountId: '1',
                 name: 'Account 1',
                 accountType: 'Checking',
-                transactions: [
+                transactionsGroups: [
                     {
                         name: 'Group 1',
                         id: '1',
@@ -569,7 +569,7 @@ describe('BankAccountOperations', () => {
                 accountId: '1',
                 name: 'Account 1',
                 accountType: 'Checking',
-                transactions: [
+                transactionsGroups: [
                     {
                         name: 'Group 2',
                         id: '2',
