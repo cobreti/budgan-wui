@@ -69,7 +69,7 @@
   });
 
   const statementPresent = computed(() => {
-    return Object.keys(addStatementStore.accounts).length > 0;;
+    return Object.keys(addStatementStore.accounts).length > 0;
   });
 
   // const accountToAdd = computed(() : AccountToAdd | undefined => {
