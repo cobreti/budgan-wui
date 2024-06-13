@@ -37,8 +37,6 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
 
     const bankAccountOperations : IBankAccountOperations = container.get(ServicesTypes.BankAccountOperations);
 
-    const accountWithNewTransactionsOnly = ref<BankAccount | undefined>(undefined);
-
     const accounts = ref<AccountToAddDictionary>({});
 
     const loading = ref<boolean>(false);
@@ -71,21 +69,11 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
             account: account,
             filename
         };
-        // const updatedAccounts = {...accounts.value};
-        // updatedAccounts[id] = {
-        //     account: account,
-        //     filename: ''
-        // };
-        //
-        // accounts.value = updatedAccounts;
 
         const existingAccount = bankAccountStore.getAccountByIdIfExist(account.accountId);
         if (existingAccount) {
             const transactionsToIgnore = bankAccountOperations.getTransactionsInBothAccounts(account, existingAccount);
             bankAccountOperations.removeTransactionsFromBankAccount(account, transactionsToIgnore);
-        }
-        else {
-            accountWithNewTransactionsOnly.value = account;
         }
     }
 
