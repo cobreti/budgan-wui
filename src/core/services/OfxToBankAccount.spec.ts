@@ -121,7 +121,7 @@ describe('OfxToBankAccount', () => {
       name: 'account',
       accountId: '1234',
       accountType: 'account-type',
-      transactions: []
+      transactionsGroups: []
     };
 
     const fctSpy = vi.spyOn(ofxToBankAccount, 'createAccountFromOfxDocument').mockReturnValue(fctRet);
