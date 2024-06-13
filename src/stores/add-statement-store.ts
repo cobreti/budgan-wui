@@ -24,6 +24,7 @@ export type AddStatementStore = {
     accounts: Ref<AccountToAddDictionary>;
     clear: () => void;
     setLoadingFile: (filename: string) => void;
+    clearLoadingFileStatus: () => void;
     setBankAccount: (id: string, filename: string, account: BankAccount) => void;
     accountExists: (id: string) => boolean;
     getAccountById: (id: string) => AccountToAdd | undefined;
@@ -59,6 +60,10 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
 
     function setLoadingFile(filename: string) {
         loading.value = true;
+    }
+
+    function clearLoadingFileStatus() {
+        loading.value = false;
     }
 
     function setBankAccount(id: string, filename: string, account: BankAccount) {
@@ -98,6 +103,7 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         accountsGroupedById,
         clear,
         setLoadingFile,
+        clearLoadingFileStatus,
         setBankAccount,
         accountExists,
         getAccountById

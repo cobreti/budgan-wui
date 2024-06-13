@@ -62,10 +62,6 @@
   const addStatementStore = useAddStatementStore();
   const bankAccountStore = useBankAccountsStore();
 
-  // const filename = computed(() => {
-  //   return 'no filename : to fill later';
-  // });
-
   const accountsIds = computed(() => {
     const accounts = addStatementStore.accountsGroupedById;
     return Object.keys(accounts);
@@ -74,32 +70,6 @@
   const statementPresent = computed(() => {
     return Object.keys(addStatementStore.accounts).length > 0;
   });
-
-  // const accountToAdd = computed(() : AccountToAdd | undefined => {
-  //   if (Object.keys(addStatementStore.accounts).length == 0) {
-  //     return undefined;
-  //   }
-  //
-  //   const firstKey = Object.keys(addStatementStore.accounts)[0];
-  //
-  //   return addStatementStore.accounts[firstKey];
-  // });
-
-  // const noNewTransactions = computed(() => {
-  //   return !accountToAdd.value || accountToAdd.value.account.transactions.length == 0;
-  // });
-
-  // const accountId = computed(() => {
-  //   return accountToAdd.value ? accountToAdd.value.account.accountId : '';
-  // })
-  //
-  // const accountType = computed(() => {
-  //   return accountToAdd.value ? accountToAdd.value.account.accountType : '';
-  // })
-  //
-  // const filteredTransactions = computed(() => {
-  //   return accountToAdd.value ? IdentityFilter(accountToAdd.value.account) : null;
-  // });
 
 
   async function onFileNameUpdated(files: File[]) {
@@ -126,16 +96,8 @@
 
       addStatementStore.setBankAccount(id, file.name, account);
     }
-    // const file = files[0];
 
-    // addStatementStore.setLoadingFile(file.name);
-
-    // const account = await ofxToBankAccount.loadOfxFile(file);
-    // const id = idGenerator.generateId();
-
-    // addStatementStore.setBankAccount(id, account);
-
-    // await router.push({name: 'addStatementAccountTransactions', params: {id: id}, replace: true});
+    addStatementStore.clearLoadingFileStatus();
   }
 
   function clear() {
@@ -157,15 +119,6 @@
     });
 
     clear();
-    // if (accountToAdd.value == undefined) {
-    //   return;
-    // }
-    //
-    // const account = accountToAdd.value.account;
-    // if (account != undefined) {
-    //   useBankAccountsStore().addWithBankAccount(account);
-    //   clear();
-    // }
   }
 
 </script>
