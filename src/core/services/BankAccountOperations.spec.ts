@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import '@/core/setupInversify'
-import { BankAccountOperations } from './BankAccountOperations';
-import type { BankAccount } from '../models/BankAccountTypes';
+import { BankAccountOperations } from './BankAccountOperations'
+import type { BankAccount } from '@models/BankAccountTypes'
+import {
+    data_getCombinedTransactionsGroup_Success_expected,
+    data_getCombinedTransactionsGroup_Success_input
+} from '@services/tests-files/getCombineTransactionsGroup-success'
 
 describe('BankAccountOperations', () => {
 
@@ -14,8 +18,7 @@ describe('BankAccountOperations', () => {
     afterEach( async() => {
         vi.resetAllMocks();
     })
-    
-    
+
     test('getTransactionsInBothAccounts success', () => {
 
         const account1 : BankAccount = {
@@ -592,4 +595,13 @@ describe('BankAccountOperations', () => {
         
             expect(account).toEqual(expectedResult);
     });
+
+    test('getCombinedTransactionsGroup success', () => {
+
+        const result = bankAccountOperationService.getCombinedTransactionsGroup(...(data_getCombinedTransactionsGroup_Success_input));
+
+        expect(result).toEqual(data_getCombinedTransactionsGroup_Success_expected);
+
+        console.log(result);
+    })
 });

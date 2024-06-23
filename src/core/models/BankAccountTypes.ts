@@ -15,12 +15,23 @@ export type BankAccountTransaction = {
     description: string;
 }
 
+export enum InvalidTransactionReason {
+    unknown = 'unknown',
+    duplicate = 'duplicate',
+}
+
+export type BankAccountInvalidTransaction = BankAccountTransaction & {
+    originalTransactionGroupId?: string;
+    invalidReason: InvalidTransactionReason;
+}
+
 export type BankAccountTransactionsGroup = {
     name: string;
     id: string;
     dateStart: Date;
     dateEnd: Date;
     transactions: BankAccountTransaction[];
+    invalidTransactions?: BankAccountInvalidTransaction[];
 }
 
 export type BankAccount = {
