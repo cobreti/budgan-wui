@@ -3,9 +3,10 @@ import '@/core/setupInversify'
 import { BankAccountOperations } from './BankAccountOperations'
 import type { BankAccount } from '@models/BankAccountTypes'
 import {
+    data_getCombinedTransactionsGroup_Different_account_ids,
     data_getCombinedTransactionsGroup_Success_expected,
     data_getCombinedTransactionsGroup_Success_input
-} from '@services/tests-files/getCombineTransactionsGroup-success'
+} from '@services/tests-files/getCombineTransactionsGroup-test-data'
 
 describe('BankAccountOperations', () => {
 
@@ -603,5 +604,11 @@ describe('BankAccountOperations', () => {
         expect(result).toEqual(data_getCombinedTransactionsGroup_Success_expected);
 
         console.log(result);
-    })
+    });
+
+    test('getCombinedTransactionsGroup different account ids', () => {
+        expect(() => bankAccountOperationService
+          .getCombinedTransactionsGroup(...data_getCombinedTransactionsGroup_Different_account_ids))
+          .toThrowError('cannot combine transactions group from different accounts');
+    });
 });

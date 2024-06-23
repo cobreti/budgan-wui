@@ -61,7 +61,6 @@ export const data_getCombinedTransactionsGroup_Success_input: BankAccount[] = [
   },
 ];
 
-
 export const data_getCombinedTransactionsGroup_Success_expected: BankAccountTransactionsGroup[] = [
   {
     name: "Group 1",
@@ -108,3 +107,20 @@ export const data_getCombinedTransactionsGroup_Success_expected: BankAccountTran
     ],
   },
 ];
+
+
+export const data_getCombinedTransactionsGroup_Different_account_ids: BankAccount[] = [
+  {
+    accountId: "1",
+    name: "Account 1",
+    accountType: "Checking",
+    transactionsGroups: [],
+  },
+  {
+    accountId: "2",
+    name: "Account 2",
+    accountType: "Savings",
+    transactionsGroups: [],
+  },
+];
+
