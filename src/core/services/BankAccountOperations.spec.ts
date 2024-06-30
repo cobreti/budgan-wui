@@ -606,6 +606,11 @@ describe('BankAccountOperations', () => {
         console.log(result);
     });
 
+    test('getcombinedTransactionsGroup empty accounts', () => {
+        const result = bankAccountOperationService.getCombinedTransactionsGroup();
+        expect(result).toEqual([]);
+    });
+
     test('getCombinedTransactionsGroup different account ids', () => {
         expect(() => bankAccountOperationService
           .getCombinedTransactionsGroup(...data_getCombinedTransactionsGroup_Different_account_ids))

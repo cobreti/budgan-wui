@@ -39,15 +39,24 @@ export class BankAccountOperations implements IBankAccountOperations {
     }
 
     getCombinedTransactionsGroup(...accounts: BankAccount[]) : BankAccountTransactionsGroup[] {
-        const accountIds = accounts.reduce((acc: {[key: string]: object}, account) => {
-            acc[account.accountId] = {};
-            return acc;
-        }, {});
 
-        if (Object.keys(accountIds).length > 1) {
+        if (accounts.length == 0) {
+            return [];
+        }
+
+        //
+        // make sure all accounts have the same accountId
+        //
+        const id = accounts[0].accountId;
+
+        const idx = accounts.findIndex((account) => account.accountId != id);
+        if (idx != -1) {
             throw new Error('cannot combine transactions group from different accounts');
         }
 
+        //
+        // flatten transactions groups
+        //
         return accounts.flatMap((account) => account.transactionsGroups);
     }
 
