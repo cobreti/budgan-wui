@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { injectable, inject } from 'inversify'
 import type { OfxDocument, OfxTransaction } from '@models/ofxDocument'
 import type { BankAccount, BankAccountTransaction } from '@models/BankAccountTypes'

@@ -55,7 +55,7 @@
   import { type IOfxToBankAccount } from '@services/OfxToBankAccount';
   import { ServicesTypes } from '@services/types'
   import type { IIdGenerator } from '@services/IdGenerator'
-  import AccountAdded from '@views/addStatementView/AccountAdded.vue'
+  import AccountAdded from '@views/addStatement/AccountAdded.vue'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
   const ofxFileName = defineModel<File[]>();

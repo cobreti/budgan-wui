@@ -4,13 +4,13 @@ export const addStatementRoutes = [
   {
     path: '/add-statement',
     name: 'addStatement',
-    component: () => import('@views/addStatementView/AddStatement.vue'),
+    component: () => import('@views/addStatement/AddStatement.vue'),
     meta: { transition: 'slide-right' }
   },
   {
     path: '/add-statement/:id',
     name: 'addStatementAccountTransactions',
-    component: () => import('@views/addStatementView/AccountTransactions.vue'),
+    component: () => import('@views/addStatement/AccountTransactions.vue'),
     meta: { transition: 'slide-right' },
     beforeEnter: (to: any, from: any, next: () => void) => {
 
