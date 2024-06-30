@@ -60,5 +60,8 @@ export class BankAccountOperations implements IBankAccountOperations {
         return accounts.flatMap((account) => account.transactionsGroups);
     }
 
+    sortTransactionsGroupByStartDateAscending(transactionsGroup: BankAccountTransactionsGroup[]) : BankAccountTransactionsGroup[] {
+        return transactionsGroup.sort((a, b) => a.dateStart.getTime() - b.dateStart.getTime());
+    }
 }
 

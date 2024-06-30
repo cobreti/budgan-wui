@@ -7,6 +7,10 @@ import {
     data_getCombinedTransactionsGroup_Success_expected,
     data_getCombinedTransactionsGroup_Success_input
 } from '@services/tests-files/getCombineTransactionsGroup-test-data'
+import {
+    data_sortTransactionsGroupByStartDateAscending_ordered_result,
+    data_sortTransactionsGroupByStartDateAscending_unordered_input
+} from '@services/tests-files/sortTransactionsGroupByStartDateAscending-test-data'
 
 describe('BankAccountOperations', () => {
 
@@ -615,5 +619,11 @@ describe('BankAccountOperations', () => {
         expect(() => bankAccountOperationService
           .getCombinedTransactionsGroup(...data_getCombinedTransactionsGroup_Different_account_ids))
           .toThrowError('cannot combine transactions group from different accounts');
+    });
+
+    test('sortTransactionsGroupByStartDateAscending success', () => {
+        const result = bankAccountOperationService
+          .sortTransactionsGroupByStartDateAscending(data_sortTransactionsGroupByStartDateAscending_unordered_input);
+        expect(result).toEqual(data_sortTransactionsGroupByStartDateAscending_ordered_result);
     });
 });
