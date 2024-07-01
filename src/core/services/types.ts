@@ -5,5 +5,6 @@ export const ServicesTypes = {
     OfxToBankAccount: 'OfxToBankAccount',
     FileReaderFactory: 'FileReaderFactory',
     IdGenerator: 'IdGenerator',
-    BankAccountOperations: 'BankAccountOperations'
+    BankAccountOperations: 'BankAccountOperations',
+    BankAccountTransactionsSanitizer: 'BankAccountTransactionsSanitizer'
 }

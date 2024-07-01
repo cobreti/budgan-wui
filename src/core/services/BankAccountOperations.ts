@@ -6,6 +6,7 @@ export interface IBankAccountOperations {
     getTransactionsInBothAccounts(account: BankAccount, otherAccount: BankAccount) : Set<string>;
     removeTransactionsFromBankAccount(account: BankAccount, transactionsToRemove: Set<string>) : void;
     getCombinedTransactionsGroup(...accounts: BankAccount[]) : BankAccountTransactionsGroup[];
+    sortTransactionsGroupByStartDateAscending(transactionsGroup: BankAccountTransactionsGroup[]) : BankAccountTransactionsGroup[];
 }
 
 
