@@ -7,7 +7,13 @@ import {
 } from '@services/tests-files/BankAccountTransactionsSanitizer/getTransactionsIdsForAccount-test-data'
 import {
   transactionsGroup_test1_expected_transactionsIds,
-  transactionsGroup_test1_success_input, transactionsGroups_test1_expected
+  transactionsGroup_test1_success_input,
+  transactionsGroup_test2_existing_transactionsIds,
+  transactionsGroup_test2_expected,
+  transactionsGroup_test2_input,
+  transactionsGroup_test2_resulting_transactionIds,
+  transactionsGroups_test1_expected,
+  transactionsGroups_test2_existing_transactions
 } from '@services/tests-files/BankAccountTransactionsSanitizer/addTransactionsGroup-test-data'
 
 
@@ -78,4 +84,14 @@ describe('BankAccountTransactionsSanitizer', () => {
     expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test1_expected);
     expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test1_expected_transactionsIds);
   });
+
+  test('addTransactionsGroup with existing data and duplicates', () => {
+    sanitizer.transactionsIds_ = transactionsGroup_test2_existing_transactionsIds;
+    sanitizer.transactionsGroups_ = transactionsGroups_test2_existing_transactions;
+
+    sanitizer.addTransactionsGroup(transactionsGroup_test2_input);
+
+    expect(sanitizer.transactionsGroups_).toEqual(transactionsGroup_test2_expected);
+    expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test2_resulting_transactionIds)
+  })
 });

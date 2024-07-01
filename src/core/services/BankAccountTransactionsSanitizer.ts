@@ -47,7 +47,7 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
       if (this.transactionsIds_[transaction.transactionId]) {
         newGroup.invalidTransactions?.push({
           ...transaction,
-          invalidReason: InvalidTransactionReason.unknown
+          invalidReason: InvalidTransactionReason.duplicate
         });
       } else {
         newGroup.transactions.push(transaction);
