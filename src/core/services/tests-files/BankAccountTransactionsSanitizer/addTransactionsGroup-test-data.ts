@@ -1,6 +1,10 @@
 import type { BankAccountTransactionsGroup } from '@models/BankAccountTypes'
 import { InvalidTransactionReason } from '@models/BankAccountTypes'
 
+//
+// test 1 : add new transactions group with no duplicated transactions
+//
+
 export const transactionsGroup_test1_success_input: BankAccountTransactionsGroup = {
   name: 'Group 1',
   id: '1',
@@ -55,6 +59,10 @@ export const transactionsGroups_test1_expected: BankAccountTransactionsGroup[] =
     invalidTransactions: []
   }
 ];
+
+//
+//  test 2 : add new transactions group with some duplicated transactions
+//
 
 export const transactionsGroups_test2_existing_transactions : BankAccountTransactionsGroup[] = [
   {
@@ -214,3 +222,59 @@ export const transactionsGroup_test2_resulting_transactionIds = {
   '13': {},
   '14': {},
 }
+
+//
+// test 3 : add new transactions group that has the same id as an existing group
+//
+
+export const transactionsGroups_test3_existing_transactions : BankAccountTransactionsGroup[] = [
+  {
+    name: 'Group 1',
+    id: '1',
+    dateStart: new Date('2022-01-01'),
+    dateEnd: new Date('2022-01-31'),
+    transactions: [
+      {
+        transactionId: '10',
+        date: new Date('2022-01-01'),
+        amount: 100,
+        type: 'Deposit',
+        description: 'Deposit 1'
+      },
+      {
+        transactionId: '11',
+
+        date: new Date('2022-01-02'),
+        amount: 100,
+        type: 'Deposit',
+        description: 'Deposit 2'
+      },
+    ],
+    invalidTransactions: []
+  }
+];
+
+export const transactionsGroups_test3_input : BankAccountTransactionsGroup = {
+  name: 'Group 1',
+  id: '1',
+  dateStart: new Date('2022-01-01'),
+  dateEnd: new Date('2022-01-31'),
+  transactions: [
+    {
+      transactionId: '12',
+      date: new Date('2022-01-01'),
+      amount: 100,
+      type: 'Deposit',
+      description: 'Deposit 1'
+    },
+    {
+      transactionId: '15',
+
+      date: new Date('2022-01-02'),
+      amount: 100,
+      type: 'Deposit',
+      description: 'Deposit 2'
+    },
+  ],
+  invalidTransactions: []
+};

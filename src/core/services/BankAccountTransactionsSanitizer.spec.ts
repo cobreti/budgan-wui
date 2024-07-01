@@ -13,7 +13,7 @@ import {
   transactionsGroup_test2_input,
   transactionsGroup_test2_resulting_transactionIds,
   transactionsGroups_test1_expected,
-  transactionsGroups_test2_existing_transactions
+  transactionsGroups_test2_existing_transactions, transactionsGroups_test3_existing_transactions
 } from '@services/tests-files/BankAccountTransactionsSanitizer/addTransactionsGroup-test-data'
 
 
@@ -29,69 +29,92 @@ describe('BankAccountTransactionsSanitizer', () => {
     vi.resetAllMocks();
   })
 
-  test('initWithAccount should set accountId_', async() => {
-    // Arrange
-    const account: BankAccount = {
-      name: 'name',
-      accountId: 'accountId',
-      accountType: 'accountType',
-      transactionsGroups: []
-    };
+  describe('initWithAccount', () => {
 
-    // Act
-    sanitizer.initWithAccount(account);
+    test('should set accountId_', async () => {
+      // Arrange
+      const account: BankAccount = {
+        name: 'name',
+        accountId: 'accountId',
+        accountType: 'accountType',
+        transactionsGroups: []
+      };
 
-    // Assert
-    expect(sanitizer.accountId_).toBe('accountId');
-    expect(sanitizer.transactionsGroups_).toEqual([]);
-    expect(sanitizer.transactionsIds_).toEqual({});
+      // Act
+      sanitizer.initWithAccount(account);
+
+      // Assert
+      expect(sanitizer.accountId_).toBe('accountId');
+      expect(sanitizer.transactionsGroups_).toEqual([]);
+      expect(sanitizer.transactionsIds_).toEqual({});
+    });
+
+    test('should set transactionsIds_', async () => {
+
+      sanitizer.initWithAccount(getTransactionsIdsForAccount_success_input);
+
+      expect(sanitizer.transactionsIds_).toEqual(getTransactionsIdsForAccount_expected_output);
+      expect(sanitizer.accountId_).toBe('123456');
+      expect(sanitizer.transactionsGroups_).toEqual([]);
+    });
+
+    test('should throw error if accountId_ is already set', async () => {
+      // Arrange
+      const account: BankAccount = {
+        name: 'name',
+        accountId: 'accountId',
+        accountType: 'accountType',
+        transactionsGroups: []
+      };
+
+      // Act
+      sanitizer.accountId_ = 'otheraccountId';
+
+      // Assert
+      expect(() => sanitizer.initWithAccount(account)).toThrowError('Account already initialized');
+    });
+
   });
 
-  test('initWithAccount should set transactionsIds_', async() => {
+  describe('getTransactionsIdsForAccount', () => {
 
-    sanitizer.initWithAccount(getTransactionsIdsForAccount_success_input);
+    test('getTransactionsIdsForAccount should return transaction ids', async () => {
+      const result = sanitizer.getTransactionsIdsForAccount(getTransactionsIdsForAccount_success_input);
 
-    expect(sanitizer.transactionsIds_).toEqual(getTransactionsIdsForAccount_expected_output);
-    expect(sanitizer.accountId_).toBe('123456');
-    expect(sanitizer.transactionsGroups_).toEqual([]);
+      expect(result).toEqual(getTransactionsIdsForAccount_expected_output);
+    });
   });
 
-  test('initWithAccount should throw error if accountId_ is already set', async() => {
-    // Arrange
-    const account: BankAccount = {
-      name: 'name',
-      accountId: 'accountId',
-      accountType: 'accountType',
-      transactionsGroups: []
-    };
+  describe('addTransactionsGroup', () => {
 
-    // Act
-    sanitizer.accountId_ = 'otheraccountId';
+    test('add group to transactionsGroups_', async () => {
+      sanitizer.addTransactionsGroup(transactionsGroup_test1_success_input);
 
-    // Assert
-    expect(() => sanitizer.initWithAccount(account)).toThrowError('Account already initialized');
+      expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test1_expected);
+      expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test1_expected_transactionsIds);
+      expect(sanitizer.rejectedGroups_).toEqual([]);
+    });
+
+    test('contains duplicates and new values', () => {
+      sanitizer.transactionsIds_ = transactionsGroup_test2_existing_transactionsIds;
+      sanitizer.transactionsGroups_ = transactionsGroups_test2_existing_transactions;
+
+      sanitizer.addTransactionsGroup(transactionsGroup_test2_input);
+
+      expect(sanitizer.transactionsGroups_).toEqual(transactionsGroup_test2_expected);
+      expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test2_resulting_transactionIds)
+      expect(sanitizer.rejectedGroups_).toEqual([]);
+    });
+
+    test('group id is the same as existing one', () => {
+
+      sanitizer.transactionsGroups_ = transactionsGroups_test3_existing_transactions;
+
+      sanitizer.addTransactionsGroup(transactionsGroup_test1_success_input);
+
+      expect(sanitizer.transactionsIds_).toEqual({});
+      expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test3_existing_transactions);
+      expect(sanitizer.rejectedGroups_).toEqual([transactionsGroup_test1_success_input]);
+    });
   });
-
-  test('getTransactionsIdsForAccount should return transaction ids', async() => {
-    const result = sanitizer.getTransactionsIdsForAccount(getTransactionsIdsForAccount_success_input);
-
-    expect(result).toEqual(getTransactionsIdsForAccount_expected_output);
-  });
-
-  test('addTransactionsGroup should add group to transactionsGroups_', async() => {
-    sanitizer.addTransactionsGroup(transactionsGroup_test1_success_input);
-
-    expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test1_expected);
-    expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test1_expected_transactionsIds);
-  });
-
-  test('addTransactionsGroup with existing data and duplicates', () => {
-    sanitizer.transactionsIds_ = transactionsGroup_test2_existing_transactionsIds;
-    sanitizer.transactionsGroups_ = transactionsGroups_test2_existing_transactions;
-
-    sanitizer.addTransactionsGroup(transactionsGroup_test2_input);
-
-    expect(sanitizer.transactionsGroups_).toEqual(transactionsGroup_test2_expected);
-    expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test2_resulting_transactionIds)
-  })
 });

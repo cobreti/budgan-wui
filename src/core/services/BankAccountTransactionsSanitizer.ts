@@ -16,6 +16,7 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
   public accountId_ : string | undefined;
   public transactionsIds_ : TransactionIdsTable = {};
   public transactionsGroups_ : BankAccountTransactionsGroup[] = [];
+  public rejectedGroups_ : BankAccountTransactionsGroup[] = [];
 
   public initWithAccount(account : BankAccount) : void {
     if (this.accountId_ != undefined) {
@@ -36,6 +37,21 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
   }
 
   public addTransactionsGroup(group: BankAccountTransactionsGroup) : void {
+
+    //
+    // check if group already added first
+    //
+
+    const groupIdx = this.transactionsGroups_.findIndex((g) => g.id === group.id);
+    if (groupIdx >= 0) {
+      this.rejectedGroups_.push(group);
+      return;
+    }
+
+    //
+    // check if group contains duplicated transactions
+    //  and add the groups list
+    //
 
     const newGroup: BankAccountTransactionsGroup = {
       ...group,
