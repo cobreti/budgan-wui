@@ -4,7 +4,11 @@ import { BankAccountTransactionsSanitizer } from '@services/BankAccountTransacti
 import {
   getTransactionsIdsForAccount_expected_output,
   getTransactionsIdsForAccount_success_input
-} from '@services/tests-files/getTransactionsIdsForAccount-test-data'
+} from '@services/tests-files/BankAccountTransactionsSanitizer/getTransactionsIdsForAccount-test-data'
+import {
+  transactionsGroup_test1_expected_transactionsIds,
+  transactionsGroup_test1_success_input, transactionsGroups_test1_expected
+} from '@services/tests-files/BankAccountTransactionsSanitizer/addTransactionsGroup-test-data'
 
 
 describe('BankAccountTransactionsSanitizer', () => {
@@ -66,5 +70,12 @@ describe('BankAccountTransactionsSanitizer', () => {
     const result = sanitizer.getTransactionsIdsForAccount(getTransactionsIdsForAccount_success_input);
 
     expect(result).toEqual(getTransactionsIdsForAccount_expected_output);
+  });
+
+  test('addTransactionsGroup should add group to transactionsGroups_', async() => {
+    sanitizer.addTransactionsGroup(transactionsGroup_test1_success_input);
+
+    expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test1_expected);
+    expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test1_expected_transactionsIds);
   });
 });

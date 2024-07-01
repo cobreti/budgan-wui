@@ -1,11 +1,13 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 
 import { injectable } from 'inversify'
 import type { BankAccount, BankAccountTransactionsGroup, TransactionIdsTable } from '@models/BankAccountTypes'
+import { InvalidTransactionReason } from '@models/BankAccountTypes'
 
 export interface IBankAccountTransactionsSanitizer {
   initWithAccount(account: BankAccount) : void;
   getTransactionsIdsForAccount(account: BankAccount) : TransactionIdsTable;
+  addTransactionsGroup(group: BankAccountTransactionsGroup) : void;
 }
 
 @injectable()
@@ -32,4 +34,27 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
       return acc;
     }, {} as TransactionIdsTable);
   }
+
+  public addTransactionsGroup(group: BankAccountTransactionsGroup) : void {
+
+    const newGroup: BankAccountTransactionsGroup = {
+      ...group,
+      transactions: [],
+      invalidTransactions: []
+    };
+
+    group.transactions.forEach((transaction) => {
+      if (this.transactionsIds_[transaction.transactionId]) {
+        newGroup.invalidTransactions?.push({
+          ...transaction,
+          invalidReason: InvalidTransactionReason.unknown
+        });
+      } else {
+        newGroup.transactions.push(transaction);
+        this.transactionsIds_[transaction.transactionId] = {};
+      }
+    });
+
+    this.transactionsGroups_.push(newGroup);
+  };
 }

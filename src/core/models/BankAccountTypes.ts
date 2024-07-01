@@ -21,7 +21,6 @@ export enum InvalidTransactionReason {
 }
 
 export type BankAccountInvalidTransaction = BankAccountTransaction & {
-    originalTransactionGroupId?: string;
     invalidReason: InvalidTransactionReason;
 }
 
