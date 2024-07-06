@@ -1,4 +1,4 @@
-import { BankAccountLoader, type LoadedAccount } from '@services/BankAccountLoader';
+import { BankAccountLoader, type LoadedAccountsById } from '@services/BankAccountLoader';
 import { type IIdGenerator } from './IdGenerator';
 import { type IOfxToBankAccount } from './OfxToBankAccount';
 import { type BankAccount } from '@models/BankAccountTypes';
@@ -36,13 +36,15 @@ describe('BankAccountLoader', async () => {
                 new File([''], 'test.ofx')
             ];
             const id = '123';
-            const loadedAccountsExepectedValue = [
-                {
-                    id,
-                    filename: 'test.ofx',
-                    account: LoadSingleFileTestSuccess_Input
-                }
-            ];
+            const loadedAccountsExepectedValue = {
+                '123456789': [
+                    {
+                        id,
+                        filename: 'test.ofx',
+                        account: LoadSingleFileTestSuccess_Input
+                    }
+                ]
+            };
 
             const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
                 .mockResolvedValue(LoadSingleFileTestSuccess_Input);
@@ -62,7 +64,7 @@ describe('BankAccountLoader', async () => {
                 new File([''], 'test.ofx')
             ];
             const id = '123';
-            const loadedAccountsExepectedValue : LoadedAccount[] = [];
+            const loadedAccountsExpectedValue : LoadedAccountsById = {};
 
             const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
                 .mockRejectedValue('Error');
@@ -74,7 +76,7 @@ describe('BankAccountLoader', async () => {
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).not.toHaveBeenCalled();
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExepectedValue);
+            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
         });
 
         test('single file with failure and error callback', async () => {
@@ -82,7 +84,7 @@ describe('BankAccountLoader', async () => {
                 new File([''], 'test.ofx')
             ];
             const id = '123';
-            const loadedAccountsExepectedValue : LoadedAccount[] = [];
+            const loadedAccountsExepectedValue : LoadedAccountsById = {};
 
             const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
                 .mockRejectedValue('Error');
@@ -112,18 +114,19 @@ describe('BankAccountLoader', async () => {
             ];
             const ids = ['123', '456'];
 
-            const loadedAccountsExepectedValue : LoadedAccount[] = [
-                {
-                    id: ids[0],
-                    filename: 'test.ofx',
-                    account: LoadMultipleAccountsTest_Input[0]
-                },
-                {
+            const loadedAccountsExepectedValue : LoadedAccountsById = {
+                '123456789': [
+                    {
+                        id: ids[0],
+                        filename: 'test.ofx',
+                        account: LoadMultipleAccountsTest_Input[0]
+                    }],
+                '987654321': [{
                     id: ids[1],
                     filename: 'test3.ofx',
                     account: LoadMultipleAccountsTest_Input[1]
-                }
-            ];
+                }]
+            };
 
             const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
                 .mockResolvedValueOnce(LoadMultipleAccountsTest_Input[0])
@@ -154,6 +157,5 @@ describe('BankAccountLoader', async () => {
             expect(accountLoadedMock).toHaveBeenCalledWith(ids[1], 'test3.ofx', LoadMultipleAccountsTest_Input[1]);
             expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExepectedValue);
         });
-
     });
 });

@@ -12,6 +12,8 @@ export type LoadedAccount = {
     account: BankAccount;
 }
 
+export type LoadedAccountsById = {[id: string]: LoadedAccount[]};
+
 
 export interface IBankAccountLoader {
 
@@ -30,7 +32,7 @@ export type BankAccountLoader_AccountLoadError = (filename: string, error: unkno
 @injectable()
 export class BankAccountLoader implements IBankAccountLoader {
 
-    loadedAccounts : LoadedAccount[] = [];
+    loadedAccounts: LoadedAccountsById = {};
 
     loadingFileStarted : BankAccountLoader_LoadingFileStarted | undefined;
     accountLoaded : BankAccountLoader_AccountLoaded | undefined;
@@ -51,11 +53,16 @@ export class BankAccountLoader implements IBankAccountLoader {
                 const account = await this.ofxToBankAccount.loadOfxFile(file);
                 const id = this.idGenerator.generateId();
 
-                this.loadedAccounts.push({
+                const accountId = account.accountId;
+                const loadedAccount = {
                     id,
                     filename: file.name,
                     account
-                });
+                };
+
+                const accountsForId = this.loadedAccounts[accountId] || [];
+                accountsForId.push(loadedAccount);
+                this.loadedAccounts[accountId] = accountsForId;
 
                 this.accountLoaded && this.accountLoaded(id, file.name, account);
             } catch (error) {
