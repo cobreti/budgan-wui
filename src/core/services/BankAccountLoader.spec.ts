@@ -3,7 +3,7 @@ import { type IIdGenerator } from './IdGenerator';
 import { type IOfxToBankAccount } from './OfxToBankAccount';
 import { type BankAccount } from '@models/BankAccountTypes';
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { LoadMultipleAccountsTest_Input, LoadSingleFileTestSuccess_Input } from './tests-files/BankAccountLoader/load-test-data';
+import { LoadMultipleAccountsTest_Input, LoadSingleFileTestSuccess_Input, LoadSortLoadedAccountByIdTest_Input } from './tests-files/BankAccountLoader/load-test-data';
 
 describe('BankAccountLoader', async () => {
 
@@ -84,7 +84,7 @@ describe('BankAccountLoader', async () => {
                 new File([''], 'test.ofx')
             ];
             const id = '123';
-            const loadedAccountsExepectedValue : LoadedAccountsById = {};
+            const loadedAccountsExpectedValue : LoadedAccountsById = {};
 
             const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
                 .mockRejectedValue('Error');
@@ -102,7 +102,7 @@ describe('BankAccountLoader', async () => {
             expect(generateIdSpy).not.toHaveBeenCalled();
             expect(accountLoadErrorMock).toHaveBeenCalledTimes(1);
             expect(accountLoadErrorMock).toHaveBeenCalledWith('test.ofx', 'Error');
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExepectedValue);
+            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
         });
 
 
@@ -114,7 +114,7 @@ describe('BankAccountLoader', async () => {
             ];
             const ids = ['123', '456'];
 
-            const loadedAccountsExepectedValue : LoadedAccountsById = {
+            const loadedAccountsExpectedValue : LoadedAccountsById = {
                 '123456789': [
                     {
                         id: ids[0],
@@ -131,7 +131,7 @@ describe('BankAccountLoader', async () => {
             const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
                 .mockResolvedValueOnce(LoadMultipleAccountsTest_Input[0])
                 .mockRejectedValueOnce('Error')
-                .mockResolvedValueOnce(LoadMultipleAccountsTest_Input[1])
+                .mockResolvedValueOnce(LoadMultipleAccountsTest_Input[1]);
 
 
             const generateIdSpy = vi.spyOn(idGenerator, 'generateId')
@@ -155,7 +155,64 @@ describe('BankAccountLoader', async () => {
             expect(accountLoadedMock).toHaveBeenCalledTimes(2);
             expect(accountLoadedMock).toHaveBeenCalledWith(ids[0], 'test.ofx', LoadMultipleAccountsTest_Input[0]);
             expect(accountLoadedMock).toHaveBeenCalledWith(ids[1], 'test3.ofx', LoadMultipleAccountsTest_Input[1]);
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExepectedValue);
+            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
+        });
+
+        test('multiple accounts sorted by account id', async () => {
+            const files: File[] = [
+                new File([''], 'test.ofx'),
+                new File([''], 'test2.ofx'),
+                new File([''], 'test3.ofx'),
+                new File([''], 'test4.ofx')
+            ];
+            const ids = ['123', '456', '789', '1011'];
+
+            const loadedAccountsExpectedValue : LoadedAccountsById = {
+                '123456789': [
+                    {
+                        id: ids[0],
+                        filename: 'test.ofx',
+                        account: LoadSortLoadedAccountByIdTest_Input[0]
+                    },
+                    {
+                        id: ids[1],
+                        filename: 'test2.ofx',
+                        account: LoadSortLoadedAccountByIdTest_Input[1]
+                    }
+                ],
+                '987654321': [
+                    {
+                        id: ids[2],
+                        filename: 'test3.ofx',
+                        account: LoadSortLoadedAccountByIdTest_Input[2]
+                    },
+                    {
+                        id: ids[3],
+                        filename: 'test4.ofx',
+                        account: LoadSortLoadedAccountByIdTest_Input[3]
+                    }
+                ]
+            };
+
+            const loadOfxFileSpy = vi.spyOn(ofxToBankAccount, 'loadOfxFile')
+            .mockResolvedValueOnce(LoadSortLoadedAccountByIdTest_Input[0])
+            .mockResolvedValueOnce(LoadSortLoadedAccountByIdTest_Input[1])
+            .mockResolvedValueOnce(LoadSortLoadedAccountByIdTest_Input[2])
+            .mockResolvedValueOnce(LoadSortLoadedAccountByIdTest_Input[3]);
+
+
+            const generateIdSpy = vi.spyOn(idGenerator, 'generateId')
+                .mockReturnValueOnce(ids[0])
+                .mockReturnValueOnce(ids[1])
+                .mockReturnValueOnce(ids[2])
+                .mockReturnValueOnce(ids[3]);
+
+
+            await bankAccountLoader.load(files);
+
+            expect(loadOfxFileSpy).toHaveBeenCalledTimes(4);
+            expect(generateIdSpy).toHaveBeenCalledTimes(4);
+            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
         });
     });
 });

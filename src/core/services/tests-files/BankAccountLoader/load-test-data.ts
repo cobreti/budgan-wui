@@ -22,3 +22,31 @@ export const LoadMultipleAccountsTest_Input: BankAccount[] = [
         transactionsGroups: []
     }
 ];
+
+
+export const LoadSortLoadedAccountByIdTest_Input: BankAccount[] = [
+    {
+        name: "Account 1 - Checking",
+        accountId: "123456789",
+        accountType: "Checking",
+        transactionsGroups: []
+    },
+    {
+        name: "Account 2 - Savings",
+        accountId: "123456789",
+        accountType: "Savings",
+        transactionsGroups: []
+    },
+    {
+        name: "Account 3 - Checking",
+        accountId: "987654321",
+        accountType: "Checking",
+        transactionsGroups: []
+    },
+    {
+        name: "Account 4 - Savings",
+        accountId: "987654321",
+        accountType: "Savings",
+        transactionsGroups: []
+    }
+];
