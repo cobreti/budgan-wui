@@ -24,6 +24,7 @@ export interface IBankAccountLoader {
 
 export type BankAccountLoader_LoadingFileStarted = (filename: string) => void;
 export type BankAccountLoader_AccountLoaded = (id: string, filename: string, account: BankAccount) => void;
+export type BankAccountLoader_AccountLoadError = (filename: string, error: unknown) => void;
 
 
 @injectable()
@@ -33,6 +34,7 @@ export class BankAccountLoader implements IBankAccountLoader {
 
     loadingFileStarted : BankAccountLoader_LoadingFileStarted | undefined;
     accountLoaded : BankAccountLoader_AccountLoaded | undefined;
+    accountLoadError : BankAccountLoader_AccountLoadError | undefined;
 
     constructor(
         @inject(ServicesTypes.OfxToBankAccount) private ofxToBankAccount: IOfxToBankAccount,
@@ -45,16 +47,20 @@ export class BankAccountLoader implements IBankAccountLoader {
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name);
       
-            const account = await this.ofxToBankAccount.loadOfxFile(file);
-            const id = this.idGenerator.generateId();
+            try {
+                const account = await this.ofxToBankAccount.loadOfxFile(file);
+                const id = this.idGenerator.generateId();
 
-            this.loadedAccounts.push({
-                id,
-                filename: file.name,
-                account
-            });
+                this.loadedAccounts.push({
+                    id,
+                    filename: file.name,
+                    account
+                });
 
-            this.accountLoaded && this.accountLoaded(id, file.name, account);
+                this.accountLoaded && this.accountLoaded(id, file.name, account);
+            } catch (error) {
+                this.accountLoadError && this.accountLoadError(file.name, error);
+            }
         }
     }
 }
