@@ -4,6 +4,9 @@ import { type IOfxToBankAccount } from './OfxToBankAccount';
 import { type BankAccount } from '@models/BankAccountTypes';
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { LoadMultipleAccountsTest_Input, LoadSingleFileTestSuccess_Input, LoadSortLoadedAccountByIdTest_Input } from './tests-files/BankAccountLoader/load-test-data';
+import type { IBankAccountOperations } from './BankAccountOperations';
+import type { IBankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
+import type { IBankAccountTransactionsSanitizer } from './BankAccountTransactionsSanitizer';
 
 describe('BankAccountLoader', async () => {
 
@@ -19,17 +22,26 @@ describe('BankAccountLoader', async () => {
         }
     } as IIdGenerator;
 
+    const bankAccountOperations : IBankAccountOperations = {
+    } as IBankAccountOperations;
+
+    const bankAccountTransactionsSanitizerFactory : IBankAccountTransactionsSanitizerFactory = {
+        create: (account: BankAccount) => {
+            return {} as IBankAccountTransactionsSanitizer;
+        }
+    } as IBankAccountTransactionsSanitizerFactory;
+
     let bankAccountLoader : BankAccountLoader = {} as BankAccountLoader;
 
     beforeEach( async() => {
-        bankAccountLoader = new BankAccountLoader(ofxToBankAccount, idGenerator);
+        bankAccountLoader = new BankAccountLoader(ofxToBankAccount, idGenerator, bankAccountOperations, bankAccountTransactionsSanitizerFactory);
     });
 
     afterEach( async() => {
         vi.resetAllMocks();
     })
 
-    describe('load', async () => {
+    describe('loadFiles', async () => {
 
         test('single file success path', async () => {
             const files: File[] = [
@@ -52,7 +64,7 @@ describe('BankAccountLoader', async () => {
             const generateIdSpy = vi.spyOn(idGenerator, 'generateId')
                 .mockReturnValue(id);
 
-            await bankAccountLoader.load(files);
+            await bankAccountLoader.loadFiles(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).toHaveBeenCalledTimes(1);
@@ -72,7 +84,7 @@ describe('BankAccountLoader', async () => {
             const generateIdSpy = vi.spyOn(idGenerator, 'generateId')
                 .mockReturnValue(id);
 
-            await bankAccountLoader.load(files);
+            await bankAccountLoader.loadFiles(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).not.toHaveBeenCalled();
@@ -96,7 +108,7 @@ describe('BankAccountLoader', async () => {
             const accountLoadErrorMock = vi.fn().mockImplementation(accountLoadError);
 
             bankAccountLoader.accountLoadError = accountLoadErrorMock;
-            await bankAccountLoader.load(files);
+            await bankAccountLoader.loadFiles(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).not.toHaveBeenCalled();
@@ -146,7 +158,7 @@ describe('BankAccountLoader', async () => {
 
             bankAccountLoader.accountLoadError = accountLoadErrorMock;
             bankAccountLoader.accountLoaded = accountLoadedMock;
-            await bankAccountLoader.load(files);
+            await bankAccountLoader.loadFiles(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(3);
             expect(generateIdSpy).toHaveBeenCalledTimes(2);
@@ -208,7 +220,7 @@ describe('BankAccountLoader', async () => {
                 .mockReturnValueOnce(ids[3]);
 
 
-            await bankAccountLoader.load(files);
+            await bankAccountLoader.loadFiles(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(4);
             expect(generateIdSpy).toHaveBeenCalledTimes(4);

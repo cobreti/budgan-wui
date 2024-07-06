@@ -7,5 +7,6 @@ export const ServicesTypes = {
     IdGenerator: 'IdGenerator',
     BankAccountOperations: 'BankAccountOperations',
     BankAccountTransactionsSanitizer: 'BankAccountTransactionsSanitizer',
+    BankAccountTransactionsSanitizerFactory: 'BankAccountTransactionsSanitizerFactory',
     BankAccountLoader: 'BankAccountLoader'
 }

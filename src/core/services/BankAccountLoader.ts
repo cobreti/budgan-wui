@@ -4,6 +4,8 @@ import 'reflect-metadata';
 import { ServicesTypes } from './types';
 import type { IIdGenerator } from './IdGenerator';
 import type { BankAccount } from '../models/BankAccountTypes';
+import type { IBankAccountOperations } from './BankAccountOperations';
+import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 
 
 export type LoadedAccount = {
@@ -41,11 +43,17 @@ export class BankAccountLoader implements IBankAccountLoader {
     constructor(
         @inject(ServicesTypes.OfxToBankAccount) private ofxToBankAccount: IOfxToBankAccount,
         @inject(ServicesTypes.IdGenerator) private idGenerator: IIdGenerator,
+        @inject(ServicesTypes.BankAccountOperations) private bankAccountOperations: IBankAccountOperations,
+        @inject(ServicesTypes.BankAccountTransactionsSanitizerFactory) private bankAccountTransactionsSanitizerFactory: BankAccountTransactionsSanitizerFactory,
     ) {
         
     }
 
     public async load(files: File[]) {
+        await this.loadFiles(files);
+    }
+
+    public async loadFiles(files: File[]) {
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name);
       
