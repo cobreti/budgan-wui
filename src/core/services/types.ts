@@ -6,5 +6,6 @@ export const ServicesTypes = {
     FileReaderFactory: 'FileReaderFactory',
     IdGenerator: 'IdGenerator',
     BankAccountOperations: 'BankAccountOperations',
-    BankAccountTransactionsSanitizer: 'BankAccountTransactionsSanitizer'
+    BankAccountTransactionsSanitizer: 'BankAccountTransactionsSanitizer',
+    BankAccountLoader: 'BankAccountLoader'
 }

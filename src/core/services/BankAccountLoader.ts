@@ -1,0 +1,61 @@
+import { type IOfxToBankAccount } from './OfxToBankAccount';
+import { inject, injectable } from 'inversify';
+import 'reflect-metadata';
+import { ServicesTypes } from './types';
+import type { IIdGenerator } from './IdGenerator';
+import type { BankAccount } from '../models/BankAccountTypes';
+
+
+export type LoadedAccount = {
+    id: string;
+    filename: string;
+    account: BankAccount;
+}
+
+
+export interface IBankAccountLoader {
+
+    loadingFileStarted : BankAccountLoader_LoadingFileStarted | undefined;
+    accountLoaded : BankAccountLoader_AccountLoaded | undefined;
+
+    load(files: File[]) : Promise<void>;
+};
+
+
+export type BankAccountLoader_LoadingFileStarted = (filename: string) => void;
+export type BankAccountLoader_AccountLoaded = (id: string, filename: string, account: BankAccount) => void;
+
+
+@injectable()
+export class BankAccountLoader implements IBankAccountLoader {
+
+    loadedAccounts : LoadedAccount[] = [];
+
+    loadingFileStarted : BankAccountLoader_LoadingFileStarted | undefined;
+    accountLoaded : BankAccountLoader_AccountLoaded | undefined;
+
+    constructor(
+        @inject(ServicesTypes.OfxToBankAccount) private ofxToBankAccount: IOfxToBankAccount,
+        @inject(ServicesTypes.IdGenerator) private idGenerator: IIdGenerator,
+    ) {
+        
+    }
+
+    public async load(files: File[]) {
+        for (const file of files) {
+            this.loadingFileStarted && this.loadingFileStarted(file.name);
+      
+            const account = await this.ofxToBankAccount.loadOfxFile(file);
+            const id = this.idGenerator.generateId();
+
+            this.loadedAccounts.push({
+                id,
+                filename: file.name,
+                account
+            });
+
+            this.accountLoaded && this.accountLoaded(id, file.name, account);
+        }
+    }
+}
+

@@ -52,11 +52,11 @@
   import {useAddStatementStore} from '@/stores/add-statement-store';
   import {computed, defineModel} from 'vue';
   import { container } from '@/core/setupInversify'
-  import { type IOfxToBankAccount } from '@services/OfxToBankAccount';
   import { ServicesTypes } from '@services/types'
-  import type { IIdGenerator } from '@services/IdGenerator'
   import AccountAdded from '@views/addStatement/AccountAdded.vue'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+import { type IBankAccountLoader } from '@/core/services/BankAccountLoader';
+import type { BankAccount } from '@/core/models/BankAccountTypes';
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -74,28 +74,21 @@
 
   async function onFileNameUpdated(files: File[]) {
 
-    if (files.length == 0) {
-      throw new Error('No file selected');
+    const bankAccountLoader = container.get<IBankAccountLoader>(ServicesTypes.BankAccountLoader);
+
+    if (!bankAccountLoader) {
+      throw new Error('No BankAccountLoader service found');
     }
 
-    const ofxToBankAccount = container.get<IOfxToBankAccount>(ServicesTypes.OfxToBankAccount);
-    if (!ofxToBankAccount) {
-      throw new Error('No OfxToBankAccount service found');
+    bankAccountLoader.loadingFileStarted = (fileName: string) => {
+      addStatementStore.setLoadingFile(fileName);
     }
 
-    const idGenerator = container.get<IIdGenerator>(ServicesTypes.IdGenerator);
-    if (!idGenerator) {
-      throw new Error('No IdGenerator service found');
+    bankAccountLoader.accountLoaded = (id: string, fileName: string, account: BankAccount) => {
+      addStatementStore.setBankAccount(id, fileName, account);
     }
 
-    for (const file of files) {
-      addStatementStore.setLoadingFile(file.name);
-
-      const account = await ofxToBankAccount.loadOfxFile(file);
-      const id = idGenerator.generateId();
-
-      addStatementStore.setBankAccount(id, file.name, account);
-    }
+    await bankAccountLoader.load(files);
 
     addStatementStore.clearLoadingFileStatus();
   }
