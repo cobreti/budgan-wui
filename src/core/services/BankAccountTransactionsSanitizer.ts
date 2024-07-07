@@ -8,23 +8,25 @@ export interface IBankAccountTransactionsSanitizer {
   initWithAccount(account: BankAccount) : void;
   getTransactionsIdsForAccount(account: BankAccount) : TransactionIdsTable;
   addTransactionsGroup(group: BankAccountTransactionsGroup) : void;
+
+  get transactionsGroups() : BankAccountTransactionsGroup[];
 }
 
 @injectable()
 export class BankAccountTransactionsSanitizer implements IBankAccountTransactionsSanitizer {
 
-  public accountId_ : string | undefined;
-  public transactionsIds_ : TransactionIdsTable = {};
-  public transactionsGroups_ : BankAccountTransactionsGroup[] = [];
-  public rejectedGroups_ : BankAccountTransactionsGroup[] = [];
+  public accountId : string | undefined;
+  public transactionsIds : TransactionIdsTable = {};
+  public transactionsGroups : BankAccountTransactionsGroup[] = [];
+  public rejectedGroups : BankAccountTransactionsGroup[] = [];
 
   public initWithAccount(account : BankAccount) : void {
-    if (this.accountId_ != undefined) {
+    if (this.accountId != undefined) {
       throw new Error('Account already initialized');
     }
 
-    this.accountId_ = account.accountId;
-    this.transactionsIds_ = this.getTransactionsIdsForAccount(account);
+    this.accountId = account.accountId;
+    this.transactionsIds = this.getTransactionsIdsForAccount(account);
   }
 
   public getTransactionsIdsForAccount(account: BankAccount) : TransactionIdsTable {
@@ -42,9 +44,9 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
     // check if group already added first
     //
 
-    const groupIdx = this.transactionsGroups_.findIndex((g) => g.id === group.id);
+    const groupIdx = this.transactionsGroups.findIndex((g) => g.id === group.id);
     if (groupIdx >= 0) {
-      this.rejectedGroups_.push(group);
+      this.rejectedGroups.push(group);
       return;
     }
 
@@ -60,17 +62,17 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
     };
 
     group.transactions.forEach((transaction) => {
-      if (this.transactionsIds_[transaction.transactionId]) {
+      if (this.transactionsIds[transaction.transactionId]) {
         newGroup.invalidTransactions?.push({
           ...transaction,
           invalidReason: InvalidTransactionReason.duplicate
         });
       } else {
         newGroup.transactions.push(transaction);
-        this.transactionsIds_[transaction.transactionId] = {};
+        this.transactionsIds[transaction.transactionId] = {};
       }
     });
 
-    this.transactionsGroups_.push(newGroup);
+    this.transactionsGroups.push(newGroup);
   };
 }

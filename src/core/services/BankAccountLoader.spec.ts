@@ -68,7 +68,7 @@ describe('BankAccountLoader', async () => {
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).toHaveBeenCalledTimes(1);
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExepectedValue);
+            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExepectedValue);
         });
 
         test('single file with failure', async () => {
@@ -88,7 +88,7 @@ describe('BankAccountLoader', async () => {
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).not.toHaveBeenCalled();
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
+            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue);
         });
 
         test('single file with failure and error callback', async () => {
@@ -114,7 +114,7 @@ describe('BankAccountLoader', async () => {
             expect(generateIdSpy).not.toHaveBeenCalled();
             expect(accountLoadErrorMock).toHaveBeenCalledTimes(1);
             expect(accountLoadErrorMock).toHaveBeenCalledWith('test.ofx', 'Error');
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
+            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue);
         });
 
 
@@ -167,7 +167,7 @@ describe('BankAccountLoader', async () => {
             expect(accountLoadedMock).toHaveBeenCalledTimes(2);
             expect(accountLoadedMock).toHaveBeenCalledWith(ids[0], 'test.ofx', LoadMultipleAccountsTest_Input[0]);
             expect(accountLoadedMock).toHaveBeenCalledWith(ids[1], 'test3.ofx', LoadMultipleAccountsTest_Input[1]);
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
+            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue);
         });
 
         test('multiple accounts sorted by account id', async () => {
@@ -224,7 +224,7 @@ describe('BankAccountLoader', async () => {
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(4);
             expect(generateIdSpy).toHaveBeenCalledTimes(4);
-            expect(bankAccountLoader.loadedAccounts).toEqual(loadedAccountsExpectedValue);
+            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue);
         });
     });
 });

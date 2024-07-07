@@ -85,10 +85,16 @@ import type { BankAccount } from '@/core/models/BankAccountTypes';
     }
 
     bankAccountLoader.accountLoaded = (id: string, fileName: string, account: BankAccount) => {
-      addStatementStore.setBankAccount(id, fileName, account);
+      // addStatementStore.setBankAccount(id, fileName, account);
     }
 
     await bankAccountLoader.load(files);
+    bankAccountLoader.sanitize(bankAccountStore.accounts);
+
+    for (const id in bankAccountLoader.accountsById) {
+      const account = bankAccountLoader.accountsById[id];
+      addStatementStore.setBankAccount(account.accountId, "", account);
+    }
 
     addStatementStore.clearLoadingFileStatus();
   }

@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { ServicesTypes } from './types';
 import type { IIdGenerator } from './IdGenerator';
-import type { BankAccount } from '../models/BankAccountTypes';
+import type { BankAccount, BankAccountsDictionary } from '../models/BankAccountTypes';
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 
@@ -23,6 +23,9 @@ export interface IBankAccountLoader {
     accountLoaded : BankAccountLoader_AccountLoaded | undefined;
 
     load(files: File[]) : Promise<void>;
+    sanitize(accounts: BankAccountsDictionary) : void;
+
+    get accountsById(): BankAccountsDictionary;
 };
 
 
@@ -34,7 +37,8 @@ export type BankAccountLoader_AccountLoadError = (filename: string, error: unkno
 @injectable()
 export class BankAccountLoader implements IBankAccountLoader {
 
-    loadedAccounts: LoadedAccountsById = {};
+    rawAccountsLoadedById: LoadedAccountsById = {};
+    sanitizedAccountsById: BankAccountsDictionary = {};
 
     loadingFileStarted : BankAccountLoader_LoadingFileStarted | undefined;
     accountLoaded : BankAccountLoader_AccountLoaded | undefined;
@@ -49,6 +53,10 @@ export class BankAccountLoader implements IBankAccountLoader {
         
     }
 
+    get accountsById() : BankAccountsDictionary {
+        return this.sanitizedAccountsById;
+    }
+
     public async load(files: File[]) {
         await this.loadFiles(files);
     }
@@ -59,6 +67,9 @@ export class BankAccountLoader implements IBankAccountLoader {
       
             try {
                 const account = await this.ofxToBankAccount.loadOfxFile(file);
+                if (account.transactionsGroups.length > 0) {
+                    account.transactionsGroups[0].filename = file.name;
+                }
                 const id = this.idGenerator.generateId();
 
                 const accountId = account.accountId;
@@ -68,14 +79,42 @@ export class BankAccountLoader implements IBankAccountLoader {
                     account
                 };
 
-                const accountsForId = this.loadedAccounts[accountId] || [];
+                const accountsForId = this.rawAccountsLoadedById[accountId] || [];
                 accountsForId.push(loadedAccount);
-                this.loadedAccounts[accountId] = accountsForId;
+                this.rawAccountsLoadedById[accountId] = accountsForId;
 
                 this.accountLoaded && this.accountLoaded(id, file.name, account);
             } catch (error) {
                 this.accountLoadError && this.accountLoadError(file.name, error);
             }
+        }
+    }
+
+    public sanitize(accounts: BankAccountsDictionary) {
+        
+        const accountsById : {[id: string]: BankAccount}= {};
+
+        for (const accountId in this.rawAccountsLoadedById) {
+            const loadedAccounts = this.rawAccountsLoadedById[accountId];
+            const combinedGroups = this.bankAccountOperations.getCombinedTransactionsGroup(...loadedAccounts.map((loadedAccount) => loadedAccount.account));
+            const sortedgRoups = this.bankAccountOperations.sortTransactionsGroupByStartDateAscending(combinedGroups);
+            const account = loadedAccounts[0].account;
+            accountsById[account.accountId] = {
+                ...account,
+                transactionsGroups: sortedgRoups
+            };
+        }
+
+        for (const id in accountsById) {
+            const sanitizer = this.bankAccountTransactionsSanitizerFactory.create(accounts[id]);
+
+            const account = accountsById[id];
+            for (const group of account.transactionsGroups) {
+                sanitizer.addTransactionsGroup(group);
+            }
+            account.transactionsGroups = sanitizer.transactionsGroups;
+
+            this.sanitizedAccountsById[id] = account;
         }
     }
 }

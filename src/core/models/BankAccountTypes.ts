@@ -26,6 +26,7 @@ export type BankAccountInvalidTransaction = BankAccountTransaction & {
 
 export type BankAccountTransactionsGroup = {
     name: string;
+    filename?: string;
     id: string;
     dateStart: Date;
     dateEnd: Date;

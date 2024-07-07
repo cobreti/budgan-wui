@@ -81,8 +81,7 @@
       .reduce((acc: any[], curr) => {
         const transactionsGroup = curr.account.transactionsGroups
           .map((group: BankAccountTransactionsGroup) => ({
-            ...group,
-            filename: curr.filename
+            ...group
           }));
 
         return [...acc, ...transactionsGroup];

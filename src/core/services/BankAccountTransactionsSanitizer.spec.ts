@@ -44,18 +44,18 @@ describe('BankAccountTransactionsSanitizer', () => {
       sanitizer.initWithAccount(account);
 
       // Assert
-      expect(sanitizer.accountId_).toBe('accountId');
-      expect(sanitizer.transactionsGroups_).toEqual([]);
-      expect(sanitizer.transactionsIds_).toEqual({});
+      expect(sanitizer.accountId).toBe('accountId');
+      expect(sanitizer.transactionsGroups).toEqual([]);
+      expect(sanitizer.transactionsIds).toEqual({});
     });
 
     test('should set transactionsIds_', async () => {
 
       sanitizer.initWithAccount(getTransactionsIdsForAccount_success_input);
 
-      expect(sanitizer.transactionsIds_).toEqual(getTransactionsIdsForAccount_expected_output);
-      expect(sanitizer.accountId_).toBe('123456');
-      expect(sanitizer.transactionsGroups_).toEqual([]);
+      expect(sanitizer.transactionsIds).toEqual(getTransactionsIdsForAccount_expected_output);
+      expect(sanitizer.accountId).toBe('123456');
+      expect(sanitizer.transactionsGroups).toEqual([]);
     });
 
     test('should throw error if accountId_ is already set', async () => {
@@ -68,7 +68,7 @@ describe('BankAccountTransactionsSanitizer', () => {
       };
 
       // Act
-      sanitizer.accountId_ = 'otheraccountId';
+      sanitizer.accountId = 'otheraccountId';
 
       // Assert
       expect(() => sanitizer.initWithAccount(account)).toThrowError('Account already initialized');
@@ -90,31 +90,31 @@ describe('BankAccountTransactionsSanitizer', () => {
     test('add group to transactionsGroups_', async () => {
       sanitizer.addTransactionsGroup(transactionsGroup_test1_success_input);
 
-      expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test1_expected);
-      expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test1_expected_transactionsIds);
-      expect(sanitizer.rejectedGroups_).toEqual([]);
+      expect(sanitizer.transactionsGroups).toEqual(transactionsGroups_test1_expected);
+      expect(sanitizer.transactionsIds).toEqual(transactionsGroup_test1_expected_transactionsIds);
+      expect(sanitizer.rejectedGroups).toEqual([]);
     });
 
     test('contains duplicates and new values', () => {
-      sanitizer.transactionsIds_ = transactionsGroup_test2_existing_transactionsIds;
-      sanitizer.transactionsGroups_ = transactionsGroups_test2_existing_transactions;
+      sanitizer.transactionsIds = transactionsGroup_test2_existing_transactionsIds;
+      sanitizer.transactionsGroups = transactionsGroups_test2_existing_transactions;
 
       sanitizer.addTransactionsGroup(transactionsGroup_test2_input);
 
-      expect(sanitizer.transactionsGroups_).toEqual(transactionsGroup_test2_expected);
-      expect(sanitizer.transactionsIds_).toEqual(transactionsGroup_test2_resulting_transactionIds)
-      expect(sanitizer.rejectedGroups_).toEqual([]);
+      expect(sanitizer.transactionsGroups).toEqual(transactionsGroup_test2_expected);
+      expect(sanitizer.transactionsIds).toEqual(transactionsGroup_test2_resulting_transactionIds)
+      expect(sanitizer.rejectedGroups).toEqual([]);
     });
 
     test('group id is the same as existing one', () => {
 
-      sanitizer.transactionsGroups_ = transactionsGroups_test3_existing_transactions;
+      sanitizer.transactionsGroups = transactionsGroups_test3_existing_transactions;
 
       sanitizer.addTransactionsGroup(transactionsGroup_test1_success_input);
 
-      expect(sanitizer.transactionsIds_).toEqual({});
-      expect(sanitizer.transactionsGroups_).toEqual(transactionsGroups_test3_existing_transactions);
-      expect(sanitizer.rejectedGroups_).toEqual([transactionsGroup_test1_success_input]);
+      expect(sanitizer.transactionsIds).toEqual({});
+      expect(sanitizer.transactionsGroups).toEqual(transactionsGroups_test3_existing_transactions);
+      expect(sanitizer.rejectedGroups).toEqual([transactionsGroup_test1_success_input]);
     });
   });
 });
