@@ -4,7 +4,7 @@ import type {BankAccount} from '@models/BankAccountTypes';
 import { container } from '@/core/setupInversify';
 import { ServicesTypes } from '@/core/services/types';
 import type { IBankAccountOperations } from '@/core/services/BankAccountOperations';
-import { useBankAccountsStore } from './bankAccounts-store';
+import { useBankAccountsStore } from '../../../stores/bankAccounts-store';
 
 export declare type LoadedAccount = {
     loading: boolean,

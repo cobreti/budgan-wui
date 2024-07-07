@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
-  import { useAddStatementStore, type AccountToAdd } from '@/stores/add-statement-store'
+  import { useAddStatementStore, type AccountToAdd } from './store/add-statement-store'
   import { computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import FilteredTransactionsList from '@components/filteredTransactionsList.vue'

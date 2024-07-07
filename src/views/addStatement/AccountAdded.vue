@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { useAddStatementStore } from '@/stores/add-statement-store'
+  import { useAddStatementStore } from './store/add-statement-store'
   import type { BankAccountTransactionsGroup } from '@models/BankAccountTypes'
 
   const props = defineProps<{
