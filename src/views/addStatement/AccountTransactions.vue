@@ -58,10 +58,11 @@
 
 <script setup lang="ts">
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
-  import { useAddStatementStore, type AccountToAdd } from './store/add-statement-store'
+  import { useAddStatementStore } from './store/add-statement-store'
   import { computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
+import type { BankAccount } from '@/core/models/BankAccountTypes'
 
   const route = useRoute();
   const router = useRouter();
@@ -69,24 +70,24 @@
 
   const addStatementStore = useAddStatementStore()
 
-  const accountToAdd = computed((): AccountToAdd => {
+  const accountToAdd = computed((): BankAccount => {
     return addStatementStore.accounts[id]
   })
 
   const noNewTransactions = computed(() => {
-    return !accountToAdd.value || accountToAdd.value.account.transactionsGroups.length == 0
+    return !accountToAdd.value || accountToAdd.value.transactionsGroups.length == 0
   })
 
   const accountId = computed(() => {
-    return accountToAdd.value.account.accountId
+    return accountToAdd.value.accountId
   })
 
   const accountType = computed(() => {
-    return accountToAdd.value ? accountToAdd.value.account.accountType : ''
+    return accountToAdd.value ? accountToAdd.value.accountType : ''
   })
 
   const filteredTransactions = computed(() => {
-    return accountToAdd.value ? IdentityFilter(accountToAdd.value.account) : null
+    return accountToAdd.value ? IdentityFilter(accountToAdd.value) : null
   })
 
   function onBack() {

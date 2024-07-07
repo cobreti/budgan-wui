@@ -20,6 +20,10 @@
                 <span class="title">transactions count :</span>
                 <span class="content">{{group.transactions.length}}</span>
               </div>
+              <div class="line-content" v-if="group.invalidTransactions != undefined && group.invalidTransactions.length > 0">
+                <span class="title">ignored transactions :</span>
+                <span class="content">{{group.invalidTransactions.length}}</span>
+              </div>
             </v-card>
           </div>
         </div>
@@ -64,7 +68,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useAddStatementStore } from './store/add-statement-store'
-  import type { BankAccountTransactionsGroup } from '@models/BankAccountTypes'
 
   const props = defineProps<{
     accountId: string
@@ -72,20 +75,8 @@
 
   const addStatementStore = useAddStatementStore();
 
-  const accountGroup = computed(() => {
-    return addStatementStore.accountsGroupedById[props.accountId];
-  });
-
   const transactionsGroups = computed(() => {
-    return Object.values(accountGroup.value)
-      .reduce((acc: any[], curr) => {
-        const transactionsGroup = curr.account.transactionsGroups
-          .map((group: BankAccountTransactionsGroup) => ({
-            ...group
-          }));
-
-        return [...acc, ...transactionsGroup];
-      }, []);
+    return addStatementStore.accounts[props.accountId].transactionsGroups;
   });
 
 </script>

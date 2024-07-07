@@ -1,55 +1,26 @@
 import {defineStore} from 'pinia';
 import { computed, ref, type Ref } from 'vue'
-import type {BankAccount} from '@models/BankAccountTypes';
-import { container } from '@/core/setupInversify';
-import { ServicesTypes } from '@/core/services/types';
-import type { IBankAccountOperations } from '@/core/services/BankAccountOperations';
-import { useBankAccountsStore } from '../../../stores/bankAccounts-store';
-
-export declare type LoadedAccount = {
-    loading: boolean,
-    account: BankAccount | undefined;
-    filename: string | undefined;
-}
-
-export declare type AccountToAdd = {
-    account: BankAccount;
-    filename: string;
-}
-
-export declare type AccountToAddDictionary = {[key: string]: AccountToAdd};
+import type {BankAccount, BankAccountsDictionary} from '@models/BankAccountTypes';
 
 export type AddStatementStore = {
     loading: Ref<boolean>;
-    accounts: Ref<AccountToAddDictionary>;
+    accounts: Ref<BankAccountsDictionary>;
+    accountsIds: Ref<string[]>;
     clear: () => void;
     setLoadingFile: (filename: string) => void;
     clearLoadingFileStatus: () => void;
-    setBankAccount: (id: string, filename: string, account: BankAccount) => void;
+    setBankAccount: (account: BankAccount) => void;
     accountExists: (id: string) => boolean;
-    getAccountById: (id: string) => AccountToAdd | undefined;
-    accountsGroupedById: Ref<Record<string, AccountToAdd[]>>;
+    getAccountById: (id: string) => BankAccount | undefined;
 };
 
 export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
 
-    const bankAccountStore = useBankAccountsStore();
+    const accounts = ref<BankAccountsDictionary>({});
 
-    const bankAccountOperations : IBankAccountOperations = container.get(ServicesTypes.BankAccountOperations);
-
-    const accounts = ref<AccountToAddDictionary>({});
+    const accountsIds = computed(() => Object.keys(accounts.value));
 
     const loading = ref<boolean>(false);
-
-    const accountsGroupedById = computed(() => {
-        return Object.values(accounts.value)
-          .reduce((acc, accountToAdd) => {
-              const accnt = acc[accountToAdd.account.name] || [];
-              acc[accountToAdd.account.name] = [...accnt, accountToAdd];
-              return acc;
-          }, {} as Record<string, AccountToAdd[]>);
-    });
-
 
     function clear() {
         loading.value = false;
@@ -64,20 +35,12 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         loading.value = false;
     }
 
-    function setBankAccount(id: string, filename: string, account: BankAccount) {
-        accounts.value[id] = {
-            account: account,
-            filename
-        };
+    function setBankAccount(account: BankAccount) {
 
-        const existingAccount = bankAccountStore.getAccountByIdIfExist(account.accountId);
-        if (existingAccount) {
-            const transactionsToIgnore = bankAccountOperations.getTransactionsInBothAccounts(account, existingAccount);
-            bankAccountOperations.removeTransactionsFromBankAccount(account, transactionsToIgnore);
-        }
+        accounts.value[account.accountId] = account;
     }
 
-    function getAccountById(id: string): AccountToAdd | undefined {
+    function getAccountById(id: string): BankAccount | undefined {
         return accounts.value[id];
     }
 
@@ -88,7 +51,7 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
     return {
         loading,
         accounts,
-        accountsGroupedById,
+        accountsIds,
         clear,
         setLoadingFile,
         clearLoadingFileStatus,

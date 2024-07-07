@@ -63,12 +63,11 @@ import type { BankAccount } from '@/core/models/BankAccountTypes';
   const bankAccountStore = useBankAccountsStore();
 
   const accountsIds = computed(() => {
-    const accounts = addStatementStore.accountsGroupedById;
-    return Object.keys(accounts);
+    return addStatementStore.accountsIds;
   });
 
   const statementPresent = computed(() => {
-    return Object.keys(addStatementStore.accounts).length > 0;
+    return accountsIds.value.length > 0;
   });
 
 
@@ -84,16 +83,12 @@ import type { BankAccount } from '@/core/models/BankAccountTypes';
       addStatementStore.setLoadingFile(fileName);
     }
 
-    bankAccountLoader.accountLoaded = (id: string, fileName: string, account: BankAccount) => {
-      // addStatementStore.setBankAccount(id, fileName, account);
-    }
-
     await bankAccountLoader.load(files);
     bankAccountLoader.sanitize(bankAccountStore.accounts);
 
     for (const id in bankAccountLoader.accountsById) {
       const account = bankAccountLoader.accountsById[id];
-      addStatementStore.setBankAccount(account.accountId, "", account);
+      addStatementStore.setBankAccount(account);
     }
 
     addStatementStore.clearLoadingFileStatus();
@@ -111,9 +106,7 @@ import type { BankAccount } from '@/core/models/BankAccountTypes';
   function onAdd() {
     const accounts = addStatementStore.accounts;
 
-    Object.values(accounts).forEach((accountBox) => {
-      const account = accountBox.account;
-
+    Object.values(accounts).forEach((account) => {
       bankAccountStore.addWithBankAccount(account);
     });
 
