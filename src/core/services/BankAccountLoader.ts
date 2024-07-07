@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { ServicesTypes } from './types';
 import type { IIdGenerator } from './IdGenerator';
-import type { BankAccount, BankAccountsDictionary } from '../models/BankAccountTypes';
+import type { BankAccount, BankAccountsDictionary } from '@models/BankAccountTypes';
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 
@@ -88,23 +88,34 @@ export class BankAccountLoader implements IBankAccountLoader {
 
     public sanitize(accounts: BankAccountsDictionary) {
         
-        const accountsById : {[id: string]: BankAccount}= {};
+        const newAccounts = this.combineAndSortTransactionsGroups();
+
+        this.sanitizeNewAccounts(accounts, newAccounts);
+    }
+
+    public combineAndSortTransactionsGroups() : BankAccountsDictionary {
+        const accountsById : BankAccountsDictionary = {};
 
         for (const accountId in this.rawAccountsLoadedById) {
             const loadedAccounts = this.rawAccountsLoadedById[accountId];
             const combinedGroups = this.bankAccountOperations.getCombinedTransactionsGroup(...loadedAccounts.map((loadedAccount) => loadedAccount.account));
-            const sortedgRoups = this.bankAccountOperations.sortTransactionsGroupByStartDateAscending(combinedGroups);
+            const sortedGroups = this.bankAccountOperations.sortTransactionsGroupByStartDateAscending(combinedGroups);
             const account = loadedAccounts[0].account;
             accountsById[account.accountId] = {
                 ...account,
-                transactionsGroups: sortedgRoups
+                transactionsGroups: sortedGroups
             };
         }
 
-        for (const id in accountsById) {
-            const sanitizer = this.bankAccountTransactionsSanitizerFactory.create(accounts[id]);
+        return accountsById;
+    }
 
-            const account = accountsById[id];
+    public sanitizeNewAccounts(existingAccounts: BankAccountsDictionary, newAccounts: BankAccountsDictionary) {
+
+        for (const id in newAccounts) {
+            const sanitizer = this.bankAccountTransactionsSanitizerFactory.create(existingAccounts[id]);
+
+            const account = newAccounts[id];
             for (const group of account.transactionsGroups) {
                 sanitizer.addTransactionsGroup(group);
             }
@@ -112,6 +123,7 @@ export class BankAccountLoader implements IBankAccountLoader {
 
             this.sanitizedAccountsById[id] = account;
         }
+
     }
 }
 
