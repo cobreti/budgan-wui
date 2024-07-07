@@ -58,10 +58,6 @@ export class BankAccountLoader implements IBankAccountLoader {
     }
 
     public async load(files: File[]) {
-        await this.loadFiles(files);
-    }
-
-    public async loadFiles(files: File[]) {
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name);
       

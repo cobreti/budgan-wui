@@ -41,7 +41,7 @@ describe('BankAccountLoader', async () => {
         vi.resetAllMocks();
     })
 
-    describe('loadFiles', async () => {
+    describe('load', async () => {
 
         test('single file success path', async () => {
             const files: File[] = [
@@ -64,7 +64,7 @@ describe('BankAccountLoader', async () => {
             const generateIdSpy = vi.spyOn(idGenerator, 'generateId')
                 .mockReturnValue(id);
 
-            await bankAccountLoader.loadFiles(files);
+            await bankAccountLoader.load(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).toHaveBeenCalledTimes(1);
@@ -84,7 +84,7 @@ describe('BankAccountLoader', async () => {
             const generateIdSpy = vi.spyOn(idGenerator, 'generateId')
                 .mockReturnValue(id);
 
-            await bankAccountLoader.loadFiles(files);
+            await bankAccountLoader.load(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).not.toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe('BankAccountLoader', async () => {
             const accountLoadErrorMock = vi.fn().mockImplementation(accountLoadError);
 
             bankAccountLoader.accountLoadError = accountLoadErrorMock;
-            await bankAccountLoader.loadFiles(files);
+            await bankAccountLoader.load(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
             expect(generateIdSpy).not.toHaveBeenCalled();
@@ -158,7 +158,7 @@ describe('BankAccountLoader', async () => {
 
             bankAccountLoader.accountLoadError = accountLoadErrorMock;
             bankAccountLoader.accountLoaded = accountLoadedMock;
-            await bankAccountLoader.loadFiles(files);
+            await bankAccountLoader.load(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(3);
             expect(generateIdSpy).toHaveBeenCalledTimes(2);
@@ -220,7 +220,7 @@ describe('BankAccountLoader', async () => {
                 .mockReturnValueOnce(ids[3]);
 
 
-            await bankAccountLoader.loadFiles(files);
+            await bankAccountLoader.load(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(4);
             expect(generateIdSpy).toHaveBeenCalledTimes(4);
