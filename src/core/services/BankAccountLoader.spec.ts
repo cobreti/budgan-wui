@@ -2,7 +2,7 @@ import { BankAccountLoader, type BankAccountListById } from '@services/BankAccou
 import { type IOfxToBankAccount } from './OfxToBankAccount';
 import { type BankAccount } from '@models/BankAccountTypes';
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { LoadMultipleAccountsTest_Input, LoadSingleFileTestSuccess_Input, LoadSortLoadedAccountByIdTest_Input } from './tests-files/BankAccountLoader/load-test-data';
+import { LoadMultipleAccountsTest_Input, LoadSingleFileTestSuccess_Expected, LoadSingleFileTestSuccess_Input, LoadSortLoadedAccountByIdTest_Input } from './tests-files/BankAccountLoader/load-test-data';
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { IBankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 import type { IBankAccountTransactionsSanitizer } from './BankAccountTransactionsSanitizer';
@@ -40,9 +40,9 @@ describe('BankAccountLoader', async () => {
             const files: File[] = [
                 new File([''], 'test.ofx')
             ];
-            const loadedAccountsExepectedValue = {
+            const loadedAccountsExpectedValue = {
                 '123456789': [
-                    LoadSingleFileTestSuccess_Input
+                    LoadSingleFileTestSuccess_Expected
                 ]
             };
 
@@ -52,7 +52,7 @@ describe('BankAccountLoader', async () => {
             await bankAccountLoader.load(files);
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(1);
-            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExepectedValue);
+            expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue);
         });
 
         test('single file with failure', async () => {
