@@ -84,7 +84,7 @@ export class BankAccountLoader implements IBankAccountLoader {
 
         for (const accountId in this.rawAccountsLoadedById) {
             const loadedAccounts = this.rawAccountsLoadedById[accountId];
-            const combinedGroups = this.bankAccountOperations.getCombinedTransactionsGroup(...loadedAccounts.map((loadedAccount) => loadedAccount.account));
+            const combinedGroups = this.bankAccountOperations.getCombinedTransactionsGroup(...loadedAccounts);
             const sortedGroups = this.bankAccountOperations.sortTransactionsGroupByStartDateAscending(combinedGroups);
             const account = loadedAccounts[0];
             accountsById[account.accountId] = {
