@@ -2,7 +2,13 @@ import { BankAccountLoader, type BankAccountListById } from '@services/BankAccou
 import { type IOfxToBankAccount } from './OfxToBankAccount';
 import { type BankAccount } from '@models/BankAccountTypes';
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { LoadMultipleAccountsTest_Input, LoadSingleFileTestSuccess_Expected, LoadSingleFileTestSuccess_Input, LoadSortLoadedAccountByIdTest_Input } from './tests-files/BankAccountLoader/load-test-data';
+import {
+    LoadMultipleAccountsTest_Expected,
+    LoadMultipleAccountsTest_Input,
+    LoadSingleFileTestSuccess_Expected,
+    LoadSingleFileTestSuccess_Input, LoadSortLoadedAccountByIdTest_Expected,
+    LoadSortLoadedAccountByIdTest_Input
+} from './tests-files/BankAccountLoader/load-test-data'
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { IBankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 import type { IBankAccountTransactionsSanitizer } from './BankAccountTransactionsSanitizer';
@@ -101,10 +107,10 @@ describe('BankAccountLoader', async () => {
 
             const loadedAccountsExpectedValue : BankAccountListById = {
                 '123456789': [
-                        LoadMultipleAccountsTest_Input[0]
+                        LoadMultipleAccountsTest_Expected[0]
                     ],
                 '987654321': [
-                        LoadMultipleAccountsTest_Input[1]
+                        LoadMultipleAccountsTest_Expected[1]
                     ]
             };
 
@@ -143,12 +149,12 @@ describe('BankAccountLoader', async () => {
 
             const loadedAccountsExpectedValue : BankAccountListById = {
                 '123456789': [
-                    LoadSortLoadedAccountByIdTest_Input[0],
-                    LoadSortLoadedAccountByIdTest_Input[1]
+                    LoadSortLoadedAccountByIdTest_Expected[0],
+                    LoadSortLoadedAccountByIdTest_Expected[1]
                 ],
                 '987654321': [
-                    LoadSortLoadedAccountByIdTest_Input[2],
-                    LoadSortLoadedAccountByIdTest_Input[3]
+                    LoadSortLoadedAccountByIdTest_Expected[2],
+                    LoadSortLoadedAccountByIdTest_Expected[3]
                 ]
             };
 
