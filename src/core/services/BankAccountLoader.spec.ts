@@ -1,6 +1,6 @@
 import { BankAccountLoader, type BankAccountListById } from '@services/BankAccountLoader';
 import { type IOfxToBankAccount } from './OfxToBankAccount';
-import { type BankAccount } from '@models/BankAccountTypes';
+import { type BankAccount, type BankAccountTransactionsGroup } from '@models/BankAccountTypes'
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
     LoadMultipleAccountsTest_Expected,
@@ -12,6 +12,12 @@ import {
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { IBankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 import type { IBankAccountTransactionsSanitizer } from './BankAccountTransactionsSanitizer';
+import {
+    combineAndSortTransactionsGroup_success_expected,
+    combineAndSortTransactionsGroup_success_getCombinedTransactionsGroup_result,
+    combineAndSortTransactionsGroup_success_input,
+    combineAndSortTransactionsGroup_success_sortTransactionsGroupByStartDateAscending_result
+} from '@services/tests-files/BankAccountLoader/combineAndSorteTransactionsGroup-test-data'
 
 describe('BankAccountLoader', async () => {
 
@@ -22,6 +28,12 @@ describe('BankAccountLoader', async () => {
     } as IOfxToBankAccount;
 
     const bankAccountOperations : IBankAccountOperations = {
+        getCombinedTransactionsGroup : (...accounts): BankAccountTransactionsGroup[] => {
+            return [];
+        },
+        sortTransactionsGroupByStartDateAscending: (transactionsGroup: BankAccountTransactionsGroup[]): BankAccountTransactionsGroup[] => {
+            return [];
+        }
     } as IBankAccountOperations;
 
     const bankAccountTransactionsSanitizerFactory : IBankAccountTransactionsSanitizerFactory = {
@@ -168,6 +180,22 @@ describe('BankAccountLoader', async () => {
 
             expect(loadOfxFileSpy).toHaveBeenCalledTimes(4);
             expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue);
+        });
+    });
+
+    describe('combineAndSortTransactionsGroup', async () => {
+
+        test('success path', async () => {
+            bankAccountLoader.rawAccountsLoadedById = combineAndSortTransactionsGroup_success_input;
+
+            vi.spyOn(bankAccountOperations, 'getCombinedTransactionsGroup')
+              .mockReturnValue(combineAndSortTransactionsGroup_success_getCombinedTransactionsGroup_result);
+            vi.spyOn(bankAccountOperations, 'sortTransactionsGroupByStartDateAscending')
+              .mockReturnValue(combineAndSortTransactionsGroup_success_sortTransactionsGroupByStartDateAscending_result);
+
+            const result = bankAccountLoader.combineAndSortTransactionsGroups();
+
+            expect(result).toEqual(combineAndSortTransactionsGroup_success_expected);
         });
     });
 });

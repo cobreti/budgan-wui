@@ -76,7 +76,7 @@ export class BankAccountLoader implements IBankAccountLoader {
         
         const newAccounts = this.combineAndSortTransactionsGroups();
 
-        this.sanitizeNewAccounts(accounts, newAccounts);
+        this.sanitizedAccountsById = this.sanitizeNewAccounts(accounts, newAccounts);
     }
 
     public combineAndSortTransactionsGroups() : BankAccountsDictionary {
@@ -96,7 +96,9 @@ export class BankAccountLoader implements IBankAccountLoader {
         return accountsById;
     }
 
-    public sanitizeNewAccounts(existingAccounts: BankAccountsDictionary, newAccounts: BankAccountsDictionary) {
+    public sanitizeNewAccounts(existingAccounts: BankAccountsDictionary, newAccounts: BankAccountsDictionary) : BankAccountsDictionary {
+
+        const sanitizedAccountsById : BankAccountsDictionary = {};
 
         for (const id in newAccounts) {
             const sanitizer = this.bankAccountTransactionsSanitizerFactory.create(existingAccounts[id]);
@@ -107,9 +109,10 @@ export class BankAccountLoader implements IBankAccountLoader {
             }
             account.transactionsGroups = sanitizer.transactionsGroups;
 
-            this.sanitizedAccountsById[id] = account;
+            sanitizedAccountsById[id] = account;
         }
 
+        return sanitizedAccountsById;
     }
 }
 
