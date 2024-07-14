@@ -24,6 +24,7 @@ import {
     sanitizeNewAccounts_existingAccount,
     sanitizeNewAccounts_newAccounts, sanitizeNewAccounts_transactionsGroups_account_123456789, sanitizeNewAccounts_transactionsGroups_account_987654321
 } from '@services/tests-files/BankAccountLoader/sanitize-test-data'
+import { accountsById_test_data } from '@services/tests-files/BankAccountLoader/accountsById-test-data'
 
 describe('BankAccountLoader', async () => {
 
@@ -258,6 +259,18 @@ describe('BankAccountLoader', async () => {
             expect(sanitizer_987654321_addTransactionsGroupSpy).toHaveBeenNthCalledWith(2, sanitizeNewAccounts_transactionsGroups_account_987654321[1]);
 
             expect(result).toEqual(sanitizeNewAccounts_accountsById_expected_data)
+        });
+    });
+
+    describe('accountsById', async () => {
+
+        test('returns content of sanitizedAccountsById', async () => {
+
+            bankAccountLoader.sanitizedAccountsById = accountsById_test_data;
+
+            const result = bankAccountLoader.accountsById;
+
+            expect(result).toEqual(accountsById_test_data);
         });
     });
 });
