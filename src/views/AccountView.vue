@@ -7,16 +7,6 @@
       </div>
     </v-card>
 
-    <v-card class="d-flex flex-row justify-end ml-2 mr-2 pt-2 pb-2">
-      <v-btn @click="onFilterButtonClicked">
-        Filters
-        <v-icon class="drop-down-icon ml-2" :icon="iconName" size="large"></v-icon>
-      </v-btn>
-      <div class="filter-panel">
-
-      </div>
-    </v-card>
-
     <v-card class="transactions-list-container ma-2 pa-2">
       <div class="transactions-list">
         <account-view-transaction-list></account-view-transaction-list>
@@ -80,12 +70,6 @@
   const account = computed(() => {
     return bankAccountStore.getAccountById(accountId.value);
   });
-
-  const iconName = "mdi-menu-down"
-
-  function onFilterButtonClicked() {
-
-  }
 
   watchEffect(() => {
     accountViewStore.addBankAccount(account.value);
