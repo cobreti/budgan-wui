@@ -206,7 +206,7 @@ describe('BankAccountLoader', async () => {
         });
     });
 
-    describe('sanitize', async () => {
+    describe('sanitizeNewAccounts', async () => {
 
         test('success path', async () => {
             const sanitizer_123456789: BankAccountTransactionsSanitizer = {
@@ -259,6 +259,24 @@ describe('BankAccountLoader', async () => {
             expect(sanitizer_987654321_addTransactionsGroupSpy).toHaveBeenNthCalledWith(2, sanitizeNewAccounts_transactionsGroups_account_987654321[1]);
 
             expect(result).toEqual(sanitizeNewAccounts_accountsById_expected_data)
+        });
+    });
+
+    describe('sanitize', async () => {
+
+        test('success path', async () => {
+
+            const combineAndSortTransactionsGroupSpy = vi.spyOn(bankAccountLoader, 'combineAndSortTransactionsGroups')
+                .mockReturnValue(combineAndSortTransactionsGroup_success_expected);
+
+            const sanitizeNewAccountsSpy = vi.spyOn(bankAccountLoader, 'sanitizeNewAccounts')
+                .mockReturnValue(sanitizeNewAccounts_accountsById_expected_data);
+
+            bankAccountLoader.sanitize({});
+
+            expect(combineAndSortTransactionsGroupSpy).toHaveBeenCalledTimes(1);
+            expect(sanitizeNewAccountsSpy).toHaveBeenCalledTimes(1);
+            expect(sanitizeNewAccountsSpy).toHaveBeenCalledWith({}, combineAndSortTransactionsGroup_success_expected);
         });
     });
 
