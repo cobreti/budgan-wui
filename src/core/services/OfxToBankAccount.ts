@@ -34,7 +34,12 @@ export class OfxToBankAccount implements IOfxToBankAccount {
             reject('Unable to read file content as text')
           }
           const accountResult = this.convertOfxToBankAccount(text);
-          resolve(accountResult);
+          if (!accountResult) {
+            reject();
+          }
+          else {
+            resolve(accountResult);
+          }
       }
 
       reader.onerror = () => {
@@ -46,14 +51,20 @@ export class OfxToBankAccount implements IOfxToBankAccount {
     });
   }
 
-  convertOfxToBankAccount(ofxContent: string) : BankAccount {
-    const result = this.ofxParser.parse(ofxContent);
+  convertOfxToBankAccount(ofxContent: string) : BankAccount | undefined {
+    try {
+      const result = this.ofxParser.parse(ofxContent);
 
-    if (!result.document) {
-      throw new Error('OFX document not found.');
+      if (!result.document) {
+        return;
+      }
+
+      return this.createAccountFromOfxDocument(result.document);
     }
-
-    return this.createAccountFromOfxDocument(result.document);
+    catch (error) {
+      console.error('Error parsing OFX file.', error);
+      return;
+    }
   }
 
   OfxToBankAccountTransaction(ofxTransaction: OfxTransaction) : BankAccountTransaction {

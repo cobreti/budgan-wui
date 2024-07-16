@@ -55,8 +55,7 @@
   import { ServicesTypes } from '@services/types'
   import AccountAdded from '@views/addStatement/AccountAdded.vue'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
-import { type IBankAccountLoader } from '@/core/services/BankAccountLoader';
-import type { BankAccount } from '@/core/models/BankAccountTypes';
+  import { type IBankAccountLoader } from '@/core/services/BankAccountLoader';
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -72,6 +71,10 @@ import type { BankAccount } from '@/core/models/BankAccountTypes';
 
 
   async function onFileNameUpdated(files: File[]) {
+
+    if (files.length == 0) {
+      return;
+    }
 
     const bankAccountLoader = container.get<IBankAccountLoader>(ServicesTypes.BankAccountLoader);
 
