@@ -10,6 +10,9 @@
         <template v-slot:prepend>
           <v-app-bar-nav-icon @click.stop="onToggleDrawer"></v-app-bar-nav-icon>
         </template>
+        <template v-slot:append>
+          v{{version}}
+        </template>
       </v-app-bar>
       <navigation-drawer/>
       <v-main :scrollable="false">
@@ -29,10 +32,13 @@ import { RouterView } from 'vue-router'
 import NavigationDrawer from '@components/NavigationDrawer.vue';
 import { useAppSettingsStore } from '@/stores/appSettings-store'
 import settings from './assets/settings.json';
+import { computed } from 'vue'
 
 const appSettingsStore = useAppSettingsStore();
 
 appSettingsStore.setVersion(settings.version);
+
+const version = computed(() => appSettingsStore.appSettings.version);
 
 function onToggleDrawer() {
   appSettingsStore.appSettings.drawerVisible = !appSettingsStore.appSettings.drawerVisible;
