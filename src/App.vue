@@ -28,8 +28,11 @@
 import { RouterView } from 'vue-router'
 import NavigationDrawer from '@components/NavigationDrawer.vue';
 import { useAppSettingsStore } from '@/stores/appSettings-store'
+import settings from './assets/settings.json';
 
 const appSettingsStore = useAppSettingsStore();
+
+appSettingsStore.setVersion(settings.version);
 
 function onToggleDrawer() {
   appSettingsStore.appSettings.drawerVisible = !appSettingsStore.appSettings.drawerVisible;
