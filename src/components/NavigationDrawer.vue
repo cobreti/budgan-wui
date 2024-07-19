@@ -8,6 +8,7 @@
       </v-list-item>
       <v-list-item title="Save" :to="{path: '/save', replace: true}" :hidden="!bankAccountsStore.hasAccounts"></v-list-item>
       <v-list-item title="Open" :to="{path: '/open', replace: true}"></v-list-item>
+      <v-list-item title="Settings" :to="{path: '/settings', replace: true}"></v-list-item>
     </v-navigation-drawer>
   </div>
 </template>

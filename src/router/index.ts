@@ -43,6 +43,11 @@ const router = createRouter({
       path: '/open',
       name: 'open',
       component: () => import('../views/ImportAccountData.vue')
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('@views/settings/SettingsPage.vue')
     }
   ]
 })
