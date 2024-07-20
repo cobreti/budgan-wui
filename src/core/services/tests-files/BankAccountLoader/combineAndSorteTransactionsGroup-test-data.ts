@@ -32,8 +32,8 @@ export const combineAndSortTransactionsGroup_success_input: BankAccountListById 
           dateStart: startDates[0],
           dateEnd: endDates[0],
           transactions: [
-            { transactionId: 'trans1', amount: 100, date: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
-            { transactionId: 'trans2', amount: -50, date: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans1', amount: 100, dateInscription: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
+            { transactionId: 'trans2', amount: -50, dateInscription: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'savings.ofx'
         },
@@ -43,8 +43,8 @@ export const combineAndSortTransactionsGroup_success_input: BankAccountListById 
           dateStart: startDates[2],
           dateEnd: endDates[2],
           transactions: [
-            { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-            { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+            { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'savings2.ofx'
         }
@@ -61,8 +61,8 @@ export const combineAndSortTransactionsGroup_success_input: BankAccountListById 
           dateStart: startDates[1],
           dateEnd: endDates[1],
           transactions: [
-            { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-            { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+            { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'checking.ofx'
         },
@@ -72,8 +72,8 @@ export const combineAndSortTransactionsGroup_success_input: BankAccountListById 
           dateStart: startDates[3],
           dateEnd: endDates[3],
           transactions: [
-            { transactionId: 'trans5', amount: 300, date: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
-            { transactionId: 'trans6', amount: -150, date: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans5', amount: 300, dateInscription: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
+            { transactionId: 'trans6', amount: -150, dateInscription: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'checking2.ofx'
         }
@@ -89,8 +89,8 @@ export const combineAndSortTransactionsGroup_success_getCombinedTransactionsGrou
     dateStart: startDates[0],
     dateEnd: endDates[0],
     transactions: [
-      { transactionId: 'trans1', amount: 100, date: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
-      { transactionId: 'trans2', amount: -50, date: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans1', amount: 100, dateInscription: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
+      { transactionId: 'trans2', amount: -50, dateInscription: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'savings.ofx'
   },
@@ -100,8 +100,8 @@ export const combineAndSortTransactionsGroup_success_getCombinedTransactionsGrou
     dateStart: startDates[2],
     dateEnd: endDates[2],
     transactions: [
-      { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-      { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+      { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'savings2.ofx'
   },
@@ -111,8 +111,8 @@ export const combineAndSortTransactionsGroup_success_getCombinedTransactionsGrou
     dateStart: startDates[1],
     dateEnd: endDates[1],
     transactions: [
-      { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-      { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+      { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'checking.ofx'
   },
@@ -122,8 +122,8 @@ export const combineAndSortTransactionsGroup_success_getCombinedTransactionsGrou
     dateStart: startDates[3],
     dateEnd: endDates[3],
     transactions: [
-      { transactionId: 'trans5', amount: 300, date: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
-      { transactionId: 'trans6', amount: -150, date: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans5', amount: 300, dateInscription: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
+      { transactionId: 'trans6', amount: -150, dateInscription: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'checking2.ofx'
   }
@@ -136,8 +136,8 @@ export const combineAndSortTransactionsGroup_success_sortTransactionsGroupByStar
     dateStart: startDates[0],
     dateEnd: endDates[0],
     transactions: [
-      { transactionId: 'trans1', amount: 100, date: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
-      { transactionId: 'trans2', amount: -50, date: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans1', amount: 100, dateInscription: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
+      { transactionId: 'trans2', amount: -50, dateInscription: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'savings.ofx'
   },
@@ -147,8 +147,8 @@ export const combineAndSortTransactionsGroup_success_sortTransactionsGroupByStar
     dateStart: startDates[1],
     dateEnd: endDates[1],
     transactions: [
-      { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-      { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+      { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'checking.ofx'
   },
@@ -158,8 +158,8 @@ export const combineAndSortTransactionsGroup_success_sortTransactionsGroupByStar
     dateStart: startDates[2],
     dateEnd: endDates[2],
     transactions: [
-      { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-      { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+      { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'savings2.ofx'
   },
@@ -169,8 +169,8 @@ export const combineAndSortTransactionsGroup_success_sortTransactionsGroupByStar
     dateStart: startDates[3],
     dateEnd: endDates[3],
     transactions: [
-      { transactionId: 'trans5', amount: 300, date: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
-      { transactionId: 'trans6', amount: -150, date: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+      { transactionId: 'trans5', amount: 300, dateInscription: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
+      { transactionId: 'trans6', amount: -150, dateInscription: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
     ],
     filename: 'checking2.ofx'
   }
@@ -188,8 +188,8 @@ export const combineAndSortTransactionsGroup_success_expected : BankAccountsDict
           dateStart: startDates[0],
           dateEnd: endDates[0],
           transactions: [
-            { transactionId: 'trans1', amount: 100, date: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
-            { transactionId: 'trans2', amount: -50, date: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans1', amount: 100, dateInscription: new Date('2023-01-01'), description: 'Deposit', type: 'DEPOSIT'},
+            { transactionId: 'trans2', amount: -50, dateInscription: new Date('2023-01-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'savings.ofx'
         },
@@ -199,8 +199,8 @@ export const combineAndSortTransactionsGroup_success_expected : BankAccountsDict
           dateStart: startDates[1],
           dateEnd: endDates[1],
           transactions: [
-            { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-            { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+            { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'checking.ofx'
         },
@@ -210,8 +210,8 @@ export const combineAndSortTransactionsGroup_success_expected : BankAccountsDict
           dateStart: startDates[2],
           dateEnd: endDates[2],
           transactions: [
-            { transactionId: 'trans3', amount: 200, date: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
-            { transactionId: 'trans4', amount: -100, date: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans3', amount: 200, dateInscription: new Date('2023-02-01'), description: 'Deposit', type: 'DEPOSIT' },
+            { transactionId: 'trans4', amount: -100, dateInscription: new Date('2023-02-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'savings2.ofx'
         },
@@ -221,8 +221,8 @@ export const combineAndSortTransactionsGroup_success_expected : BankAccountsDict
           dateStart: startDates[3],
           dateEnd: endDates[3],
           transactions: [
-            { transactionId: 'trans5', amount: 300, date: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
-            { transactionId: 'trans6', amount: -150, date: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
+            { transactionId: 'trans5', amount: 300, dateInscription: new Date('2023-03-01'), description: 'Deposit', type: 'DEPOSIT' },
+            { transactionId: 'trans6', amount: -150, dateInscription: new Date('2023-03-02'), description: 'Withdrawal', type: 'WITHDRAWAL'}
           ],
           filename: 'checking2.ofx'
         }

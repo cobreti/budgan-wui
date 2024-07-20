@@ -3,7 +3,7 @@
   <div class="transactions-list-panel">
     <ul>
       <li v-for="transaction in transactions" :key="transaction.transactionId">
-        {{transaction.date}} - {{transaction.amount}}
+        {{ transaction.dateInscription }} - {{ transaction.amount }}
       </li>
     </ul>
   </div>

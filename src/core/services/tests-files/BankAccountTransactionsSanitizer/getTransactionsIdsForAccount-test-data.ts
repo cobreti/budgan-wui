@@ -13,14 +13,14 @@ export const getTransactionsIdsForAccount_success_input: BankAccount = {
       transactions: [
         {
           transactionId: '10',
-          date: new Date('2022-01-01'),
+          dateInscription: new Date('2022-01-01'),
           amount: 100,
           type: 'Deposit',
           description: 'Deposit 1'
         },
         {
           transactionId: '11',
-          date: new Date('2022-01-02'),
+          dateInscription: new Date('2022-01-02'),
           amount: 100,
           type: 'Deposit',
           description: 'Deposit 2'
@@ -36,14 +36,14 @@ export const getTransactionsIdsForAccount_success_input: BankAccount = {
       transactions: [
         {
           transactionId: '20',
-          date: new Date('2022-02-01'),
+          dateInscription: new Date('2022-02-01'),
           amount: 200,
           type: 'Withdrawal',
           description: 'Withdrawal 1'
         },
         {
           transactionId: '21',
-          date: new Date('2022-02-02'),
+          dateInscription: new Date('2022-02-02'),
           amount: 200,
           type: 'Withdrawal',
           description: 'Withdrawal 2'

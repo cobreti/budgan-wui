@@ -15,7 +15,7 @@ export const sanitizeNewAccounts_existingAccount : BankAccountsDictionary = {
         transactions: [
           {
             transactionId: '1',
-            date: new Date(),
+            dateInscription: new Date(),
             amount: 1,
             type: 'debit',
             description: 'test'
@@ -42,7 +42,7 @@ export const sanitizeNewAccounts_newAccounts: BankAccountsDictionary = {
         transactions: [
           {
             transactionId: 'trans1-1',
-            date: new Date('2023-01-10'),
+            dateInscription: new Date('2023-01-10'),
             amount: 100,
             type: 'DEPOSIT',
             description: 'Initial Deposit'
@@ -57,7 +57,7 @@ export const sanitizeNewAccounts_newAccounts: BankAccountsDictionary = {
         transactions: [
           {
             transactionId: 'trans1-2',
-            date: new Date('2023-02-15'),
+            dateInscription: new Date('2023-02-15'),
             amount: 200,
             type: 'DEPOSIT',
             description: 'Monthly Deposit'
@@ -79,7 +79,7 @@ export const sanitizeNewAccounts_newAccounts: BankAccountsDictionary = {
         transactions: [
           {
             transactionId: 'trans2-1',
-            date: new Date('2023-03-10'),
+            dateInscription: new Date('2023-03-10'),
             amount: -50,
             type: 'WITHDRAWAL',
             description: 'Utility Bill'
@@ -94,7 +94,7 @@ export const sanitizeNewAccounts_newAccounts: BankAccountsDictionary = {
         transactions: [
           {
             transactionId: 'trans2-2',
-            date: new Date('2023-04-15'),
+            dateInscription: new Date('2023-04-15'),
             amount: 150,
             type: 'DEPOSIT',
             description: 'Paycheck'
@@ -115,7 +115,7 @@ export const sanitizeNewAccounts_transactionsGroups_account_123456789 : BankAcco
     transactions: [
       {
         transactionId: '1',
-        date: new Date(),
+        dateInscription: new Date(),
         amount: 1,
         type: 'debit',
         description: 'test'
@@ -130,7 +130,7 @@ export const sanitizeNewAccounts_transactionsGroups_account_123456789 : BankAcco
     transactions: [
       {
         transactionId: 'trans2-1',
-        date: new Date('2023-03-10'),
+        dateInscription: new Date('2023-03-10'),
         amount: -50,
         type: 'WITHDRAWAL',
         description: 'Utility Bill'
@@ -145,7 +145,7 @@ export const sanitizeNewAccounts_transactionsGroups_account_123456789 : BankAcco
     transactions: [
       {
         transactionId: 'trans2-2',
-        date: new Date('2023-04-15'),
+        dateInscription: new Date('2023-04-15'),
         amount: 150,
         type: 'DEPOSIT',
         description: 'Paycheck'
@@ -164,7 +164,7 @@ export const sanitizeNewAccounts_transactionsGroups_account_987654321 : BankAcco
     transactions: [
       {
         transactionId: 'trans1-1',
-        date: new Date('2023-01-10'),
+        dateInscription: new Date('2023-01-10'),
         amount: 100,
         type: 'DEPOSIT',
         description: 'Initial Deposit'
@@ -179,7 +179,7 @@ export const sanitizeNewAccounts_transactionsGroups_account_987654321 : BankAcco
     transactions: [
       {
         transactionId: 'trans1-2',
-        date: new Date('2023-02-15'),
+        dateInscription: new Date('2023-02-15'),
         amount: 200,
         type: 'DEPOSIT',
         description: 'Monthly Deposit'
@@ -202,7 +202,7 @@ export const sanitizeNewAccounts_accountsById_expected_data : BankAccountsDictio
         transactions: [
           {
             transactionId: 'trans1-1',
-            date: new Date('2023-01-10'),
+            dateInscription: new Date('2023-01-10'),
             amount: 100,
             type: 'DEPOSIT',
             description: 'Initial Deposit'
@@ -217,7 +217,7 @@ export const sanitizeNewAccounts_accountsById_expected_data : BankAccountsDictio
         transactions: [
           {
             transactionId: 'trans1-2',
-            date: new Date('2023-02-15'),
+            dateInscription: new Date('2023-02-15'),
             amount: 200,
             type: 'DEPOSIT',
             description: 'Monthly Deposit'
@@ -239,7 +239,7 @@ export const sanitizeNewAccounts_accountsById_expected_data : BankAccountsDictio
         transactions: [
           {
             transactionId: '1',
-            date: new Date(),
+            dateInscription: new Date(),
             amount: 1,
             type: 'debit',
             description: 'test'
@@ -254,7 +254,7 @@ export const sanitizeNewAccounts_accountsById_expected_data : BankAccountsDictio
         transactions: [
           {
             transactionId: 'trans2-1',
-            date: new Date('2023-03-10'),
+            dateInscription: new Date('2023-03-10'),
             amount: -50,
             type: 'WITHDRAWAL',
             description: 'Utility Bill'
@@ -269,7 +269,7 @@ export const sanitizeNewAccounts_accountsById_expected_data : BankAccountsDictio
         transactions: [
           {
             transactionId: 'trans2-2',
-            date: new Date('2023-04-15'),
+            dateInscription: new Date('2023-04-15'),
             amount: 150,
             type: 'DEPOSIT',
             description: 'Paycheck'

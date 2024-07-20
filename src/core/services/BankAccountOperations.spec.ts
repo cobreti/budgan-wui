@@ -40,21 +40,21 @@ describe('BankAccountOperations', () => {
                     transactions: [
                         {
                             transactionId: '1',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '2',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -75,21 +75,21 @@ describe('BankAccountOperations', () => {
                     transactions: [
                         {
                             transactionId: '1',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '4',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -118,21 +118,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '1',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '2',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -147,21 +147,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '5',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -184,21 +184,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '1',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '8',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '4',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -213,21 +213,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '7',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '9',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -257,21 +257,21 @@ describe('BankAccountOperations', () => {
                     transactions:[
                         {
                             transactionId: '1',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '2',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -292,21 +292,21 @@ describe('BankAccountOperations', () => {
                     transactions:[
                         {
                             transactionId: '1',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '4',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -335,21 +335,21 @@ describe('BankAccountOperations', () => {
                     transactions: [
                         {
                             transactionId: '1',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '2',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -374,7 +374,7 @@ describe('BankAccountOperations', () => {
                     transactions: [
                         {
                             transactionId: '2',
-                            date: new Date(),
+                            dateInscription: new Date(),
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -401,21 +401,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '1',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '2',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -430,21 +430,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '5',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -469,7 +469,7 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '2',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -484,14 +484,14 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -523,21 +523,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '1',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '2',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -552,21 +552,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '5',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -591,7 +591,7 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                date: new Date(),
+                                dateInscription: new Date(),
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'

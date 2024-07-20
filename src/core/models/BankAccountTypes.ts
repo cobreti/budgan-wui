@@ -9,14 +9,17 @@ export declare type TransactionIdsTable = {[key: string]: object};
 
 export type BankAccountTransaction = {
     transactionId: string;
-    date: Date;
+    dateInscription: Date;
+    dateTransaction?: Date;
     amount: number;
     type: string;
     description: string;
 }
 
 export enum InvalidTransactionReason {
+    // eslint-disable-next-line no-unused-vars
     unknown = 'unknown',
+    // eslint-disable-next-line no-unused-vars
     duplicate = 'duplicate',
 }
 
