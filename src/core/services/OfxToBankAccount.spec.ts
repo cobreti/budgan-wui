@@ -202,7 +202,7 @@ describe('OfxToBankAccount', () => {
 
       expect(result).toEqual({
         transactionId: 'id',
-        date: ofxTransaction.datePosted,
+        dateInscription: ofxTransaction.datePosted,
         amount: 100,
         type: 'type',
         description: 'name'
@@ -221,7 +221,7 @@ describe('OfxToBankAccount', () => {
 
       expect(result).toEqual({
         transactionId: 'id',
-        date: ofxTransaction.datePosted,
+        dateInscription: ofxTransaction.datePosted,
         amount: 100,
         type: 'type',
         description: ''
@@ -323,14 +323,14 @@ describe('OfxToBankAccount', () => {
             transactions: [
               {
                 transactionId: 'id1',
-                date: document.transactions[0].datePosted,
+                dateInscription: document.transactions[0].datePosted,
                 amount: 100,
                 type: 'type1',
                 description: 'name1'
               },
               {
                 transactionId: 'id2',
-                date: document.transactions[1].datePosted,
+                dateInscription: document.transactions[1].datePosted,
                 amount: 200,
                 type: 'type2',
                 description: 'name2'

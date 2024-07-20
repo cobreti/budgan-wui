@@ -86,7 +86,7 @@ export class OfxToBankAccount implements IOfxToBankAccount {
 
     return {
       transactionId: ofxTransaction.fitId,
-      date: ofxTransaction.datePosted,
+      dateInscription: ofxTransaction.datePosted,
       amount: ofxTransaction.amount,
       type: ofxTransaction.type,
       description: ofxTransaction.name || ''

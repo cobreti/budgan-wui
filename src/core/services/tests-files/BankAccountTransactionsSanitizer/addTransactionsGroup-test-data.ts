@@ -13,14 +13,14 @@ export const transactionsGroup_test1_success_input: BankAccountTransactionsGroup
   transactions: [
     {
       transactionId: '10',
-      date: new Date('2022-01-01'),
+      dateInscription: new Date('2022-01-01'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 1'
     },
     {
       transactionId: '11',
-      date: new Date('2022-01-02'),
+      dateInscription: new Date('2022-01-02'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 2'
@@ -42,7 +42,7 @@ export const transactionsGroups_test1_expected: BankAccountTransactionsGroup[] =
     transactions: [
       {
         transactionId: '10',
-        date: new Date('2022-01-01'),
+        dateInscription: new Date('2022-01-01'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 1'
@@ -50,7 +50,7 @@ export const transactionsGroups_test1_expected: BankAccountTransactionsGroup[] =
       {
         transactionId: '11',
 
-        date: new Date('2022-01-02'),
+        dateInscription: new Date('2022-01-02'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 2'
@@ -73,7 +73,7 @@ export const transactionsGroups_test2_existing_transactions : BankAccountTransac
     transactions: [
       {
         transactionId: '10',
-        date: new Date('2022-01-01'),
+        dateInscription: new Date('2022-01-01'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 1'
@@ -81,7 +81,7 @@ export const transactionsGroups_test2_existing_transactions : BankAccountTransac
       {
         transactionId: '11',
 
-        date: new Date('2022-01-02'),
+        dateInscription: new Date('2022-01-02'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 2'
@@ -104,35 +104,35 @@ export const transactionsGroup_test2_input: BankAccountTransactionsGroup = {
   transactions: [
     {
       transactionId: '10',
-      date: new Date('2022-01-01'),
+      dateInscription: new Date('2022-01-01'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 1'
     },
     {
       transactionId: '11',
-      date: new Date('2022-01-02'),
+      dateInscription: new Date('2022-01-02'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 2'
     },
     {
       transactionId: '12',
-      date: new Date('2022-01-03'),
+      dateInscription: new Date('2022-01-03'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 3'
     },
     {
       transactionId: '13',
-      date: new Date('2022-01-04'),
+      dateInscription: new Date('2022-01-04'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 4'
     },
     {
       transactionId: '14',
-      date: new Date('2022-01-05'),
+      dateInscription: new Date('2022-01-05'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 5'
@@ -150,7 +150,7 @@ export const transactionsGroup_test2_expected: BankAccountTransactionsGroup[] = 
     transactions: [
       {
         transactionId: '10',
-        date: new Date('2022-01-01'),
+        dateInscription: new Date('2022-01-01'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 1'
@@ -158,7 +158,7 @@ export const transactionsGroup_test2_expected: BankAccountTransactionsGroup[] = 
       {
         transactionId: '11',
 
-        date: new Date('2022-01-02'),
+        dateInscription: new Date('2022-01-02'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 2'
@@ -174,21 +174,21 @@ export const transactionsGroup_test2_expected: BankAccountTransactionsGroup[] = 
     transactions: [
       {
         transactionId: '12',
-        date: new Date('2022-01-03'),
+        dateInscription: new Date('2022-01-03'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 3'
       },
       {
         transactionId: '13',
-        date: new Date('2022-01-04'),
+        dateInscription: new Date('2022-01-04'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 4'
       },
       {
         transactionId: '14',
-        date: new Date('2022-01-05'),
+        dateInscription: new Date('2022-01-05'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 5'
@@ -197,7 +197,7 @@ export const transactionsGroup_test2_expected: BankAccountTransactionsGroup[] = 
     invalidTransactions: [
       {
         transactionId: '10',
-        date: new Date('2022-01-01'),
+        dateInscription: new Date('2022-01-01'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 1',
@@ -205,7 +205,7 @@ export const transactionsGroup_test2_expected: BankAccountTransactionsGroup[] = 
       },
       {
         transactionId: '11',
-        date: new Date('2022-01-02'),
+        dateInscription: new Date('2022-01-02'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 2',
@@ -236,7 +236,7 @@ export const transactionsGroups_test3_existing_transactions : BankAccountTransac
     transactions: [
       {
         transactionId: '10',
-        date: new Date('2022-01-01'),
+        dateInscription: new Date('2022-01-01'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 1'
@@ -244,7 +244,7 @@ export const transactionsGroups_test3_existing_transactions : BankAccountTransac
       {
         transactionId: '11',
 
-        date: new Date('2022-01-02'),
+        dateInscription: new Date('2022-01-02'),
         amount: 100,
         type: 'Deposit',
         description: 'Deposit 2'
@@ -262,7 +262,7 @@ export const transactionsGroups_test3_input : BankAccountTransactionsGroup = {
   transactions: [
     {
       transactionId: '12',
-      date: new Date('2022-01-01'),
+      dateInscription: new Date('2022-01-01'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 1'
@@ -270,7 +270,7 @@ export const transactionsGroups_test3_input : BankAccountTransactionsGroup = {
     {
       transactionId: '15',
 
-      date: new Date('2022-01-02'),
+      dateInscription: new Date('2022-01-02'),
       amount: 100,
       type: 'Deposit',
       description: 'Deposit 2'

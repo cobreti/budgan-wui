@@ -160,7 +160,7 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
                         transactions: transactionsGroup.transactions.map((transaction :BankAccountTransaction) => {
                             return {
                                 ...transaction,
-                                date: new Date(transaction.date)
+                                date: new Date(transaction.dateInscription)
                             };
                         })
                     };

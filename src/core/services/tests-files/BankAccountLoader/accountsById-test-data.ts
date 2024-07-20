@@ -15,14 +15,14 @@ export const accountsById_test_data: BankAccountsDictionary = {
         transactions: [
           {
             transactionId: 'trans123',
-            date: new Date('2023-01-15'),
+            dateInscription: new Date('2023-01-15'),
             amount: -100,
             type: 'WITHDRAWAL',
             description: 'Grocery Shopping'
           },
           {
             transactionId: 'trans124',
-            date: new Date('2023-01-20'),
+            dateInscription: new Date('2023-01-20'),
             amount: 2000,
             type: 'DEPOSIT',
             description: 'Paycheck'
@@ -44,14 +44,14 @@ export const accountsById_test_data: BankAccountsDictionary = {
         transactions: [
           {
             transactionId: 'trans223',
-            date: new Date('2023-02-10'),
+            dateInscription: new Date('2023-02-10'),
             amount: 500,
             type: 'DEPOSIT',
             description: 'Gift'
           },
           {
             transactionId: 'trans224',
-            date: new Date('2023-02-14'),
+            dateInscription: new Date('2023-02-14'),
             amount: -50,
             type: 'WITHDRAWAL',
             description: 'Valentine\'s Day Dinner',
@@ -60,7 +60,7 @@ export const accountsById_test_data: BankAccountsDictionary = {
         invalidTransactions: [
           {
             transactionId: 'trans224',
-            date: new Date('2023-02-14'),
+            dateInscription: new Date('2023-02-14'),
             amount: -50,
             type: 'WITHDRAWAL',
             description: 'Valentine\'s Day Dinner',

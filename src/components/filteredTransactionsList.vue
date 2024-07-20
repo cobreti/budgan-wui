@@ -13,7 +13,7 @@
     <div class="transaction" v-for="transaction in filteredTransactions.transactions" :key="transaction.transactionId">
       <div class="d-flex flex-row justify-start">
         <div class="date mr-4">
-          <span>{{transaction.date.toLocaleString()}}</span>
+          <span>{{ transaction.dateInscription.toLocaleString() }}</span>
         </div>
         <div class="type mr-4">
           <span>{{transaction.type}}</span>

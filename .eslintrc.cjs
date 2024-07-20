@@ -11,13 +11,7 @@ module.exports = {
   ],
   'rules': {
     "no-unused-parameter": "off",
-    "no-unused-vars": [
-      "error",
-      {
-        "ignoreRestSiblings": true,
-        "args": "none"
-      }
-    ],
+    "no-unused-vars": "off",
     "@typescript-eslint/no-unused-parameter": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
