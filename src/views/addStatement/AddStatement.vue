@@ -14,7 +14,7 @@
               v-model="ofxFileName"
               :disabled = "addStatementStore.loading"
               @update:modelValue="onFileNameUpdated"
-              accept=".ofx"
+              accept=".ofx, .csv"
               :multiple="true"
           ></v-file-input>
         </div>

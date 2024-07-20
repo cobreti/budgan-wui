@@ -5,6 +5,7 @@ import { ServicesTypes } from './types';
 import type { BankAccount, BankAccountsDictionary } from '@models/BankAccountTypes';
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
+import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
 
 
 export type BankAccountListById = {[id: string]: BankAccount[]};
@@ -19,7 +20,7 @@ export interface IBankAccountLoader {
     sanitize(accounts: BankAccountsDictionary) : void;
 
     get accountsById(): BankAccountsDictionary;
-};
+}
 
 
 export type BankAccountLoader_LoadingFileStarted = (filename: string) => void;
@@ -39,6 +40,7 @@ export class BankAccountLoader implements IBankAccountLoader {
 
     constructor(
         @inject(ServicesTypes.OfxToBankAccount) private ofxToBankAccount: IOfxToBankAccount,
+        @inject(ServicesTypes.CsvToBankAccount) private csvToBankAccount: ICsvToBankAccount,
         @inject(ServicesTypes.BankAccountOperations) private bankAccountOperations: IBankAccountOperations,
         @inject(ServicesTypes.BankAccountTransactionsSanitizerFactory) private bankAccountTransactionsSanitizerFactory: BankAccountTransactionsSanitizerFactory,
     ) {
@@ -54,7 +56,7 @@ export class BankAccountLoader implements IBankAccountLoader {
             this.loadingFileStarted && this.loadingFileStarted(file.name);
       
             try {
-                const account = await this.ofxToBankAccount.loadOfxFile(file);
+                const account = await this.loadFile(file);
                 if (account.transactionsGroups.length > 0) {
                     account.transactionsGroups[0].filename = file.name;
                 }
@@ -69,6 +71,19 @@ export class BankAccountLoader implements IBankAccountLoader {
             } catch (error) {
                 this.accountLoadError && this.accountLoadError(file.name, error);
             }
+        }
+    }
+
+    public async loadFile(file: File)  : Promise<BankAccount> {
+        const reOfx = /\.ofx$/i;
+        const reCsv = /\.csv$/i;
+
+        if (reOfx.test(file.name)) {
+            return await this.ofxToBankAccount.loadOfxFile(file);
+        } else if (reCsv.test(file.name)) {
+            return await this.csvToBankAccount.loadOfxFile(file);
+        } else {
+            throw new Error('Unsupported file type');
         }
     }
 
