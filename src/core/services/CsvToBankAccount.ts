@@ -4,9 +4,10 @@ import { inject, injectable } from 'inversify'
 import type { BankAccount } from '@models/BankAccountTypes'
 import { ServicesTypes } from '@services/types'
 import type { IReaderFactory } from '@services/FileReaderFactory'
+import { parse } from 'csv-parse/browser/esm';
 
 export interface ICsvToBankAccount {
-  loadOfxFile(file: File) : Promise<BankAccount>;
+  loadCsvFile(file: File) : Promise<BankAccount>;
 }
 
 @injectable()
@@ -18,7 +19,7 @@ export class CsvToBankAccount implements ICsvToBankAccount {
 
   }
 
-  loadOfxFile(file: File) : Promise<BankAccount> {
+  loadCsvFile(file: File) : Promise<BankAccount> {
     return new Promise((resolve, reject) => {
       const reader =  this.fileReaderFactory.createReader();
 
@@ -48,7 +49,29 @@ export class CsvToBankAccount implements ICsvToBankAccount {
 
   convertCsvToBankAccount(text: string) : BankAccount | undefined {
 
+    const parser = parse({
+      delimiter: ','
+    });
+
+    parser.on('readable', () => {
+      let record;
+      while ((record = parser.read()) !== null ) {
+        console.log(record);
+      }
+    });
+
     const lines = text.split(/\r?\n/);
+
+    lines.forEach((line) => {
+      const items = line.split(',');
+      if (items.length > 3) {
+        parser.write(line);
+        parser.write('\n');
+      }
+    });
+
+    parser.end();
+
     return undefined;
   }
 }

@@ -81,7 +81,7 @@ export class BankAccountLoader implements IBankAccountLoader {
         if (reOfx.test(file.name)) {
             return await this.ofxToBankAccount.loadOfxFile(file);
         } else if (reCsv.test(file.name)) {
-            return await this.csvToBankAccount.loadOfxFile(file);
+            return await this.csvToBankAccount.loadCsvFile(file);
         } else {
             throw new Error('Unsupported file type');
         }
