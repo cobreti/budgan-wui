@@ -25,6 +25,7 @@ import {
     sanitizeNewAccounts_newAccounts, sanitizeNewAccounts_transactionsGroups_account_123456789, sanitizeNewAccounts_transactionsGroups_account_987654321
 } from '@services/tests-files/BankAccountLoader/sanitize-test-data'
 import { accountsById_test_data } from '@services/tests-files/BankAccountLoader/accountsById-test-data'
+import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
 
 describe('BankAccountLoader', async () => {
 
@@ -33,6 +34,10 @@ describe('BankAccountLoader', async () => {
             return {} as BankAccount;
         }
     } as IOfxToBankAccount;
+
+    const csvToBankAccount: ICsvToBankAccount = {
+
+    } as ICsvToBankAccount;
 
     const bankAccountOperations : IBankAccountOperations = {
         getCombinedTransactionsGroup : (...accounts): BankAccountTransactionsGroup[] => {
@@ -52,7 +57,7 @@ describe('BankAccountLoader', async () => {
     let bankAccountLoader : BankAccountLoader = {} as BankAccountLoader;
 
     beforeEach( async() => {
-        bankAccountLoader = new BankAccountLoader(ofxToBankAccount, bankAccountOperations, bankAccountTransactionsSanitizerFactory);
+        bankAccountLoader = new BankAccountLoader(ofxToBankAccount, csvToBankAccount, bankAccountOperations, bankAccountTransactionsSanitizerFactory);
     });
 
     afterEach( async() => {
