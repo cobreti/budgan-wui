@@ -19,6 +19,12 @@
           required
           :rules = "accountNameRules"
           v-model="accountName"></v-text-field>
+        <v-select
+          required
+          label="Account Type"
+          :items="accountTypes"
+          :rules = "accountTypeRule"
+          v-model="accountType"></v-select>
         <v-btn
           type="submit"
           @click="createAccount"
@@ -50,7 +56,9 @@
 
   const accountName = defineModel<string>('accountName', {required: true});
   const accountNumber = defineModel<string>('accountNumber', {required: true});
+  const accountType = defineModel<string>('accountType', {required: true});
   const formValid = defineModel<boolean>('formValid');
+  const accountTypes = ['Checking', 'Savings', 'Credit Card'];
 
   const accountNameRules = [
     (v: string) => {
@@ -72,11 +80,19 @@
     },
   ]
 
+  const accountTypeRule = [
+    (v: string) => {
+      if (!v) return 'Account type is required';
+
+      return true;
+    }
+  ]
+
   async function createAccount() {
     const bankAccount : BankAccount = {
       name: accountName.value,
       accountId: accountNumber.value,
-      accountType: "",
+      accountType: accountType.value,
       transactionsGroups: []
     };
 
