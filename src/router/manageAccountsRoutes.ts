@@ -2,7 +2,7 @@
 export const manageAccountsRoutes = [
   {
     path: '/accounts',
-    name: 'addStatement',
+    name: 'accounts',
     component: () => import('@views/accounts/manage-accounts.vue'),
     meta: { transition: 'slide-right' }
   },
