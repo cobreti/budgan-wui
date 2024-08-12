@@ -5,12 +5,13 @@
         variant="plain"
         elevation="0"
         border="false"
+        role="link"
         :to="{path: '/account/' + props.account.accountId}"
         >
         {{props.account.name}}
       </v-btn>
     </v-card-title>
-    <v-card-text class="cursor-default">
+    <v-card-text class="cursor-default ml-6">
       <div class="d-flex flex-row">
         <div class="info-span">
             {{props.account.accountId}}
