@@ -13,6 +13,8 @@
 
   .transaction:nth-child(odd) {
     background-color: rgba(var(--v-theme-on-surface-variant));
+    padding-bottom: 2px;
+    padding-top: 2px;
   }
 </style>
 

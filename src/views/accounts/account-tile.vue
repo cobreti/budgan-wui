@@ -2,10 +2,8 @@
   <v-card class="ma-10">
     <v-card-title class="cursor-pointer">
       <v-btn
+        class="account-name"
         variant="plain"
-        elevation="0"
-        border="false"
-        role="link"
         :to="{path: '/account/' + props.account.accountId}"
         >
         {{props.account.name}}
@@ -23,6 +21,12 @@
 </template>
 
 <style scoped>
+
+  .account-name {
+    font-size: 1em;
+    font-weight: bold;
+  }
+
   .cursor-default {
     cursor: default;
   }
