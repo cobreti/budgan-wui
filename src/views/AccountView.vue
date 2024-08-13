@@ -1,22 +1,37 @@
 <template>
   <div class="d-flex flex-column align-content-start h-100">
-    <v-card class="account-header mt-2 ml-2 mr-2 mb-1 pa-2">
-      <div>
-        <span class="font-weight-bold">account : </span>
-        <span class="pl-2">{{accountId}}</span>
+    <v-toolbar>
+      <div class="dflex w-100 flex-row flex-content justify-space-between">
+        <div class="ml-4 mr-4">
+          <a @click="$router.go(-1)">
+            <v-icon
+              size="Large"
+              icon="mdi-chevron-left"></v-icon>
+          </a>
+        </div>
+        <div class="mr-4 ml-4">
+          <span class="font-weight-bold">account : </span>
+          <span class="pl-2">{{accountId}}</span>
+        </div>
       </div>
-    </v-card>
-
-    <v-card class="transactions-list-container ma-2 pa-2">
+    </v-toolbar>
+    <div class="transactions-list-container ma-2 pa-2">
       <div class="transactions-list">
         <account-view-transaction-list></account-view-transaction-list>
       </div>
-    </v-card>
+    </div>
   </div>
 </template>
 
 
 <style scoped>
+
+  .flex-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 
   .filter-panel {
     display: block;
