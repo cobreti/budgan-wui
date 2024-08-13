@@ -1,25 +1,25 @@
 <template>
-  <v-toolbar>
-    <div class="dflex w-100 flex-row flex-content justify-space-between">
-      <div class="ml-4 mr-4">
-        <a @click="$router.go(-1)">
-          <v-icon
-            size="Large"
-            icon="mdi-chevron-left"></v-icon>
-        </a>
-      </div>
-      <div class="mr-4 ml-4">
-        <span class="font-weight-bold">account : </span>
-        <span class="pl-2">{{accountId}}</span>
-      </div>
-    </div>
-  </v-toolbar>
   <div class="d-flex flex-column align-content-start h-100">
-    <v-card class="transactions-list-container ma-2 pa-2">
+    <v-toolbar>
+      <div class="dflex w-100 flex-row flex-content justify-space-between">
+        <div class="ml-4 mr-4">
+          <a @click="$router.go(-1)">
+            <v-icon
+              size="Large"
+              icon="mdi-chevron-left"></v-icon>
+          </a>
+        </div>
+        <div class="mr-4 ml-4">
+          <span class="font-weight-bold">account : </span>
+          <span class="pl-2">{{accountId}}</span>
+        </div>
+      </div>
+    </v-toolbar>
+    <div class="transactions-list-container ma-2 pa-2">
       <div class="transactions-list">
         <account-view-transaction-list></account-view-transaction-list>
       </div>
-    </v-card>
+    </div>
   </div>
 </template>
 
