@@ -39,5 +39,33 @@
 
   import AccountViewTransactionList from '@components/accountView/AccountViewTransactionList.vue'
   import AccountHeader from '@views/account/account-header.vue'
+  import { onBeforeRouteLeave, useRoute } from 'vue-router'
+  import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+  import { useAccountViewStore } from '@/stores/accountView-store'
+  import { computed, watchEffect } from 'vue'
+
+  // const router = useRouter();
+  const bankAccountStore = useBankAccountsStore();
+  const accountViewStore = useAccountViewStore();
+
+  const route = useRoute();
+
+  const accountId = computed(() => {
+    return route.params.id as string;
+  });
+
+  const account = computed(() => {
+    return bankAccountStore.getAccountById(accountId.value);
+  });
+
+  watchEffect(() => {
+    accountViewStore.addBankAccount(account.value);
+  });
+
+  onBeforeRouteLeave((to, from, next) => {
+    accountViewStore.clearAccountView();
+    next();
+  });
+
 </script>
 ```

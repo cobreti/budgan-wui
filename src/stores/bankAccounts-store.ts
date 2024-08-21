@@ -18,7 +18,7 @@ export type BankAccountsStore = {
     getAccountById: (accountId: string) => BankAccount;
     getAccountByNameIfExists: (accountName: string) => BankAccount | undefined;
     getAccountByIdIfExist: (accountId: string) => BankAccount | undefined;
-    addWithBankAccount: (account: BankAccount) => void;
+    addWithBankAccount: (account: BankAccount, accountId : string | undefined) => void;
     hasAccounts: ComputedRef<boolean>;
     clear: () => void;
     getTransactionsIdsForAccountId: (accountId: string) => TransactionIdsTable;
@@ -88,13 +88,14 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
         } as BankAccountTransactionsGroup;
     }
 
-    function addWithBankAccount(account: BankAccount) {
+    function addWithBankAccount(account: BankAccount, accountId : string | undefined = undefined) {
 
-        const existingAccount = getAccountById(account.accountId);
-        const accountTransactionsIds = transactionsIdsIndex.value[account.accountId] || {};
+        const targetAccountId = accountId || account.accountId;
+        const existingAccount = getAccountById(targetAccountId);
+        const accountTransactionsIds = transactionsIdsIndex.value[targetAccountId] || {};
 
         if (!existingAccount) {
-            accounts.value[account.accountId] = account;
+            accounts.value[targetAccountId] = account;
         }
         else {
             const sanitizedTransactionsGroup = account.transactionsGroups.map((transactionsGroup) => {
@@ -109,7 +110,7 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
 
         const ids = buildTransactionIdsForAccount(account);
 
-        transactionsIdsIndex.value[account.accountId] = {...accountTransactionsIds, ...ids};
+        transactionsIdsIndex.value[targetAccountId] = {...accountTransactionsIds, ...ids};
     }
 
     function buildTransactionIdsForAccount(account: BankAccount) : TransactionIdsTable {

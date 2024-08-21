@@ -69,10 +69,16 @@
   import { container } from '@/core/setupInversify'
   import type { IBankAccountLoader } from '@services/BankAccountLoader'
   import { ServicesTypes } from '@services/types'
+  import { useRoute } from 'vue-router'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
   const bankAccountStore = useBankAccountsStore();
+  const route = useRoute();
+
+  const targetAccountId = computed(() => {
+    return route.params.id as string;
+  });
 
   const accountsIds = computed(() => {
     return addStatementStore.accountsIds;
@@ -123,7 +129,7 @@
     const accounts = addStatementStore.accounts;
 
     Object.values(accounts).forEach((account) => {
-      bankAccountStore.addWithBankAccount(account);
+      bankAccountStore.addWithBankAccount(account, targetAccountId.value);
     });
 
     clear();
