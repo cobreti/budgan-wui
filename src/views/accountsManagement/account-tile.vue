@@ -4,7 +4,7 @@
       <v-btn
         class="account-name"
         variant="plain"
-        :to="{path: '/account/' + props.account.accountId}"
+        :to="{path: '/account/' + props.account.accountId + '/transactions'}"
         >
         {{props.account.name}}
       </v-btn>

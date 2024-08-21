@@ -9,17 +9,24 @@
               icon="mdi-chevron-left"></v-icon>
           </a>
         </div>
+        <div>
+          <v-btn
+            flat
+            :to="{path: 'add-statement', replace: true}"
+            @click="addStatement">
+            <v-icon
+              size="24"
+              icon="mdi-file-upload-outline"></v-icon>
+            add statement
+          </v-btn>
+        </div>
         <div class="mr-4 ml-4">
           <span class="font-weight-bold">account : </span>
           <span class="pl-2">{{accountId}}</span>
         </div>
       </div>
     </v-toolbar>
-    <div class="transactions-list-container ma-2 pa-2">
-      <div class="transactions-list">
-        <account-view-transaction-list></account-view-transaction-list>
-      </div>
-    </div>
+    <router-view name="accountroutes"></router-view>
   </div>
 </template>
 
@@ -49,30 +56,16 @@
     /* min-height: 3em; */
   }
 
-  .transactions-list-container {
-    flex: 1 1 0;
-    display: block;
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-  }
-
-  .transactions-list {
-    display: block;
-    position: relative;
-    overflow: auto;
-    height: 100%;
-  }
 </style>
 
 
 <script setup lang="ts">
-  import {onBeforeRouteLeave, useRoute} from 'vue-router';
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
   import {computed, watchEffect} from 'vue';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
   import {useAccountViewStore} from '@/stores/accountView-store';
-  import AccountViewTransactionList from '@components/accountView/AccountViewTransactionList.vue';
 
+  const router = useRouter();
   const bankAccountStore = useBankAccountsStore();
   const accountViewStore = useAccountViewStore();
 
@@ -94,5 +87,9 @@
     accountViewStore.clearAccountView();
     next();
   });
+
+  function addStatement() {
+
+  }
 
 </script>

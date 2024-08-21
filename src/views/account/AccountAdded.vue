@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { useAddStatementStore } from './store/add-statement-store'
+  import { useAddStatementStore } from '../../stores/add-statement-store'
 
   const props = defineProps<{
     accountId: string

@@ -18,7 +18,7 @@
 
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import { computed } from 'vue'
-  import AccountTile from '@views/accounts/account-tile.vue'
+  import AccountTile from '@views/accountsManagement/account-tile.vue'
 
   const bankAccountStore = useBankAccountsStore();
 

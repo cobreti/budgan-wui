@@ -1,4 +1,4 @@
-import { useAddStatementStore } from '@/views/addStatement/store/add-statement-store'
+import { useAddStatementStore } from '@/stores/add-statement-store'
 
 export const addStatementRoutes = [
   {

@@ -1,14 +1,25 @@
 <template>
-  <div class="page-container pa-2">
-    <div class="d-flex flex-column align-content-start h-100">
-      <v-card class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2" :class="{'d-none': statementPresent}">
-        <div class="d-flex flex-row">
-          <div class="d-flex flex-column justify-center mr-4 mb-4">
-            <label for="ofx-file-input">
-              OFX file
-            </label>
-          </div>
-          <v-file-input
+  <div>
+    <account-header>
+      <v-btn
+        flat
+        :to="{path: 'transactions', replace: true}">
+<!--        <v-icon-->
+<!--          size="24"-->
+<!--          icon="mdi-file-upload-outline"></v-icon>-->
+        transactions
+      </v-btn>
+    </account-header>
+    <div class="page-container pa-2">
+      <div class="d-flex flex-column align-content-start h-100">
+        <v-card class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2" :class="{'d-none': statementPresent}">
+          <div class="d-flex flex-row">
+            <div class="d-flex flex-column justify-center mr-4 mb-4">
+              <label for="ofx-file-input">
+                OFX file
+              </label>
+            </div>
+            <v-file-input
               id="ofx-file-input"
               class=""
               v-model="ofxFileName"
@@ -16,26 +27,27 @@
               @update:modelValue="onFileNameUpdated"
               accept=".ofx"
               :multiple="true"
-          ></v-file-input>
-        </div>
-      </v-card>
-      <v-card class="action-card" v-show="statementPresent">
-        <div class="d-flex flex-column align-content-center ma-5">
-          <v-expansion-panels class="elevation-0">
-            <account-added v-for="id in accountsIds" :key="id" :accountId="id"></account-added>
-          </v-expansion-panels>
-        </div>
-        <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
-          <v-btn @click="onAdd">Add</v-btn>
-          <v-btn @click="onDiscard()">Discard</v-btn>
-        </v-card-actions>
-      </v-card>
+            ></v-file-input>
+          </div>
+        </v-card>
+        <v-card class="action-card" v-show="statementPresent">
+          <div class="d-flex flex-column align-content-center ma-5">
+            <v-expansion-panels class="elevation-0">
+              <account-added v-for="id in accountsIds" :key="id" :accountId="id"></account-added>
+            </v-expansion-panels>
+          </div>
+          <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
+            <v-btn @click="onAdd">Add</v-btn>
+            <v-btn @click="onDiscard()">Discard</v-btn>
+          </v-card-actions>
+        </v-card>
+      </div>
     </div>
-  </div>
 
+  </div>
 </template>
 
-<style>
+<style scoped>
   .page-container {
     height: 100%;
   }
@@ -49,13 +61,14 @@
 </style>
 
 <script setup lang="ts">
-  import {useAddStatementStore} from '../../stores/add-statement-store';
-  import {computed, defineModel} from 'vue';
-  import { container } from '@/core/setupInversify'
-  import { ServicesTypes } from '@services/types'
+  import AccountHeader from '@views/account/account-header.vue'
   import AccountAdded from '@views/account/AccountAdded.vue'
+  import { computed, defineModel } from 'vue'
+  import { useAddStatementStore } from '@/stores/add-statement-store'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
-  import { type IBankAccountLoader } from '@/core/services/BankAccountLoader';
+  import { container } from '@/core/setupInversify'
+  import type { IBankAccountLoader } from '@services/BankAccountLoader'
+  import { ServicesTypes } from '@services/types'
 
   const ofxFileName = defineModel<File[]>();
   const addStatementStore = useAddStatementStore();
@@ -115,6 +128,4 @@
 
     clear();
   }
-
 </script>
-
