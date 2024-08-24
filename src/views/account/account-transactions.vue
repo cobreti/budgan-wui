@@ -15,10 +15,17 @@
         <account-view-transaction-list :transactions=transactions></account-view-transaction-list>
       </div>
     </div>
+    <v-footer class="footer" elevation="2">
+      {{ transactions.length }} transactions
+    </v-footer>
   </div>
 </template>
 
 <style scoped>
+  .footer {
+    max-height: 2em;
+  }
+
   .transactions-list-container {
     flex: 1 1 0;
     display: block;
@@ -30,7 +37,7 @@
     position: relative;
     overflow: auto;
     height: 100%;
-    padding-bottom: 2em;
+    padding-bottom: 1em;
   }
 </style>
 
