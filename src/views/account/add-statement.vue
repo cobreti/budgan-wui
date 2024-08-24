@@ -1,6 +1,6 @@
 <template>
   <div>
-    <account-header>
+    <account-header :bank-account="targetAccount">
       <v-btn
         flat
         :to="{path: 'transactions', replace: true}">
@@ -83,6 +83,11 @@
   const accountsIds = computed(() => {
     return addStatementStore.accountsIds;
   });
+
+  const targetAccount = computed(() => {
+    return bankAccountStore.getAccountById(targetAccountId.value);
+  });
+
 
   const statementPresent = computed(() => {
     return accountsIds.value.length > 0;

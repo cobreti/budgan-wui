@@ -1,29 +1,20 @@
 <template>
     <v-toolbar>
       <div class="dflex w-100 flex-row flex-content justify-space-between">
-<!--        <div class="ml-4 mr-4">-->
-<!--        </div>-->
-<!--        <div class="ml-4 mr-4">-->
-<!--          <a @click="$router.go(-1)">-->
-<!--            <v-icon-->
-<!--              size="Large"-->
-<!--              icon="mdi-chevron-left"></v-icon>-->
-<!--          </a>-->
-<!--        </div>-->
-<!--        <div>-->
-<!--          <v-btn-->
-<!--            flat-->
-<!--            :to="{path: 'add-statement', replace: true}"-->
-<!--            @click="addStatement">-->
-<!--            <v-icon-->
-<!--              size="24"-->
-<!--              icon="mdi-file-upload-outline"></v-icon>-->
-<!--            add statement-->
-<!--          </v-btn>-->
-<!--        </div>-->
-        <div class="mr-4 ml-4">
-          <span class="font-weight-bold">account : </span>
-          <span class="pl-2">{{accountId}}</span>
+        <div class="mr-4 ml-4 d-flex flex-row">
+          <div class="header-title">
+            <div>
+              account
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="account-name">
+              {{bankAccount.name}}
+            </div>
+            <div class="account-id">
+              ( {{ bankAccount.accountId }} )
+            </div>
+          </div>
         </div>
         <div class="mr-4 ml-4">
           <slot />
@@ -40,15 +31,33 @@
     align-items: center;
     justify-content: center;
   }
+
+  .header-title {
+    cursor: default;
+    height: 100%;
+    display: contents;
+
+    > div {
+      font-weight: bold;
+      align-content: center;
+      margin-right: 1em;
+    }
+  }
+
+  .account-name {
+    font-size: medium;
+  }
+
+  .account-id {
+    font-size: smaller;
+  }
 </style>
 
 <script setup lang="ts">
-  import { useRoute } from 'vue-router'
-  import { computed } from 'vue'
+  import type { BankAccount } from '@models/BankAccountTypes'
 
-  const route = useRoute();
+  defineProps<{
+    bankAccount: BankAccount;
+  }>();
 
-  const accountId = computed(() => {
-    return route.params.id as string;
-  });
 </script>

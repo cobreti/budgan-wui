@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column align-content-start h-100">
-    <account-header>
+    <account-header :bank-account="account">
         <v-btn
           flat
           :to="{path: 'add-statement', replace: true}">
