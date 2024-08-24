@@ -18,7 +18,7 @@ export type BankAccountsStore = {
     getAccountById: (accountId: string) => BankAccount;
     getAccountByNameIfExists: (accountName: string) => BankAccount | undefined;
     getAccountByIdIfExist: (accountId: string) => BankAccount | undefined;
-    addWithBankAccount: (account: BankAccount, accountId : string | undefined) => void;
+    addWithBankAccount: (account: BankAccount, accountId? : string) => void;
     hasAccounts: ComputedRef<boolean>;
     clear: () => void;
     getTransactionsIdsForAccountId: (accountId: string) => TransactionIdsTable;
@@ -88,7 +88,7 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>('bank
         } as BankAccountTransactionsGroup;
     }
 
-    function addWithBankAccount(account: BankAccount, accountId : string | undefined = undefined) {
+    function addWithBankAccount(account: BankAccount, accountId? : string) {
 
         const targetAccountId = accountId || account.accountId;
         const existingAccount = getAccountById(targetAccountId);

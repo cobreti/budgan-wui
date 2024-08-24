@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <account-view-transaction class="transaction" v-for="transaction in transactions" :key="transaction.transactionId" :transaction="transaction"></account-view-transaction>
+    <account-view-transaction-item class="transaction" v-for="transaction in transactions" :key="transaction.transactionId" :transaction="transaction">
+    </account-view-transaction-item>
   </div>
 </template>
 
@@ -20,14 +21,13 @@
 
 <script setup lang="ts">
   import 'vuetify/styles'
-  import AccountViewTransaction from '@components/accountView/AccountViewTransaction.vue';
-  import {useAccountViewStore} from '@/stores/accountView-store';
-  import {computed} from 'vue';
+  import type { AccountViewTransaction } from '@/stores/accountView-store'
+  import AccountViewTransactionItem from '@components/accountView/AccountViewTransactionItem.vue'
 
-  const accountViewStore = useAccountViewStore();
+  const props = defineProps<{
+    transactions: AccountViewTransaction[]
+  }>();
 
-  const transactions = computed(() => {
-    return accountViewStore.accountView.transactions;
-  });
+  console.log('transactions', props.transactions.values);
 
 </script>

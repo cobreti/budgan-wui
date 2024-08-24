@@ -40,32 +40,15 @@
     justify-content: center;
   }
 
-  .filter-panel {
-    display: block;
-    position: relative;
-    height: 50%;
-  }
-
-  .drop-down-icon {
-    font-size: 28pt
-  }
-
-  .account-header {
-    display: block;
-    position: relative;
-    /* min-height: 3em; */
-  }
-
 </style>
 
 
 <script setup lang="ts">
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
   import {computed, watchEffect} from 'vue';
   import {useBankAccountsStore} from '@/stores/bankAccounts-store';
   import {useAccountViewStore} from '@/stores/accountView-store';
 
-  const router = useRouter();
   const bankAccountStore = useBankAccountsStore();
   const accountViewStore = useAccountViewStore();
 

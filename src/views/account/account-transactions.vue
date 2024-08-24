@@ -1,5 +1,5 @@
 <template>
-  <div lass="d-flex flex-column align-content-start h-100">
+  <div class="d-flex flex-column align-content-start h-100">
     <account-header>
         <v-btn
           flat
@@ -12,7 +12,7 @@
     </account-header>
     <div class="transactions-list-container ma-2 pa-2">
       <div class="transactions-list">
-        <account-view-transaction-list></account-view-transaction-list>
+        <account-view-transaction-list :transactions=transactions></account-view-transaction-list>
       </div>
     </div>
   </div>
@@ -22,9 +22,7 @@
   .transactions-list-container {
     flex: 1 1 0;
     display: block;
-    position: relative;
     overflow: hidden;
-    height: 100%;
   }
 
   .transactions-list {
@@ -32,6 +30,7 @@
     position: relative;
     overflow: auto;
     height: 100%;
+    padding-bottom: 2em;
   }
 </style>
 
@@ -58,6 +57,10 @@
     return bankAccountStore.getAccountById(accountId.value);
   });
 
+  const transactions = computed(() => {
+    return accountViewStore.accountView.transactions;
+  });
+
   watchEffect(() => {
     accountViewStore.addBankAccount(account.value);
   });
@@ -68,4 +71,3 @@
   });
 
 </script>
-```
