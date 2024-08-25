@@ -1,35 +1,33 @@
 <template>
-<!--  <div class="w-100">-->
-    <v-expansion-panel>
-      <v-expansion-panel-title>
-        {{accountId}}
-      </v-expansion-panel-title>
-      <v-expansion-panel-text>
-        <div class="">
-          <div class="d-flex flex-row flex-wrap align-content-space-evenly">
-            <v-card class="trans-group" v-for="group in transactionsGroups" :key="group.id">
-              <div class="line-content">
-                <span class="title">Filename :</span>
-                <span class="content">{{group.filename}}</span>
-              </div>
-              <div class="line-content">
-                <span class="title">Date :</span>
-                <span class="content">{{group.dateStart.toDateString()}} - {{group.dateEnd.toDateString()}}</span>
-              </div>
-              <div class="line-content">
-                <span class="title">transactions count :</span>
-                <span class="content">{{group.transactions.length}}</span>
-              </div>
-              <div class="line-content" v-if="group.invalidTransactions != undefined && group.invalidTransactions.length > 0">
-                <span class="title">ignored transactions :</span>
-                <span class="content">{{group.invalidTransactions.length}}</span>
-              </div>
-            </v-card>
-          </div>
+  <v-expansion-panel>
+    <v-expansion-panel-title>
+      {{accountId}}
+    </v-expansion-panel-title>
+    <v-expansion-panel-text>
+      <div class="">
+        <div class="d-flex flex-row flex-wrap align-content-space-evenly">
+          <v-card class="trans-group" v-for="group in transactionsGroups" :key="group.id">
+            <div class="line-content">
+              <span class="title">Filename :</span>
+              <span class="content">{{group.filename}}</span>
+            </div>
+            <div class="line-content">
+              <span class="title">Date :</span>
+              <span class="content">{{group.dateStart.toDateString()}} - {{group.dateEnd.toDateString()}}</span>
+            </div>
+            <div class="line-content">
+              <span class="title">transactions count :</span>
+              <span class="content">{{group.transactions.length}}</span>
+            </div>
+            <div class="line-content" v-if="group.invalidTransactions != undefined && group.invalidTransactions.length > 0">
+              <span class="title">ignored transactions :</span>
+              <span class="content">{{group.invalidTransactions.length}}</span>
+            </div>
+          </v-card>
         </div>
-      </v-expansion-panel-text>
-    </v-expansion-panel>
-<!--  </div>-->
+      </div>
+    </v-expansion-panel-text>
+  </v-expansion-panel>
 </template>
 
 <style scoped>
