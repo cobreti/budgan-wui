@@ -10,15 +10,15 @@
     <div class="ma-5 form">
       <v-form fast-fail @submit.prevent v-model="formValid">
         <v-text-field
-          label="Account Number"
-          required
-          :rules = "accountNumberRules"
-          v-model="accountNumber"></v-text-field>
-        <v-text-field
           label="Account Name"
           required
           :rules = "accountNameRules"
           v-model="accountName"></v-text-field>
+        <v-text-field
+          label="Account Number"
+          required
+          :rules = "accountNumberRules"
+          v-model="accountNumber"></v-text-field>
         <v-select
           required
           label="Account Type"
@@ -51,6 +51,7 @@
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import type { BankAccount } from '@models/BankAccountTypes'
   import router from '@/router'
+  import { computed } from 'vue'
 
   const bankAccountStore = useBankAccountsStore();
 
@@ -60,9 +61,15 @@
   const formValid = defineModel<boolean>('formValid');
   const accountTypes = ['Checking', 'Savings', 'Credit Card'];
 
+  const accountNames = computed(() => {
+    return Object.values(bankAccountStore.accounts).map(account => account.name);
+  })
+
   const accountNameRules = [
     (v: string) => {
       if (!v) return 'Account name is required';
+
+      if (accountNames.value.includes(v)) return 'Account name already exists';
 
       return true;
     },
