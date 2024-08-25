@@ -20,3 +20,5 @@ export type CSVFileSettings = {
   columns: CSVColumns[];
 };
 
+
+export type NamedCSVFileSettings = {[name: string]: CSVFileSettings};
