@@ -33,7 +33,7 @@
         <v-card class="action-card" v-show="statementPresent">
           <div class="d-flex flex-column align-content-center ma-5">
             <v-expansion-panels class="elevation-0">
-              <account-added v-for="id in accountsIds" :key="id" :accountId="id"></account-added>
+              <bdg-account-added v-for="id in accountsIds" :key="id" :accountId="id"></bdg-account-added>
             </v-expansion-panels>
           </div>
           <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
   import AccountHeader from '@views/account/BdgAccountHeader.vue'
-  import AccountAdded from '@views/account/BdgAccountAdded.vue'
+  import BdgAccountAdded from '@views/account/BdgAccountAdded.vue'
   import { computed, defineModel } from 'vue'
   import { useAddStatementStore } from '@/stores/add-statement-store'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
