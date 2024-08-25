@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@views/BdgHomeView.vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 import { addStatementRoutes } from '@/router/addStatementRoutes'
 import { accountsManagementRoutes } from '@/router/accountsManagementRoutes'
@@ -22,12 +22,12 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('@views/BdgAboutView.vue')
     },
     {
       path: '/save',
       name: 'save',
-      component: () => import('../views/ExportAccountData.vue'),
+      component: () => import('@views/BdgExportAccountData.vue'),
       beforeEnter: (to, from, next) => {
         const bankAccountsStore = useBankAccountsStore()
 
@@ -41,12 +41,12 @@ const router = createRouter({
     {
       path: '/open',
       name: 'open',
-      component: () => import('../views/ImportAccountData.vue')
+      component: () => import('@views/BdgImportAccountData.vue')
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('@views/settings/SettingsPage.vue')
+      component: () => import('@views/settings/BdgSettingsPage.vue')
     }
   ]
 })

@@ -39,29 +39,14 @@
   .page-container {
     height: 100%;
   }
-
-  .action-card {
-    flex: 1 1 0;
-    display: block;
-    position: relative;
-    min-height: 5em;
-    max-height: 5em;
-  }
-
-  .file-input-card {
-    flex: 1 1 0;
-    display: block;
-    position: relative;
-    min-height: 10em;
-  }
 </style>
 
 <script setup lang="ts">
   import { IdentityFilter } from '@/core/filters/IdentityFilter'
-  import { useAddStatementStore } from '../../stores/add-statement-store'
+  import { useAddStatementStore } from '@/stores/add-statement-store'
   import { computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import FilteredTransactionsList from '@components/filteredTransactionsList.vue'
+  import FilteredTransactionsList from '@components/BdgFilteredTransactionsList.vue'
 import type { BankAccount } from '@/core/models/BankAccountTypes'
 
   const route = useRoute();

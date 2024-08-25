@@ -3,12 +3,12 @@ export const accountsManagementRoutes = [
   {
     path: '/accounts',
     name: 'accounts',
-    component: () => import('@views/accountsManagement/manage-accounts.vue'),
+    component: () => import('@views/accountsManagement/BdgManageAccounts.vue'),
     meta: { transition: 'slide-right' }
   },
   {
     path: '/accounts/new',
     name: 'newAccount',
-    component: () => import('@views/accountsManagement/new-account.vue'),
+    component: () => import('@views/accountsManagement/BdgNewAccount.vue'),
   }
 ]

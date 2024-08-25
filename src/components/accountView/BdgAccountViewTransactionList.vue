@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <account-view-transaction-item class="transaction" v-for="transaction in transactions" :key="transaction.transactionId" :transaction="transaction">
-    </account-view-transaction-item>
+    <bdg-account-view-transaction-item class="transaction" v-for="transaction in transactions" :key="transaction.transactionId" :transaction="transaction">
+    </bdg-account-view-transaction-item>
   </div>
 </template>
 
@@ -22,7 +22,7 @@
 <script setup lang="ts">
   import 'vuetify/styles'
   import type { AccountViewTransaction } from '@/stores/accountView-store'
-  import AccountViewTransactionItem from '@components/accountView/AccountViewTransactionItem.vue'
+  import BdgAccountViewTransactionItem from '@components/accountView/BdgAccountViewTransactionItem.vue'
 
   const props = defineProps<{
     transactions: AccountViewTransaction[]

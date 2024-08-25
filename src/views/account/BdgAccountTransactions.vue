@@ -43,8 +43,8 @@
 
 <script setup lang="ts">
 
-  import AccountViewTransactionList from '@components/accountView/AccountViewTransactionList.vue'
-  import AccountHeader from '@views/account/account-header.vue'
+  import AccountViewTransactionList from '@components/accountView/BdgAccountViewTransactionList.vue'
+  import AccountHeader from '@views/account/BdgAccountHeader.vue'
   import { onBeforeRouteLeave, useRoute } from 'vue-router'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import { useAccountViewStore } from '@/stores/accountView-store'

@@ -4,15 +4,15 @@
       <div class="d-flex flex-row mb-2">
         <v-text-field class="filename-input" label="Name" v-model="filename"
           :rules="[
-            v => !!v || 'Field is required',
-            v => /^[\w-]+$/.test(v) || 'Name must only contain alphabets, numeric, _ and -',
-            v => /^[a-zA-Z].*$/.test(v) || 'Name must start with a letter'
+            (v: string) => !!v || 'Field is required',
+            (v: string) => /^[\w-]+$/.test(v) || 'Name must only contain alphabets, numeric, _ and -',
+            (v: string) => /^[a-zA-Z].*$/.test(v) || 'Name must start with a letter'
           ]"
           ></v-text-field>
       </div>
       <div class="ml-2 mt-4">
         <div class="mb-4 font-weight-black">Accounts</div>
-        <accounts-selector class="ml-2" v-model:selected-accounts="selection"></accounts-selector>
+        <bdg-accounts-selector class="ml-2" v-model:selected-accounts="selection"></bdg-accounts-selector>
       </div>
       <div class="d-flex flex-row justify-center">
         <v-btn
@@ -33,7 +33,7 @@
 <script setup lang="ts">
 
 import { computed, ref, watchEffect } from 'vue'
-  import AccountsSelector from '@components/accountsSelector.vue'
+  import BdgAccountsSelector from '@components/BdgAccountsSelector.vue'
   import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import { useExportAccountsStore } from '@/stores/exportAccounts-store'

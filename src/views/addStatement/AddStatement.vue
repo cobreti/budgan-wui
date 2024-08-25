@@ -49,11 +49,11 @@
 </style>
 
 <script setup lang="ts">
-  import {useAddStatementStore} from '../../stores/add-statement-store';
+  import {useAddStatementStore} from '@/stores/add-statement-store';
   import {computed, defineModel} from 'vue';
   import { container } from '@/core/setupInversify'
   import { ServicesTypes } from '@services/types'
-  import AccountAdded from '@views/account/AccountAdded.vue'
+  import AccountAdded from '@views/account/BdgAccountAdded.vue'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
   import { type IBankAccountLoader } from '@/core/services/BankAccountLoader';
 

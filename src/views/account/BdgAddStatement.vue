@@ -61,8 +61,8 @@
 </style>
 
 <script setup lang="ts">
-  import AccountHeader from '@views/account/account-header.vue'
-  import AccountAdded from '@views/account/AccountAdded.vue'
+  import AccountHeader from '@views/account/BdgAccountHeader.vue'
+  import AccountAdded from '@views/account/BdgAccountAdded.vue'
   import { computed, defineModel } from 'vue'
   import { useAddStatementStore } from '@/stores/add-statement-store'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
