@@ -61,6 +61,17 @@ import { computed, ref, type Ref } from 'vue'
     return props.showClearSelection || false;
   });
 
+  const columnsCount = computed(() => {
+    const v = Number(props.columnsCount);
+    if (v > 20) {
+      return 20;
+    }
+    if (v < 1) {
+      return 1;
+    }
+    return v;
+  })
+
   function onSelectCell(index: number) {
     selectedColumn.value = index;
 

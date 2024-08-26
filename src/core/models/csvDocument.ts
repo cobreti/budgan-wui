@@ -6,18 +6,20 @@ export type CSVRawRow = {
   description: string;
 };
 
-export enum CSVColumns {
-  CARD_NUMBER = 'cardNumber',
-  DATE_INSCRIPTION = 'dateInscription',
-  DATE_TRANSACTION = 'dateTransaction',
-  AMOUNT = 'amount',
-  DESCRIPTION = 'description',
-  UNKNOWN = 'unknown',
+export enum CSVColumnContent {
+  UNKNOWN = 0,
+  CARD_NUMBER = 1,
+  DATE_INSCRIPTION = 2,
+  DATE_TRANSACTION = 3,
+  AMOUNT = 4,
+  DESCRIPTION = 5
 }
+
+export type CSVContentByColumn = {[index: number]: CSVColumnContent}
 
 export type CSVFileSettings = {
   delimiter: string;
-  columns: CSVColumns[];
+  columns: CSVContentByColumn;
 };
 
 
