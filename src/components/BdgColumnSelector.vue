@@ -5,13 +5,13 @@
       class="column-cell"
       @click="onSelectCell(-1)">
     </div>
-    <div v-for="index in columnsCount"
+    <div v-for="(n, index) in columnsCount"
          :key="index"
          class="column-cell"
          :class="{ 'selected-cell': index === selectedColumn }"
           @click="onSelectCell(index)">
       <div>
-        {{ index }}
+        {{ index + 1 }}
       </div>
     </div>
   </div>
