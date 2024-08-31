@@ -15,7 +15,7 @@ export enum CSVColumnContent {
   DESCRIPTION = 5
 }
 
-export type CSVContentByColumn = {[index: number]: CSVColumnContent}
+export type CSVContentByColumn = {[index: string]: CSVColumnContent}
 
 export type CSVFileSettings = {
   delimiter: string;

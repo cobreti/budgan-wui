@@ -110,7 +110,7 @@
     for (let i = 0; i < numberOfColumns.value; i++) {
       const k:string = i.toString();
       if (colsKeys.includes(k)) {
-        const eColContent = columns.value[k];
+        const eColContent = (columns.value)[k];
         result.push(columnsContentValues[eColContent]?.text || ' ');
       } else {
         result.push(' ');
@@ -122,7 +122,6 @@
 
   const columnsCountRules = [
     (v: number) => !!v || 'Columns count is required',
-    (v: number) => /^\d+$/.test(v) || 'Columns count must be a number',
     (v: number) => v > 0 || 'Columns count must be greater than 0',
     (v: number) => v < 21 || 'Columns count must be at max 20'
   ];
