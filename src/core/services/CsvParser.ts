@@ -47,6 +47,14 @@ export class CsvParser implements ICsvParser {
     this.settings.minimumColumnsCount = value;
   }
 
+  set delimiter(value: string) {
+    this.settings.delimiter = value;
+  }
+
+  get delimiter() {
+    return this.settings.delimiter;
+  }
+
   parse(text: string): CsvParseResult {
     const parser: Parser = parse({
       delimiter: this.settings.delimiter,
@@ -84,7 +92,7 @@ export class CsvParser implements ICsvParser {
       let record;
       while ((record = parser.read()) !== null ) {
 
-        const lineNo = record[0];
+        const lineNo = Number(record[0]);
         const records: string[] = [];
         delete record[0];
 
@@ -95,10 +103,7 @@ export class CsvParser implements ICsvParser {
         }
 
         addRecords(lineNo, records);
-
-        // console.log(record);
       }
-      // console.log('\n');
     });
 
     const lines = text.split(/\r?\n/);
@@ -114,7 +119,7 @@ export class CsvParser implements ICsvParser {
       if (this.settings.minimumColumnsCount && items.length < this.settings.minimumColumnsCount) {
         ignoredLines.push({
           lineNumber: lineNo,
-          content: line
+          content: line.trim()
         });
       }
       else {
