@@ -11,4 +11,5 @@ export const ServicesTypes = {
     BankAccountTransactionsSanitizerFactory: 'BankAccountTransactionsSanitizerFactory',
     BankAccountLoader: 'BankAccountLoader',
     StreamFactory: 'StreamFactory',
+    CsvParser: 'CsvParser',
 }

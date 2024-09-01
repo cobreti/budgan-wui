@@ -11,6 +11,7 @@ import { BankAccountTransactionsSanitizerFactory } from '@services/BankAccountTr
 import { BankAccountLoader } from '@services/BankAccountLoader';
 import { CsvToBankAccount } from '@services/CsvToBankAccount'
 import { StreamFactory } from '@services/StreamFactory'
+import { CsvParser } from '@services/CsvParser'
 
 const container = new Container();
 
@@ -24,6 +25,7 @@ container.bind(ServicesTypes.BankAccountTransactionsSanitizer).to(BankAccountTra
 container.bind(ServicesTypes.BankAccountTransactionsSanitizerFactory).to(BankAccountTransactionsSanitizerFactory);
 container.bind(ServicesTypes.BankAccountLoader).to(BankAccountLoader);
 container.bind(ServicesTypes.StreamFactory).to(StreamFactory).inSingletonScope();
+container.bind(ServicesTypes.CsvParser).to(CsvParser);
 
 export {
     container

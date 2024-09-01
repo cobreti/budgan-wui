@@ -6,7 +6,7 @@ import type { IInputStream } from '@services/Stream'
 import { FileInputStream } from '@services/FileInputStream'
 
 export interface IStreamFactory {
-
+  createFileReader(file: File) : IInputStream;
 }
 
 @injectable()

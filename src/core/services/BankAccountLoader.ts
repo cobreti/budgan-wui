@@ -6,6 +6,8 @@ import type { BankAccount, BankAccountsDictionary } from '@models/BankAccountTyp
 import type { IBankAccountOperations } from './BankAccountOperations';
 import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory';
 import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
+import type { IStreamFactory } from '@services/StreamFactory'
+import type { ICsvParser } from '@services/CsvParser'
 
 
 export type BankAccountListById = {[id: string]: BankAccount[]};
@@ -43,6 +45,8 @@ export class BankAccountLoader implements IBankAccountLoader {
         @inject(ServicesTypes.CsvToBankAccount) private csvToBankAccount: ICsvToBankAccount,
         @inject(ServicesTypes.BankAccountOperations) private bankAccountOperations: IBankAccountOperations,
         @inject(ServicesTypes.BankAccountTransactionsSanitizerFactory) private bankAccountTransactionsSanitizerFactory: BankAccountTransactionsSanitizerFactory,
+        @inject(ServicesTypes.StreamFactory) private streamFactory: IStreamFactory,
+        @inject(ServicesTypes.CsvParser) private csvParser: ICsvParser
     ) {
         
     }
@@ -81,10 +85,23 @@ export class BankAccountLoader implements IBankAccountLoader {
         if (reOfx.test(file.name)) {
             return await this.ofxToBankAccount.loadOfxFile(file);
         } else if (reCsv.test(file.name)) {
-            return await this.csvToBankAccount.loadCsvFile(file);
+            return this.csvFileToBankAccount(file);
+            // return await this.csvToBankAccount.loadCsvFile(file);
         } else {
             throw new Error('Unsupported file type');
         }
+    }
+
+    public async csvFileToBankAccount(file: File) : Promise<BankAccount> {
+
+        const inputStream = this.streamFactory.createFileReader(file);
+
+        const text = await inputStream.read();
+
+        this.csvParser.minimumColumnsCount = 3;
+        const csvResult = this.csvParser.parse(text);
+
+        return await this.csvToBankAccount.loadCsvFile(file);
     }
 
     public sanitize(accounts: BankAccountsDictionary) {

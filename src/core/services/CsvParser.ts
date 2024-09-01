@@ -29,7 +29,10 @@ export type CsvParseResult = {
 }
 
 export interface ICsvParser {
+  minimumColumnsCount: number;
+  delimiter: string;
 
+  parse(text: string): CsvParseResult;
 }
 
 @injectable()
