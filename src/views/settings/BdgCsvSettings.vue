@@ -69,7 +69,7 @@
 <script setup lang="ts">
   import BdgColumnSelector from '@components/BdgColumnSelector.vue'
   import { computed, type Ref, ref } from 'vue'
-  import { CSVColumnContent, type CSVContentByColumn } from '@models/csvDocument'
+  import { CSVColumnContent, type CSVContentByColumn_Deprecated } from '@models/csvDocument'
 
   const columnsContentValues = [
     {
@@ -99,7 +99,7 @@
   ];
 
   const numberOfColumns = ref(3);
-  const columns: Ref<CSVContentByColumn> = ref({})
+  const columns: Ref<CSVContentByColumn_Deprecated> = ref({})
   const selectedColumn = ref(-1);
   const currentColumnContentValue: Ref<CSVColumnContent> = ref(CSVColumnContent.UNKNOWN);
 

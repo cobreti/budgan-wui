@@ -12,15 +12,29 @@ export enum CSVColumnContent {
   DATE_INSCRIPTION = 2,
   DATE_TRANSACTION = 3,
   AMOUNT = 4,
-  DESCRIPTION = 5
+  DESCRIPTION = 5,
+  TYPE = 6
 }
 
-export type CSVContentByColumn = {[index: string]: CSVColumnContent}
+export type CSVColumnContentMapping = {[index in CSVColumnContent]?: number}
 
-export type CSVFileSettings = {
+export type CSVSettings = {
   delimiter: string;
-  columns: CSVContentByColumn;
+  columns: CSVColumnContentMapping;
+};
+
+export type CSVSettingsTable = {[index: string]: CSVSettings};
+
+//
+// Deprecated csv types
+/////////////////////////
+
+export type CSVContentByColumn_Deprecated = {[index: string]: CSVColumnContent}
+
+export type CSVFileSettings_Deprecated = {
+  delimiter: string;
+  columns: CSVContentByColumn_Deprecated;
 };
 
 
-export type NamedCSVFileSettings = {[name: string]: CSVFileSettings};
+export type NamedCSVFileSettings_Deprecated = {[name: string]: CSVFileSettings_Deprecated};
