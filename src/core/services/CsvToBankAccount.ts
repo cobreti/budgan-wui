@@ -1,10 +1,12 @@
 import 'reflect-metadata';
 
 import { inject, injectable } from 'inversify'
-import type { BankAccount } from '@models/BankAccountTypes'
+import type { BankAccount, BankAccountTransactionsGroup } from '@models/BankAccountTypes'
 import { ServicesTypes } from '@services/types'
 import type { IReaderFactory } from '@services/FileReaderFactory'
 import { parse } from 'csv-parse/browser/esm';
+import { type CSVColumnContentMapping } from '@models/csvDocument'
+import type { CsvContent } from '@services/CsvParser'
 
 export interface ICsvToBankAccount {
   loadCsvFile(file: File) : Promise<BankAccount>;
@@ -71,6 +73,12 @@ export class CsvToBankAccount implements ICsvToBankAccount {
     });
 
     parser.end();
+
+    return undefined;
+  }
+
+  convertToBankAccountTransactionsGroup(csvContent: CsvContent, columnsMapping: CSVColumnContentMapping): BankAccountTransactionsGroup | undefined {
+
 
     return undefined;
   }

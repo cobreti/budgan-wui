@@ -3,6 +3,10 @@ import type { CsvRow } from '@services/CsvParser'
 import type { BankAccountTransaction } from '@models/BankAccountTypes'
 import moment from 'moment';
 
+export type CsvColumnsToBankAccountTransactionMapperOptions = {
+  dateFormat?: string;
+}
+
 export class CsvColumnsToBankAccountTransactionMapper {
 
   dateInscriptionColIndex: number | undefined;
@@ -13,7 +17,7 @@ export class CsvColumnsToBankAccountTransactionMapper {
   typeColIndex: number | undefined;
   dateFormat: string = 'YYYYMMDD';
 
-  constructor(private columnsMapping : CSVColumnContentMapping) {
+  constructor(private columnsMapping : CSVColumnContentMapping, options?: CsvColumnsToBankAccountTransactionMapperOptions) {
 
     this.dateInscriptionColIndex = this.getColumnIndex(CSVColumnContent.DATE_INSCRIPTION);
     this.dateTransactionColIndex = this.getColumnIndex(CSVColumnContent.DATE_TRANSACTION);
@@ -21,6 +25,12 @@ export class CsvColumnsToBankAccountTransactionMapper {
     this.cardNumberColIndex = this.getColumnIndex(CSVColumnContent.CARD_NUMBER);
     this.descriptionColIndex = this.getColumnIndex(CSVColumnContent.DESCRIPTION);
     this.typeColIndex = this.getColumnIndex(CSVColumnContent.TYPE);
+
+    if (options) {
+      if (options.dateFormat) {
+        this.dateFormat = options.dateFormat;
+      }
+    }
   }
 
   getColumnIndex(column: CSVColumnContent) : number | undefined {
