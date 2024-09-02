@@ -25,7 +25,7 @@
               v-model="ofxFileName"
               :disabled = "addStatementStore.loading"
               @update:modelValue="onFileNameUpdated"
-              accept=".ofx"
+              accept=".ofx,.csv"
               :multiple="true"
             ></v-file-input>
           </div>
@@ -110,7 +110,7 @@
       addStatementStore.setLoadingFile(fileName);
     }
 
-    await bankAccountLoader.load(files);
+    await bankAccountLoader.loadWithAccount(targetAccount.value, files);
     bankAccountLoader.sanitize(bankAccountStore.accounts);
 
     for (const id in bankAccountLoader.accountsById) {

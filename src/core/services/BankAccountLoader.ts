@@ -8,6 +8,7 @@ import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTrans
 import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
 import type { IStreamFactory } from '@services/StreamFactory'
 import type { ICsvParser } from '@services/CsvParser'
+import { CSVColumnContent, type CSVColumnContentMapping } from '@models/csvDocument'
 
 
 export type BankAccountListById = {[id: string]: BankAccount[]};
@@ -19,6 +20,7 @@ export interface IBankAccountLoader {
     accountLoaded : BankAccountLoader_AccountLoaded | undefined;
 
     load(files: File[]) : Promise<void>;
+    loadWithAccount(account: BankAccount, files: File[]) : Promise<void>;
     sanitize(accounts: BankAccountsDictionary) : void;
 
     get accountsById(): BankAccountsDictionary;
@@ -78,6 +80,30 @@ export class BankAccountLoader implements IBankAccountLoader {
         }
     }
 
+    public async loadWithAccount(account: BankAccount, files: File[]) {
+        for (const file of files) {
+            this.loadingFileStarted && this.loadingFileStarted(file.name);
+
+            try {
+                const resultAccount = await this.loadFileWithAccount(account, file);
+                if (resultAccount.transactionsGroups.length > 0) {
+                    resultAccount.transactionsGroups[0].filename = file.name;
+                }
+
+                const accountId = resultAccount.accountId;
+
+                const accountsForId = this.rawAccountsLoadedById[accountId] || [];
+                accountsForId.push(resultAccount);
+                this.rawAccountsLoadedById[accountId] = accountsForId;
+
+                this.accountLoaded && this.accountLoaded(resultAccount);
+            }
+            catch (error) {
+                this.accountLoadError && this.accountLoadError(file.name, error);
+            }
+        }
+    }
+
     public async loadFile(file: File)  : Promise<BankAccount> {
         const reOfx = /\.ofx$/i;
         const reCsv = /\.csv$/i;
@@ -85,14 +111,26 @@ export class BankAccountLoader implements IBankAccountLoader {
         if (reOfx.test(file.name)) {
             return await this.ofxToBankAccount.loadOfxFile(file);
         } else if (reCsv.test(file.name)) {
-            return this.csvFileToBankAccount(file);
-            // return await this.csvToBankAccount.loadCsvFile(file);
+            return await this.csvToBankAccount.loadCsvFile(file);
         } else {
             throw new Error('Unsupported file type');
         }
     }
 
-    public async csvFileToBankAccount(file: File) : Promise<BankAccount> {
+    public async loadFileWithAccount(account: BankAccount, file: File) : Promise<BankAccount> {
+        const reOfx = /\.ofx$/i;
+        const reCsv = /\.csv$/i;
+
+        if (reOfx.test(file.name)) {
+            return await this.ofxToBankAccount.loadOfxFile(file);
+        } else if (reCsv.test(file.name)) {
+            return this.csvFileToBankAccount(account, file);
+        } else {
+            throw new Error('Unsupported file type');
+        }
+    }
+
+    public async csvFileToBankAccount(account: BankAccount, file: File) : Promise<BankAccount> {
 
         const inputStream = this.streamFactory.createFileReader(file);
 
@@ -101,7 +139,28 @@ export class BankAccountLoader implements IBankAccountLoader {
         this.csvParser.minimumColumnsCount = 3;
         const csvResult = this.csvParser.parse(text);
 
-        return await this.csvToBankAccount.loadCsvFile(file);
+        const csvColumnsMapping: CSVColumnContentMapping = {
+            [CSVColumnContent.CARD_NUMBER]: 0,
+            [CSVColumnContent.TYPE]: 1,
+            [CSVColumnContent.DATE_INSCRIPTION]: 2,
+            [CSVColumnContent.AMOUNT]: 3,
+            [CSVColumnContent.DESCRIPTION]: 4
+        };
+
+        const transactionsGroup = this.csvToBankAccount.convertToBankAccountTransactionsGroup(csvResult.content, csvColumnsMapping);
+
+        if (transactionsGroup == undefined) {
+            throw new Error('Unable to convert CSV file to transactions group');
+        }
+
+        return {
+            name: account.name,
+            accountId: account.accountId,
+            accountType: account.accountType,
+            transactionsGroups: [transactionsGroup]
+        } as BankAccount;
+
+        // return await this.csvToBankAccount.loadCsvFile(file);
     }
 
     public sanitize(accounts: BankAccountsDictionary) {
