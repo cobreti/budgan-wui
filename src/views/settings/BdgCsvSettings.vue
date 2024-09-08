@@ -1,32 +1,46 @@
 <template>
   <div>
     <div class="controls-container">
-      <v-text-field
-        class="columns-count-field"
-        label="number of columns"
-        :rules="columnsCountRules"
-        v-model.number="numberOfColumns"
-        type="number">
-      </v-text-field>
-      <bdg-column-selector :columns-count=numberOfColumns show-clear-selection @column-selected="onColumnSelected" @column-selection-cleared="onColumnSelectionCleared"/>
-      <v-select
-        class ="columns-content-select"
-        :rules="columnContentValueRule"
-        :disabled="selectedColumn < 0"
-        :items="columnsContentValues"
-        item-title="text"
-        item-value="value"
-        v-model="columns[selectedColumn]">
-      </v-select>
-    </div>
-    <div class="preview">
-      <div class="title">Columns preview</div>
-      <span class="item" v-for="(column, index) in columnsPreview" :key="index">{{ column }}</span>
+      <v-file-input
+        id="csv-file-input"
+        label="Select CSV file"
+        class="csv-file-input"
+        v-model="csvFileName"
+        @update:modelValue="onFileNameUpdated"
+        accept=".csv"
+        :multiple="false"
+      ></v-file-input>
+
+      <!--      <v-text-field-->
+<!--        class="columns-count-field"-->
+<!--        label="number of columns"-->
+<!--        :rules="columnsCountRules"-->
+<!--        v-model.number="numberOfColumns"-->
+<!--        type="number">-->
+<!--      </v-text-field>-->
+<!--      <bdg-column-selector :columns-count=numberOfColumns show-clear-selection @column-selected="onColumnSelected" @column-selection-cleared="onColumnSelectionCleared"/>-->
+<!--      <v-select-->
+<!--        class ="columns-content-select"-->
+<!--        :rules="columnContentValueRule"-->
+<!--        :disabled="selectedColumn < 0"-->
+<!--        :items="columnsContentValues"-->
+<!--        item-title="text"-->
+<!--        item-value="value"-->
+<!--        v-model="columns[selectedColumn]">-->
+<!--      </v-select>-->
+<!--    </div>-->
+<!--    <div class="preview">-->
+<!--      <div class="title">Columns preview</div>-->
+<!--      <span class="item" v-for="(column, index) in columnsPreview" :key="index">{{ column }}</span>-->
     </div>
   </div>
 </template>
 
 <style scoped>
+
+  .csv-file-input {
+  }
+
   .controls-container {
     width: 50%;
     margin: 2em;
@@ -68,8 +82,29 @@
 
 <script setup lang="ts">
   import BdgColumnSelector from '@components/BdgColumnSelector.vue'
-  import { computed, type Ref, ref } from 'vue'
+  import { computed, defineModel, type Ref, ref } from 'vue'
   import { CSVColumnContent, type CSVContentByColumn_Deprecated } from '@models/csvDocument'
+  import { container } from '@/core/setupInversify'
+  import { ServicesTypes } from '@services/types'
+  import type { IStreamFactory } from '@services/StreamFactory'
+  import type { ICsvParser } from '@services/CsvParser'
+
+
+  const csvFileName = defineModel<File[]>();
+
+  async function onFileNameUpdated(files: File[]) {
+
+    const streamFactory = container.get<IStreamFactory>(ServicesTypes.StreamFactory);
+    const csvParser = container.get<ICsvParser>(ServicesTypes.CsvParser);
+
+    const inputStream = streamFactory.createFileReader(files[0]);
+    const text = await inputStream.read();
+
+    csvParser.minimumColumnsCount = 4;
+    const csvResult = csvParser.parse(text);
+
+    console.log('csvResult', csvResult);
+  }
 
   const columnsContentValues = [
     {
