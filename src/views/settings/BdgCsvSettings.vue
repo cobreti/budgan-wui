@@ -10,6 +10,18 @@
         accept=".csv"
         :multiple="false"
       ></v-file-input>
+      <div v-if="csvHeader">
+        <bdg-column-selector :columns-count=csvHeader.length show-clear-selection @column-selected="onColumnSelected" @column-selection-cleared="onColumnSelectionCleared"/>
+        <div>
+          {{ csvHeader }}
+        </div>
+        <div>
+          {{ csvHeader?.length || 0 }}
+        </div>
+        <div>
+          {{ csvHeaderColumnValue }}
+        </div>
+      </div>
 
       <!--      <v-text-field-->
 <!--        class="columns-count-field"-->
@@ -87,10 +99,26 @@
   import { container } from '@/core/setupInversify'
   import { ServicesTypes } from '@services/types'
   import type { IStreamFactory } from '@services/StreamFactory'
-  import type { ICsvParser } from '@services/CsvParser'
+  import type { CsvParseResult, ICsvParser } from '@services/CsvParser'
 
 
   const csvFileName = defineModel<File[]>();
+
+  const csvContentPreview : Ref<CsvParseResult | null> = ref(null);
+  const csvHeaderIndex : Ref<number> = ref(-1);
+
+  const csvHeader = computed(() => {
+    console.log('csvContentPreview', (csvContentPreview.value));
+    return csvContentPreview.value?.content.header?.records;
+  });
+
+  const csvHeaderColumnValue = computed(() => {
+
+    if (csvHeaderIndex.value < 0) {
+      return '';
+    }
+    return csvContentPreview.value?.content.header?.records[csvHeaderIndex.value];
+  });
 
   async function onFileNameUpdated(files: File[]) {
 
@@ -101,10 +129,10 @@
     const text = await inputStream.read();
 
     csvParser.minimumColumnsCount = 4;
-    const csvResult = csvParser.parse(text);
-
-    console.log('csvResult', csvResult);
+    csvContentPreview.value = csvParser.parse(text);
+    csvHeaderIndex.value = -1;
   }
+
 
   const columnsContentValues = [
     {
@@ -166,13 +194,13 @@
   ];
 
   function onColumnSelected(index: number) {
-    selectedColumn.value = index;
+    csvHeaderIndex.value = index;
 
-    if (index in columns.value) {
-      currentColumnContentValue.value = columns.value[index];
-    } else {
-      currentColumnContentValue.value = CSVColumnContent.UNKNOWN;
-    }
+    // if (index in columns.value) {
+    //   currentColumnContentValue.value = columns.value[index];
+    // } else {
+    //   currentColumnContentValue.value = CSVColumnContent.UNKNOWN;
+    // }
     // console.log(`Column ${index} selected`);
   }
 
