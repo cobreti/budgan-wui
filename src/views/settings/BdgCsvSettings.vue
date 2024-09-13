@@ -11,7 +11,12 @@
         :multiple="false"
       ></v-file-input>
       <div v-if="csvHeader">
-        <bdg-column-selector :columns-count=csvHeader.length show-clear-selection @column-selected="onColumnSelected" @column-selection-cleared="onColumnSelectionCleared"/>
+        <bdg-column-selector 
+          :columns-count=csvHeader.length
+          :columns-text="csvHeader"
+          v-model:selectedColumn="selectedColumn"
+          @column-selected="onColumnSelected" 
+          @column-selection-cleared="onColumnSelectionCleared"/>
         <div>
           {{ csvHeader }}
         </div>
@@ -94,7 +99,7 @@
 
 <script setup lang="ts">
   import BdgColumnSelector from '@components/BdgColumnSelector.vue'
-  import { computed, defineModel, type Ref, ref } from 'vue'
+  import { computed, defineModel, type Ref, ref, watch } from 'vue'
   import { CSVColumnContent, type CSVContentByColumn_Deprecated } from '@models/csvDocument'
   import { container } from '@/core/setupInversify'
   import { ServicesTypes } from '@services/types'
@@ -103,6 +108,7 @@
 
 
   const csvFileName = defineModel<File[]>();
+  const selectedColumn = ref(-1);
 
   const csvContentPreview : Ref<CsvParseResult | null> = ref(null);
   const csvHeaderIndex : Ref<number> = ref(-1);
@@ -120,6 +126,10 @@
     return csvContentPreview.value?.content.header?.records[csvHeaderIndex.value];
   });
 
+  watch(selectedColumn, (newVal) => {
+    console.log('selectedColumn : ', newVal);
+  });
+
   async function onFileNameUpdated(files: File[]) {
 
     const streamFactory = container.get<IStreamFactory>(ServicesTypes.StreamFactory);
@@ -131,6 +141,7 @@
     csvParser.minimumColumnsCount = 4;
     csvContentPreview.value = csvParser.parse(text);
     csvHeaderIndex.value = -1;
+    selectedColumn.value = -1;
   }
 
 
@@ -163,7 +174,6 @@
 
   const numberOfColumns = ref(3);
   const columns: Ref<CSVContentByColumn_Deprecated> = ref({})
-  const selectedColumn = ref(-1);
   const currentColumnContentValue: Ref<CSVColumnContent> = ref(CSVColumnContent.UNKNOWN);
 
   const columnsPreview = computed(() => {
@@ -205,7 +215,7 @@
   }
 
   function onColumnSelectionCleared() {
-    selectedColumn.value = -1;
+    // selectedColumn.value = -1;
     // console.log('Column selection cleared');
   }
 </script>

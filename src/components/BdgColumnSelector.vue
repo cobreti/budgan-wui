@@ -9,6 +9,7 @@
          :key="index"
          class="column-cell"
          :class="{ 'selected-cell': index === selectedColumn }"
+         :title="columnsText ? columnsText[index] : ''"
           @click="onSelectCell(index)">
       <div>
         {{ index + 1 }}
@@ -40,6 +41,17 @@
     }
   }
 
+  .column-cell[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    transform: translateY(-100%);
+    background-color: rgba(var(--v-theme-secondary));
+    color: white;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    z-index: 1000;
+  }
+
   .selected-cell {
     background-color: rgba(var(--v-theme-secondary));
   }
@@ -47,16 +59,22 @@
 
 <script setup lang="ts">
 
-import { computed, ref, type Ref } from 'vue'
+  import { computed } from 'vue'
 
   const emit = defineEmits(['column-selected', 'column-selection-cleared']);
 
+  const selectedColumn = defineModel('selectedColumn', {
+    type: Number,
+    default: -1
+  });
+
   const props = defineProps<{
     columnsCount: number,
-    showClearSelection?: boolean
+    showClearSelection?: boolean,
+    columnsText?: string[]
   }>();
 
-  const selectedColumn : Ref<number> = ref(-1);
+  // const selectedColumn : Ref<number> = ref(-1);
   const showClearSelection = computed(() => {
     return props.showClearSelection || false;
   });
@@ -79,6 +97,7 @@ import { computed, ref, type Ref } from 'vue'
       emit('column-selection-cleared');
     }
     else {
+      // selectedColumnModel.value = index;
       emit('column-selected', index);
     }
   }
