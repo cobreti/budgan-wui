@@ -11,8 +11,14 @@
          :class="{ 'selected-cell': index === selectedColumn }"
          :title="columnsText ? columnsText[index] : ''"
           @click="onSelectCell(index)">
-      <div>
-        {{ index + 1 }}
+      <div class="d-flex flex-column justify-space-between align-content-space-evenly flex-1-1">
+        <div class="column-cell-text">
+          {{ columnsText ? columnsText[index] : index + 1 }}
+        </div>
+<!--        <div>-->
+<!--          <v-select flat>-->
+<!--          </v-select>-->
+<!--        </div>-->
       </div>
     </div>
   </div>
@@ -33,11 +39,14 @@
     cursor: pointer;
     border: 1px solid black;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 
-    > div {
+    .column-cell-text {
       display: block;
       text-align: center;
+      font-size: small;
     }
   }
 

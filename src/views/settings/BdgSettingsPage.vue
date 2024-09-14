@@ -9,6 +9,6 @@
 
 <script setup lang="ts">
 
-  import BdgCsvSettings from '@views/settings/BdgCsvSettings.vue'
+  import BdgCsvSettings from '@/views/settings/csvSettings/BdgCsvSettings.vue'
 </script>
 

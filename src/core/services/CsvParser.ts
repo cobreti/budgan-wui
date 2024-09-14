@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { injectable } from 'inversify'
 import { parse, Parser } from 'csv-parse/browser/esm';
 
+export type CsvRecords = string[];
 
 export type CsvSettings = {
   delimiter: string;
@@ -10,7 +11,7 @@ export type CsvSettings = {
 
 export type CsvRow = {
   lineNumber?: number;
-  records: string[];
+  records: CsvRecords;
 };
 
 export type CsvContent = {
