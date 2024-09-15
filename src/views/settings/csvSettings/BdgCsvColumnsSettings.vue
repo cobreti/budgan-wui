@@ -15,20 +15,49 @@
                     {{ currentRow[index] }}
                 </div>
                 <div>
-                  <v-select
+                  <!-- <v-select
                     flat
                     :items="ColumnMappingItems"
                     v-model="modelValues[index]"
                   >
 
-                  </v-select>
+                  </v-select> -->
+                </div>
+                <div class="drop-area">
+
                 </div>
             </div>
+      </div>
+
+      <div class="chip-area">
+        <div id="test" class="draggable-item" @mousedown="onMouseDown">
+          <!-- <div>test</div> -->
+          <v-chip>test</v-chip>
+        </div>
       </div>
     </div>
 </template>
 
 <style scoped>
+
+  .drop-area {
+    display: block;
+    width: 100%;
+    height: 2em;
+    border: 1px solid blue;
+  }
+
+  .chip-area {
+    display: block;
+    margin-top: 3em;
+
+    .draggable-item {
+      /* background-color: cyan; */
+      /* width: auto; */
+      /* display: inline-block; */
+    }
+  }
+
   .selector {
     border: 1px dotted black;
     width: 100%;
@@ -101,4 +130,86 @@
         }
       }
     ]
+
+    function onDrag(event: DragEvent) {
+      event.dataTransfer?.setData("text", event.target.id);
+    }
+
+    interface DragEventWithTransfer extends DragEvent {
+      dataTransfer: DataTransfer;
+    }
+
+    function onDrop(event: DragEventWithTransfer): void {
+      event.preventDefault();
+      const data: string = event.dataTransfer.getData("text");
+      const elm: HTMLElement | null = document.getElementById(data);
+      if (elm) {
+        event.target.appendChild(elm);
+      }
+    }
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function onMouseMove(event) {
+      event.preventDefault();
+      if (elm) {
+        elm.style.left = `${event.clientX - elm.clientWidth/2}px`;
+        elm.style.top = `${event.clientY - elm.clientHeight/2}px`;
+
+        elm.hidden = true;
+        const target = document.elementFromPoint(event.clientX, event.clientY);
+        elm.hidden = false;
+
+        if (target) {
+          const dropArea = target.closest('.drop-area');
+          if (dropArea) {
+            // console.log(dropArea);
+          }
+          // if (dropArea) {
+          //   dropArea.appendChild(elm);
+          // }
+        }
+      }
+    }
+
+    let elm: HtmlElement | null = null;
+    let orgPosition = '';
+
+    function onMouseUp(event) {
+      event.preventDefault();
+      console.log('mouse up');
+
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+
+      elm.hidden = true;
+        const target = document.elementFromPoint(event.clientX, event.clientY);
+        elm.hidden = false;
+
+        if (target) {
+          const dropArea = target.closest('.drop-area');
+          if (dropArea) {
+            console.log(dropArea);
+            dropArea.appendChild(elm);
+          }
+        }
+
+        elm.style.position = orgPosition;
+        elm = null;
+      }
+
+    function onMouseDown(event) {
+      event.preventDefault();
+      console.log('mouse down');
+
+      elm = event.target.closest('.draggable-item');
+      // elm = event.target;
+      orgPosition = elm.style.position;
+      elm.style.position = 'fixed';
+
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    }
 </script>
