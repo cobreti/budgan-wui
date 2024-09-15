@@ -30,10 +30,12 @@
       </div>
 
       <div class="chip-area">
-        <div id="test" class="draggable-item" @mousedown="onMouseDown">
+        <!-- <div id="test" class="draggable-item" @mousedown="onMouseDown"> -->
           <!-- <div>test</div> -->
+        <BdgDraggable class="draggable-item" drop-area-class="drop-area">
           <v-chip>test</v-chip>
-        </div>
+        </BdgDraggable>
+        <!-- </div> -->
       </div>
     </div>
 </template>
@@ -87,6 +89,7 @@
 </style>
 
 <script setup lang="ts">
+    import BdgDraggable from '@/components/dragndrop/BdgDraggable.vue';
     import { computed, ref, type ModelRef } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
     import { CSVColumnContent } from '@/core/models/csvDocument';
@@ -152,64 +155,64 @@
       event.preventDefault();
     }
 
-    function onMouseMove(event) {
-      event.preventDefault();
-      if (elm) {
-        elm.style.left = `${event.clientX - elm.clientWidth/2}px`;
-        elm.style.top = `${event.clientY - elm.clientHeight/2}px`;
+    // function onMouseMove(event) {
+    //   event.preventDefault();
+    //   if (elm) {
+    //     elm.style.left = `${event.clientX - elm.clientWidth/2}px`;
+    //     elm.style.top = `${event.clientY - elm.clientHeight/2}px`;
 
-        elm.hidden = true;
-        const target = document.elementFromPoint(event.clientX, event.clientY);
-        elm.hidden = false;
+    //     elm.hidden = true;
+    //     const target = document.elementFromPoint(event.clientX, event.clientY);
+    //     elm.hidden = false;
 
-        if (target) {
-          const dropArea = target.closest('.drop-area');
-          if (dropArea) {
-            // console.log(dropArea);
-          }
-          // if (dropArea) {
-          //   dropArea.appendChild(elm);
-          // }
-        }
-      }
-    }
+    //     if (target) {
+    //       const dropArea = target.closest('.drop-area');
+    //       if (dropArea) {
+    //         // console.log(dropArea);
+    //       }
+    //       // if (dropArea) {
+    //       //   dropArea.appendChild(elm);
+    //       // }
+    //     }
+    //   }
+    // }
 
-    let elm: HtmlElement | null = null;
-    let orgPosition = '';
+    // let elm: HtmlElement | null = null;
+    // let orgPosition = '';
 
-    function onMouseUp(event) {
-      event.preventDefault();
-      console.log('mouse up');
+    // function onMouseUp(event) {
+    //   event.preventDefault();
+    //   console.log('mouse up');
 
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
+    //   window.removeEventListener('mousemove', onMouseMove);
+    //   window.removeEventListener('mouseup', onMouseUp);
 
-      elm.hidden = true;
-        const target = document.elementFromPoint(event.clientX, event.clientY);
-        elm.hidden = false;
+    //   elm.hidden = true;
+    //     const target = document.elementFromPoint(event.clientX, event.clientY);
+    //     elm.hidden = false;
 
-        if (target) {
-          const dropArea = target.closest('.drop-area');
-          if (dropArea) {
-            console.log(dropArea);
-            dropArea.appendChild(elm);
-          }
-        }
+    //     if (target) {
+    //       const dropArea = target.closest('.drop-area');
+    //       if (dropArea) {
+    //         console.log(dropArea);
+    //         dropArea.appendChild(elm);
+    //       }
+    //     }
 
-        elm.style.position = orgPosition;
-        elm = null;
-      }
+    //     elm.style.position = orgPosition;
+    //     elm = null;
+    //   }
 
-    function onMouseDown(event) {
-      event.preventDefault();
-      console.log('mouse down');
+    // function onMouseDown(event) {
+    //   event.preventDefault();
+    //   console.log('mouse down');
 
-      elm = event.target.closest('.draggable-item');
-      // elm = event.target;
-      orgPosition = elm.style.position;
-      elm.style.position = 'fixed';
+    //   elm = event.target.closest('.draggable-item');
+    //   // elm = event.target;
+    //   orgPosition = elm.style.position;
+    //   elm.style.position = 'fixed';
 
-      window.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('mouseup', onMouseUp);
-    }
+    //   window.addEventListener('mousemove', onMouseMove);
+    //   window.addEventListener('mouseup', onMouseUp);
+    // }
 </script>
