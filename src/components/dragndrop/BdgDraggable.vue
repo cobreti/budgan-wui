@@ -19,6 +19,7 @@
   import { useTemplateRef } from 'vue'
 
   let elm: HTMLElement | null = null
+  let currentDropArea: Element | null = null
   let orgPosition = ''
 
   const slotRef = useTemplateRef('draggableContent')
@@ -56,6 +57,27 @@
       elm.style.top = `${event.clientY - elm.clientHeight / 2}px`
 
       const dropArea = getDropElementFromPoint(event.clientX, event.clientY)
+
+      if (dropArea !== currentDropArea) {
+        if (dropArea) {
+          const hoverEnterEvent = new CustomEvent('bdg-dragdrop:hoverenter', {
+            detail: {
+              element: elm
+            }
+          })
+          dropArea?.dispatchEvent(hoverEnterEvent)
+        }
+        else {
+          const hoverExitEvent = new CustomEvent('bdg-dragdrop:hoverexit', {
+            detail: {
+              element: elm
+            }
+          });
+          currentDropArea?.dispatchEvent(hoverExitEvent)
+        }
+
+        currentDropArea = dropArea;
+      }
     }
   }
 

@@ -23,9 +23,9 @@
 
                   </v-select> -->
                 </div>
-                <div class="drop-area">
+                <bdg-drop-area class="drop-area">
 
-                </div>
+                </bdg-drop-area>
             </div>
       </div>
 
@@ -93,6 +93,7 @@
     import { computed, ref, type ModelRef } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
     import { CSVColumnContent } from '@/core/models/csvDocument';
+    import BdgDropArea from '@components/dragndrop/BdgDropArea.vue'
 
     type ColumnMappingItemValue = {
       csvColumnContent: CSVColumnContent | undefined;
