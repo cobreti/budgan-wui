@@ -23,7 +23,7 @@
 
                   </v-select> -->
                 </div>
-                <bdg-drop-area class="drop-area">
+                <bdg-drop-area class="drop-area" :on-hoverenter="onHoverEnter" :on-hoverexit="onHoverExit" :on-drop="onDrop">
 
                 </bdg-drop-area>
             </div>
@@ -94,6 +94,7 @@
     import { useCsvSettingsStore } from './csvSettings-store';
     import { CSVColumnContent } from '@/core/models/csvDocument';
     import BdgDropArea from '@components/dragndrop/BdgDropArea.vue'
+    import type { BdgDropEvent, BdgHoverEnterEvent, BdgHoverExitEvent } from '@components/dragndrop/BdgDragndropTypes'
 
     type ColumnMappingItemValue = {
       csvColumnContent: CSVColumnContent | undefined;
@@ -112,6 +113,18 @@
     const currentRow = computed(() => csvSettingsStore.csvRows[currentRowIndex.value].records || []);
     const columnsCount = computed(() => currentRow.value.length);
     const modelValues = computed(() => csvSettingsStore.columnsMappingModelValues )
+
+    function onHoverEnter(event: BdgHoverEnterEvent) {
+      console.log('onHoverEnter', event);
+    }
+
+    function onHoverExit(event: BdgHoverExitEvent) {
+      console.log('onHoverExit', event);
+    }
+
+    function onDrop(event: BdgDropEvent) {
+      // event.preventDefault();
+    }
 
     // const columnSelectionModel = defineModel('columnSelectionModel', {
     //   type: Object as () => ColumnMappingItemValue,
@@ -143,14 +156,14 @@
       dataTransfer: DataTransfer;
     }
 
-    function onDrop(event: DragEventWithTransfer): void {
-      event.preventDefault();
-      const data: string = event.dataTransfer.getData("text");
-      const elm: HTMLElement | null = document.getElementById(data);
-      if (elm) {
-        event.target.appendChild(elm);
-      }
-    }
+    // function onDrop(event: DragEventWithTransfer): void {
+    //   event.preventDefault();
+    //   const data: string = event.dataTransfer.getData("text");
+    //   const elm: HTMLElement | null = document.getElementById(data);
+    //   if (elm) {
+    //     event.target.appendChild(elm);
+    //   }
+    // }
 
     function allowDrop(event) {
       event.preventDefault();

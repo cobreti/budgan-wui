@@ -17,6 +17,7 @@
 <script setup lang="ts">
 
   import { useTemplateRef } from 'vue'
+  import { DragnDropEvents } from '@components/dragndrop/BdgDragndropTypes'
 
   let elm: HTMLElement | null = null
   let currentDropArea: Element | null = null
@@ -56,19 +57,23 @@
       elm.style.left = `${event.clientX - elm.clientWidth / 2}px`
       elm.style.top = `${event.clientY - elm.clientHeight / 2}px`
 
-      const dropArea = getDropElementFromPoint(event.clientX, event.clientY)
+      let dropArea = getDropElementFromPoint(event.clientX, event.clientY)
 
       if (dropArea !== currentDropArea) {
         if (dropArea) {
-          const hoverEnterEvent = new CustomEvent('bdg-dragdrop:hoverenter', {
+          const hoverEnterEvent = new CustomEvent(DragnDropEvents.HOVER_ENTER, {
             detail: {
-              element: elm
+              element: elm,
+              preventDrop: () => {
+                console.log('drop prevented');
+                dropArea = null;
+              }
             }
           })
           dropArea?.dispatchEvent(hoverEnterEvent)
         }
         else {
-          const hoverExitEvent = new CustomEvent('bdg-dragdrop:hoverexit', {
+          const hoverExitEvent = new CustomEvent(DragnDropEvents.HOVER_EXIT, {
             detail: {
               element: elm
             }
@@ -91,9 +96,16 @@
       return
     }
 
-    const dropArea = getDropElementFromPoint(event.clientX, event.clientY)
-    if (dropArea && elm) {
-      dropArea.appendChild(elm)
+    // const dropArea = getDropElementFromPoint(event.clientX, event.clientY)
+    if (currentDropArea && elm) {
+
+      const dropEvent = new CustomEvent(DragnDropEvents.DROP, {
+        detail: {
+          element: elm
+        }
+      });
+      currentDropArea.dispatchEvent(dropEvent)
+      // currentDropArea.appendChild(elm)
     }
 
     elm.style.position = orgPosition
