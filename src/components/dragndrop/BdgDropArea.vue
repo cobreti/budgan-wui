@@ -1,7 +1,7 @@
 <template>
-  <div ref="drop-root">
+  <span ref="drop-root">
     <slot></slot>
-  </div>
+  </span>
 </template>
 
 <style scoped>

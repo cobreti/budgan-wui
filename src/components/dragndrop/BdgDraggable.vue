@@ -7,48 +7,82 @@
   */
 
 <template>
-  <div @mousedown="onMouseDown" ref="draggableContent">
+  <div class="draggable-content" :class="{ 'hide-draggable-content': hideElm }" @mousedown="onMouseDown" ref="draggableContent">
     <slot ></slot>
+    <span :hidden="!hoverDropArea">
+    <slot name="hoverdroparea">
+    </slot>
+    </span>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .draggable-content {
+    cursor: move;
+    display: inline-block;
+  }
+
+  .hide-draggable-content {
+    display:none;
+  }
+</style>
 
 <script setup lang="ts">
 
-  import { useTemplateRef } from 'vue'
-  import { DragnDropEvents } from '@components/dragndrop/BdgDragndropTypes'
+import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
+  import {
+    type BdgHoverEnterEvent,
+    type BdgHoverExitEvent,
+    DragnDropEvents
+  } from '@components/dragndrop/BdgDragndropTypes'
 
   let elm: HTMLElement | null = null
-  let currentDropArea: Element | null = null
+  const currentDropArea: Ref<Element | undefined> = ref(undefined)
   let orgPosition = ''
+  const hoverDropArea = computed(() => {
+    return currentDropArea.value != null;
+  })
 
-  const slotRef = useTemplateRef('draggableContent')
+  const hideElm = ref(false);
+  let slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
+  const originalParent : Ref<HTMLElement | null | undefined> = ref(undefined);
   const props = defineProps<
     {
       dropAreaClass: string
+      onHoverenter?: (event: BdgHoverEnterEvent) => void,
+      onHoverexit?: (event: BdgHoverExitEvent) => void,
     }>()
 
   const dropAreaClassSelector = `.${props.dropAreaClass}`
 
-  function getDropElementFromPoint(x: number, y: number): Element | null {
+  onMounted(() => {
+    originalParent.value = slotRef.value?.parentElement;
+  })
+
+  function getDropElementFromPoint(x: number, y: number): Element | undefined {
     if (dropAreaClassSelector == '') {
-      return null
+      return undefined
     }
 
-    let ret: Element | null = null
+    let elements: Element[] | null = null
+    let dropArea : Element | undefined = undefined;
 
     if (elm) {
-      elm.hidden = true
-      ret = document.elementFromPoint(x, y)
-      elm.hidden = false
+      // hideElm.value = true
+      elements = document.elementsFromPoint(x, y);
+      console.log(elements);
+      // hideElm.value = false
 
-      if (ret) {
-        ret = ret.closest(dropAreaClassSelector)
+      dropArea = elements.find((element) => {
+        return element.matches(dropAreaClassSelector)
+      })
+
+      if (dropArea) {
+        // ret = ret.closest(dropAreaClassSelector)
       }
     }
 
-    return ret
+    return dropArea;
   }
 
   function onMouseMove(event: MouseEvent) {
@@ -59,17 +93,28 @@
 
       let dropArea = getDropElementFromPoint(event.clientX, event.clientY)
 
-      if (dropArea !== currentDropArea) {
+      if (dropArea !== currentDropArea.value) {
         if (dropArea) {
           const hoverEnterEvent = new CustomEvent(DragnDropEvents.HOVER_ENTER, {
             detail: {
               element: elm,
               preventDrop: () => {
                 console.log('drop prevented');
-                dropArea = null;
+                dropArea = undefined;
               }
             }
-          })
+          });
+
+          if (props.onHoverenter) {
+            props.onHoverenter({
+              element: elm,
+              preventDrop: () => {
+                console.log('drop prevented');
+                dropArea = undefined;
+              }
+            });
+          }
+
           dropArea?.dispatchEvent(hoverEnterEvent)
         }
         else {
@@ -78,10 +123,17 @@
               element: elm
             }
           });
-          currentDropArea?.dispatchEvent(hoverExitEvent)
+
+          if (props.onHoverexit) {
+            props.onHoverexit({
+              element: elm
+            });
+          }
+
+          currentDropArea.value?.dispatchEvent(hoverExitEvent)
         }
 
-        currentDropArea = dropArea;
+        currentDropArea.value = dropArea;
       }
     }
   }
@@ -96,20 +148,25 @@
       return
     }
 
-    // const dropArea = getDropElementFromPoint(event.clientX, event.clientY)
-    if (currentDropArea && elm) {
+    if (currentDropArea.value && elm) {
 
       const dropEvent = new CustomEvent(DragnDropEvents.DROP, {
         detail: {
           element: elm
         }
       });
-      currentDropArea.dispatchEvent(dropEvent)
+      currentDropArea.value.dispatchEvent(dropEvent)
       // currentDropArea.appendChild(elm)
+    }
+    else {
+      if (originalParent.value && elm) {
+        originalParent.value.appendChild(elm)
+      }
     }
 
     elm.style.position = orgPosition
-    elm = null
+    elm = null;
+    currentDropArea.value = undefined;
   }
 
   function onMouseDown(event: MouseEvent) {

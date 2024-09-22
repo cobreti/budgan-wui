@@ -33,7 +33,20 @@
         <!-- <div id="test" class="draggable-item" @mousedown="onMouseDown"> -->
           <!-- <div>test</div> -->
         <BdgDraggable class="draggable-item" drop-area-class="drop-area">
-          <v-chip>test</v-chip>
+          <v-chip>
+            test
+          </v-chip>
+          <template v-slot:hoverdroparea>
+            <span>&nbsp;+</span>
+          </template>
+        </BdgDraggable>
+        <BdgDraggable class="draggable-item" drop-area-class="drop-area">
+          <v-chip>
+            test 2
+          </v-chip>
+          <template v-slot:hoverdroparea>
+            <span>&nbsp;+</span>
+          </template>
         </BdgDraggable>
         <!-- </div> -->
       </div>
@@ -44,9 +57,10 @@
 
   .drop-area {
     display: block;
-    width: 100%;
+    //width: 100%;
     height: 2em;
     border: 1px solid blue;
+    margin: 1em;
   }
 
   .chip-area {

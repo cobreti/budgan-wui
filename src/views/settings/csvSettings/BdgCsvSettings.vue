@@ -21,7 +21,7 @@
   }
 
   .controls-container {
-    width: 50%;
+    width: 90%;
     margin: 2em;
   }
 
