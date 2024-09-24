@@ -12,8 +12,14 @@ export type BdgDropEvent = {
   preventDefault: () => void
 };
 
-export const DragnDropEvents = {
-  HOVER_ENTER: 'bdg-dragdrop:hoverenter',
-  HOVER_EXIT: 'bdg-dragdrop:hoverexit',
-  DROP: 'bdg-dragdrop:drop'
+// export const DragnDropEvents = {
+//   HOVER_ENTER: 'bdg-dragdrop:hoverenter',
+//   HOVER_EXIT: 'bdg-dragdrop:hoverexit',
+//   DROP: 'bdg-dragdrop:drop'
+// };
+
+export enum DragnDropEvents {
+  HOVER_ENTER = 'bdg-dragdrop:hoverenter',
+  HOVER_EXIT = 'bdg-dragdrop:hoverexit',
+  DROP = 'bdg-dragdrop:drop'
 };

@@ -33,19 +33,22 @@
         <!-- <div id="test" class="draggable-item" @mousedown="onMouseDown"> -->
           <!-- <div>test</div> -->
         <BdgDraggable class="draggable-item" drop-area-class="drop-area">
-          <v-chip>
-            test
-          </v-chip>
-          <template v-slot:hoverdroparea>
-            <span>&nbsp;+</span>
-          </template>
+            <v-chip>
+              test
+            </v-chip>
+<!--          <template v-slot:hoverdroparea>-->
+<!--&lt;!&ndash;            <span>&nbsp;+</span>&ndash;&gt;-->
+<!--          </template>-->
+<!--          <template v-slot:indroparea>-->
+<!--            <span>O</span>-->
+<!--          </template>-->
         </BdgDraggable>
         <BdgDraggable class="draggable-item" drop-area-class="drop-area">
           <v-chip>
             test 2
           </v-chip>
           <template v-slot:hoverdroparea>
-            <span>&nbsp;+</span>
+<!--            <span>&nbsp;+</span>-->
           </template>
         </BdgDraggable>
         <!-- </div> -->
@@ -57,7 +60,6 @@
 
   .drop-area {
     display: block;
-    //width: 100%;
     height: 2em;
     border: 1px solid blue;
     margin: 1em;
@@ -104,29 +106,29 @@
 
 <script setup lang="ts">
     import BdgDraggable from '@/components/dragndrop/BdgDraggable.vue';
-    import { computed, ref, type ModelRef } from 'vue';
+    import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
-    import { CSVColumnContent } from '@/core/models/csvDocument';
+    // import { CSVColumnContent } from '@/core/models/csvDocument';
     import BdgDropArea from '@components/dragndrop/BdgDropArea.vue'
     import type { BdgDropEvent, BdgHoverEnterEvent, BdgHoverExitEvent } from '@components/dragndrop/BdgDragndropTypes'
 
-    type ColumnMappingItemValue = {
-      csvColumnContent: CSVColumnContent | undefined;
-    };
+    // type ColumnMappingItemValue = {
+    //   csvColumnContent: CSVColumnContent | undefined;
+    // };
 
-    type ColumnMappingItem = {
-      title: string;
-      value: ColumnMappingItemValue;
-    };
+    // type ColumnMappingItem = {
+    //   title: string;
+    //   value: ColumnMappingItemValue;
+    // };
 
     const csvSettingsStore = useCsvSettingsStore();
 
     const currentRowIndex = ref(0);
-    const columnsSelectionModels : ModelRef<ColumnMappingItemValue>[] = [];
+    // const columnsSelectionModels : ModelRef<ColumnMappingItemValue>[] = [];
     const hasCsvPreview = computed(() => csvSettingsStore.csvRows.length > 0);
     const currentRow = computed(() => csvSettingsStore.csvRows[currentRowIndex.value].records || []);
     const columnsCount = computed(() => currentRow.value.length);
-    const modelValues = computed(() => csvSettingsStore.columnsMappingModelValues )
+    // const modelValues = computed(() => csvSettingsStore.columnsMappingModelValues )
 
     function onHoverEnter(event: BdgHoverEnterEvent) {
       console.log('onHoverEnter', event);
@@ -147,41 +149,41 @@
     //   })
     // });
 
-    const ColumnMappingItems : ColumnMappingItem[] = [
-      {
-        title: 'N/A',
-        value: {
-          csvColumnContent: undefined
-        }
-      },
-      {
-        title: 'Card Number',
-        value: {
-          csvColumnContent: CSVColumnContent.CARD_NUMBER
-        }
-      }
-    ]
-
-    function onDrag(event: DragEvent) {
-      event.dataTransfer?.setData("text", event.target.id);
-    }
-
-    interface DragEventWithTransfer extends DragEvent {
-      dataTransfer: DataTransfer;
-    }
-
-    // function onDrop(event: DragEventWithTransfer): void {
-    //   event.preventDefault();
-    //   const data: string = event.dataTransfer.getData("text");
-    //   const elm: HTMLElement | null = document.getElementById(data);
-    //   if (elm) {
-    //     event.target.appendChild(elm);
+    // const ColumnMappingItems : ColumnMappingItem[] = [
+    //   {
+    //     title: 'N/A',
+    //     value: {
+    //       csvColumnContent: undefined
+    //     }
+    //   },
+    //   {
+    //     title: 'Card Number',
+    //     value: {
+    //       csvColumnContent: CSVColumnContent.CARD_NUMBER
+    //     }
     //   }
+    // ]
+
+    // function onDrag(event: DragEvent) {
+    //   event.dataTransfer?.setData("text", event.target.id);
     // }
 
-    function allowDrop(event) {
-      event.preventDefault();
-    }
+    // interface DragEventWithTransfer extends DragEvent {
+    //   dataTransfer: DataTransfer;
+    // }
+
+    // // function onDrop(event: DragEventWithTransfer): void {
+    // //   event.preventDefault();
+    // //   const data: string = event.dataTransfer.getData("text");
+    // //   const elm: HTMLElement | null = document.getElementById(data);
+    // //   if (elm) {
+    // //     event.target.appendChild(elm);
+    // //   }
+    // // }
+
+    // function allowDrop(event) {
+    //   event.preventDefault();
+    // }
 
     // function onMouseMove(event) {
     //   event.preventDefault();

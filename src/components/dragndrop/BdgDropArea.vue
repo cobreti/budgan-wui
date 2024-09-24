@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 
-  import { onMounted, onUnmounted, useTemplateRef } from 'vue'
+  import { onMounted, onUnmounted, useTemplateRef, type Ref } from 'vue'
   import {
     type BdgDropEvent,
     type BdgHoverEnterEvent,
@@ -18,15 +18,24 @@
     DragnDropEvents
   } from '@components/dragndrop/BdgDragndropTypes'
 
+  declare global {
+    interface HTMLElementEventMap {
+      [DragnDropEvents.HOVER_ENTER]: CustomEvent<BdgHoverEnterEvent>;
+      [DragnDropEvents.HOVER_EXIT]: CustomEvent<BdgHoverExitEvent>;
+      [DragnDropEvents.DROP]: CustomEvent<BdgDropEvent>;
+    }
+  }
+
+
   const props = defineProps<{
     onHoverenter?: (event: BdgHoverEnterEvent) => void,
     onHoverexit?: (event: BdgHoverExitEvent) => void,
     onDrop?: (event: BdgDropEvent) => void
   }>();
 
-  const dropRoot = useTemplateRef('drop-root');
+  const dropRoot : Ref<HTMLSpanElement | null> = useTemplateRef('drop-root');
 
-  function onHoverEnter(event: CustomEvent) {
+  function onHoverEnter(event: CustomEvent<BdgHoverEnterEvent>) {
     if (props.onHoverenter) {
       props.onHoverenter({
         element: event.detail.element,
@@ -37,7 +46,7 @@
     }
   }
 
-  function onHoverExit(event: CustomEvent) {
+  function onHoverExit(event: CustomEvent<BdgHoverExitEvent>) {
     if (props.onHoverexit) {
       props.onHoverexit({
         element: event.detail.element
@@ -45,7 +54,7 @@
     }
   }
 
-  function onDrop(event: CustomEvent) {
+  function onDraggableDrop(event: CustomEvent<BdgDropEvent>) {
     let preventDefault = false;
 
     if (props.onDrop) {
@@ -65,12 +74,12 @@
   onMounted(() => {
     dropRoot.value?.addEventListener(DragnDropEvents.HOVER_ENTER, onHoverEnter);
     dropRoot.value?.addEventListener(DragnDropEvents.HOVER_EXIT, onHoverExit);
-    dropRoot.value?.addEventListener(DragnDropEvents.DROP, onDrop);
+    dropRoot.value?.addEventListener(DragnDropEvents.DROP, onDraggableDrop);
   });
 
   onUnmounted(() => {
     dropRoot.value?.removeEventListener(DragnDropEvents.HOVER_ENTER, onHoverEnter);
     dropRoot.value?.removeEventListener(DragnDropEvents.HOVER_EXIT, onHoverExit);
-    dropRoot.value?.removeEventListener(DragnDropEvents.DROP, onDrop);
+    dropRoot.value?.removeEventListener(DragnDropEvents.DROP, onDraggableDrop);
   });
 </script>

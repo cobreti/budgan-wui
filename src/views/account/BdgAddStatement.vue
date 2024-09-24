@@ -94,9 +94,11 @@
   });
 
 
-  async function onFileNameUpdated(files: File[]) {
+  async function onFileNameUpdated(files: File[] | File) {
 
-    if (files.length == 0) {
+    const filesArray = Array.isArray(files)? files : [files];
+
+    if (filesArray.length == 0) {
       return;
     }
 
@@ -110,7 +112,7 @@
       addStatementStore.setLoadingFile(fileName);
     }
 
-    await bankAccountLoader.loadWithAccount(targetAccount.value, files);
+    await bankAccountLoader.loadWithAccount(targetAccount.value, filesArray );
     bankAccountLoader.sanitize(bankAccountStore.accounts);
 
     for (const id in bankAccountLoader.accountsById) {

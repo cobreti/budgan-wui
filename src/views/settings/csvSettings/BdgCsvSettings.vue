@@ -80,12 +80,21 @@
     console.log('selectedColumn : ', newVal);
   });
 
-  async function onFileNameUpdated(files: File[]) {
+  async function onFileNameUpdated(files: File[] | File) : Promise<void> {
 
     const streamFactory = container.get<IStreamFactory>(ServicesTypes.StreamFactory);
     const csvParser = container.get<ICsvParser>(ServicesTypes.CsvParser);
 
-    const inputStream = streamFactory.createFileReader(files[0]);
+    let file : File;
+
+    if (Array.isArray(files)) {
+      file = files[0];
+    }
+    else {
+      file = files as File;
+    }
+
+    const inputStream = streamFactory.createFileReader(file);
     const text = await inputStream.read();
 
     csvParser.minimumColumnsCount = 4;

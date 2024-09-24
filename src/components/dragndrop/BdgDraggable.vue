@@ -7,45 +7,58 @@
   */
 
 <template>
-  <div class="draggable-content" :class="{ 'hide-draggable-content': hideElm }" @mousedown="onMouseDown" ref="draggableContent">
-    <slot ></slot>
-    <span :hidden="!hoverDropArea">
-    <slot name="hoverdroparea">
+  <div class="draggable-content" @mousedown="onMouseDown" ref="draggableContent">
+    <slot>
     </slot>
+    <span :hidden="!hoverDropArea">
+      <slot name="hoverdroparea">
+        <div class="add-icon">+</div>
+      </slot>
+    </span>
+    <span :hidden="!indroparea">
+      <slot name="indroparea">
+        <div class="remove-icon">X</div>
+      </slot>
     </span>
   </div>
 </template>
 
 <style scoped>
   .draggable-content {
-    cursor: move;
     display: inline-block;
   }
 
-  .hide-draggable-content {
-    display:none;
+  .add-icon {
+    display: inline-block;
+    transform: translate3d(-50%, -50%, 0);
+    font-size: larger;
+    font-weight: bolder;
+  }
+
+  .remove-icon {
+    display: inline-block;
+    font-size: larger;
+    font-weight: bolder;
   }
 </style>
 
 <script setup lang="ts">
 
-import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
+  import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
   import {
     type BdgHoverEnterEvent,
     type BdgHoverExitEvent,
     DragnDropEvents
   } from '@components/dragndrop/BdgDragndropTypes'
 
-  let elm: HTMLElement | null = null
-  const currentDropArea: Ref<Element | undefined> = ref(undefined)
-  let orgPosition = ''
-  const hoverDropArea = computed(() => {
-    return currentDropArea.value != null;
-  })
-
-  const hideElm = ref(false);
-  let slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
+  // let elm: HTMLElement | null = null
+  const draggedElm: Ref<HTMLElement | null> = ref(null)
+  const slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
+  const orgPosition: Ref<string> = ref('');
+  const currentDropArea: Ref<Element | undefined> = ref(undefined);
   const originalParent : Ref<HTMLElement | null | undefined> = ref(undefined);
+  const indroparea: Ref<boolean> = ref(false)
+
   const props = defineProps<
     {
       dropAreaClass: string
@@ -54,6 +67,12 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
     }>()
 
   const dropAreaClassSelector = `.${props.dropAreaClass}`
+
+
+  const hoverDropArea = computed(() => {
+    return currentDropArea.value != null;
+  })
+
 
   onMounted(() => {
     originalParent.value = slotRef.value?.parentElement;
@@ -67,19 +86,12 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
     let elements: Element[] | null = null
     let dropArea : Element | undefined = undefined;
 
-    if (elm) {
-      // hideElm.value = true
+    if (draggedElm.value) {
       elements = document.elementsFromPoint(x, y);
-      console.log(elements);
-      // hideElm.value = false
 
       dropArea = elements.find((element) => {
         return element.matches(dropAreaClassSelector)
       })
-
-      if (dropArea) {
-        // ret = ret.closest(dropAreaClassSelector)
-      }
     }
 
     return dropArea;
@@ -87,9 +99,9 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
 
   function onMouseMove(event: MouseEvent) {
     event.preventDefault()
-    if (elm) {
-      elm.style.left = `${event.clientX - elm.clientWidth / 2}px`
-      elm.style.top = `${event.clientY - elm.clientHeight / 2}px`
+    if (draggedElm.value) {
+      draggedElm.value.style.left = `${event.clientX - draggedElm.value.clientWidth / 2}px`
+      draggedElm.value.style.top = `${event.clientY - draggedElm.value.clientHeight / 2}px`
 
       let dropArea = getDropElementFromPoint(event.clientX, event.clientY)
 
@@ -97,7 +109,7 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
         if (dropArea) {
           const hoverEnterEvent = new CustomEvent(DragnDropEvents.HOVER_ENTER, {
             detail: {
-              element: elm,
+              element: draggedElm.value,
               preventDrop: () => {
                 console.log('drop prevented');
                 dropArea = undefined;
@@ -107,7 +119,7 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
 
           if (props.onHoverenter) {
             props.onHoverenter({
-              element: elm,
+              element: draggedElm.value,
               preventDrop: () => {
                 console.log('drop prevented');
                 dropArea = undefined;
@@ -120,13 +132,13 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
         else {
           const hoverExitEvent = new CustomEvent(DragnDropEvents.HOVER_EXIT, {
             detail: {
-              element: elm
+              element: draggedElm.value
             }
           });
 
           if (props.onHoverexit) {
             props.onHoverexit({
-              element: elm
+              element: draggedElm.value
             });
           }
 
@@ -144,28 +156,29 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
     window.removeEventListener('mousemove', onMouseMove)
     window.removeEventListener('mouseup', onMouseUp)
 
-    if (!elm) {
+    if (!draggedElm.value) {
       return
     }
 
-    if (currentDropArea.value && elm) {
+    if (currentDropArea.value && draggedElm.value) {
 
       const dropEvent = new CustomEvent(DragnDropEvents.DROP, {
         detail: {
-          element: elm
+          element: draggedElm.value
         }
       });
       currentDropArea.value.dispatchEvent(dropEvent)
-      // currentDropArea.appendChild(elm)
+      indroparea.value = true;
     }
     else {
-      if (originalParent.value && elm) {
-        originalParent.value.appendChild(elm)
+      if (originalParent.value && draggedElm.value) {
+        originalParent.value.appendChild(draggedElm.value)
       }
+      indroparea.value = false;
     }
 
-    elm.style.position = orgPosition
-    elm = null;
+    draggedElm.value.style.position = orgPosition.value;
+    draggedElm.value = null;
     currentDropArea.value = undefined;
   }
 
@@ -174,9 +187,10 @@ import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } f
     console.log('mouse down')
 
     if (slotRef.value) {
-      elm = slotRef.value as HTMLElement
-      orgPosition = elm.style.position
-      elm.style.position = 'fixed'
+      indroparea.value = false;
+      draggedElm.value = slotRef.value as HTMLElement
+      orgPosition.value = draggedElm.value.style.position
+      draggedElm.value.style.position = 'fixed'
     }
 
     window.addEventListener('mousemove', onMouseMove)
