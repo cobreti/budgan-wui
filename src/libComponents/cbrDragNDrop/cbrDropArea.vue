@@ -16,15 +16,8 @@
     type BdgHoverEnterEvent,
     type BdgHoverExitEvent,
     DragnDropEvents
-  } from '@components/dragndrop/BdgDragndropTypes'
-
-  declare global {
-    interface HTMLElementEventMap {
-      [DragnDropEvents.HOVER_ENTER]: CustomEvent<BdgHoverEnterEvent>;
-      [DragnDropEvents.HOVER_EXIT]: CustomEvent<BdgHoverExitEvent>;
-      [DragnDropEvents.DROP]: CustomEvent<BdgDropEvent>;
-    }
-  }
+  } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
+  import '@libComponents/cbrDragNDrop/cbrDragNDropEventMap'
 
 
   const props = defineProps<{

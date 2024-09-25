@@ -49,7 +49,7 @@
     type BdgHoverEnterEvent,
     type BdgHoverExitEvent,
     DragnDropEvents
-  } from '@components/dragndrop/BdgDragndropTypes'
+  } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
   // let elm: HTMLElement | null = null
   const draggedElm: Ref<HTMLElement | null> = ref(null)

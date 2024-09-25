@@ -23,16 +23,16 @@
 
                   </v-select> -->
                 </div>
-                <bdg-drop-area class="drop-area" :on-hoverenter="onHoverEnter" :on-hoverexit="onHoverExit" :on-drop="onDrop">
+                <cbrDropArea class="drop-area" :on-hoverenter="onHoverEnter" :on-hoverexit="onHoverExit" :on-drop="onDrop">
 
-                </bdg-drop-area>
+                </cbrDropArea>
             </div>
       </div>
 
       <div class="chip-area">
         <!-- <div id="test" class="draggable-item" @mousedown="onMouseDown"> -->
           <!-- <div>test</div> -->
-        <BdgDraggable class="draggable-item" drop-area-class="drop-area">
+        <cbrDraggable class="draggable-item" drop-area-class="drop-area">
             <v-chip>
               test
             </v-chip>
@@ -42,15 +42,15 @@
 <!--          <template v-slot:indroparea>-->
 <!--            <span>O</span>-->
 <!--          </template>-->
-        </BdgDraggable>
-        <BdgDraggable class="draggable-item" drop-area-class="drop-area">
+        </cbrDraggable>
+        <cbrDraggable class="draggable-item" drop-area-class="drop-area">
           <v-chip>
             test 2
           </v-chip>
           <template v-slot:hoverdroparea>
 <!--            <span>&nbsp;+</span>-->
           </template>
-        </BdgDraggable>
+        </cbrDraggable>
         <!-- </div> -->
       </div>
     </div>
@@ -105,12 +105,12 @@
 </style>
 
 <script setup lang="ts">
-    import BdgDraggable from '@/components/dragndrop/BdgDraggable.vue';
     import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
+    import cbrDraggable from '@libComponents/cbrDragNDrop/cbrDraggable.vue';
+    import cbrDropArea from '@libComponents/cbrDragNDrop/cbrDropArea.vue';
     // import { CSVColumnContent } from '@/core/models/csvDocument';
-    import BdgDropArea from '@components/dragndrop/BdgDropArea.vue'
-    import type { BdgDropEvent, BdgHoverEnterEvent, BdgHoverExitEvent } from '@components/dragndrop/BdgDragndropTypes'
+    import type { BdgDropEvent, BdgHoverEnterEvent, BdgHoverExitEvent } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
     // type ColumnMappingItemValue = {
     //   csvColumnContent: CSVColumnContent | undefined;
