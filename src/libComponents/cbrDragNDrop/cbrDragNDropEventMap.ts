@@ -1,9 +1,9 @@
-import type { BdgDropEvent, BdgHoverEnterEvent, BdgHoverExitEvent, DragnDropEvents } from "./cbrDragNDropTypes";
+import type { CbrDropEvent, CbrHoverEnterEvent, CbrHoverExitEvent, DragnDropEvents } from "./cbrDragNDropTypes";
 
 declare global {
     interface HTMLElementEventMap {
-      [DragnDropEvents.HOVER_ENTER]: CustomEvent<BdgHoverEnterEvent>;
-      [DragnDropEvents.HOVER_EXIT]: CustomEvent<BdgHoverExitEvent>;
-      [DragnDropEvents.DROP]: CustomEvent<BdgDropEvent>;
+      [DragnDropEvents.HOVER_ENTER]: CustomEvent<CbrHoverEnterEvent>;
+      [DragnDropEvents.HOVER_EXIT]: CustomEvent<CbrHoverExitEvent>;
+      [DragnDropEvents.DROP]: CustomEvent<CbrDropEvent>;
     }
   }

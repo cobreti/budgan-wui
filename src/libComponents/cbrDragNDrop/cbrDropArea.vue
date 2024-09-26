@@ -12,25 +12,25 @@
 
   import { onMounted, onUnmounted, useTemplateRef, type Ref } from 'vue'
   import {
-    type BdgDropEvent,
-    type BdgHoverEnterEvent,
-    type BdgHoverExitEvent,
+    type CbrDropEvent,
+    type CbrHoverEnterEvent,
+    type CbrHoverExitEvent,
     DragnDropEvents
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
   import '@libComponents/cbrDragNDrop/cbrDragNDropEventMap'
 
 
   const props = defineProps<{
-    onHoverenter?: (event: BdgHoverEnterEvent) => void,
-    onHoverexit?: (event: BdgHoverExitEvent) => void,
-    onDrop?: (event: BdgDropEvent) => void
+    hoverEnter?: (event: CbrHoverEnterEvent) => void,
+    hoverExit?: (event: CbrHoverExitEvent) => void,
+    onDrop?: (event: CbrDropEvent) => void
   }>();
 
   const dropRoot : Ref<HTMLSpanElement | null> = useTemplateRef('drop-root');
 
-  function onHoverEnter(event: CustomEvent<BdgHoverEnterEvent>) {
-    if (props.onHoverenter) {
-      props.onHoverenter({
+  function onHoverEnter(event: CustomEvent<CbrHoverEnterEvent>) {
+    if (props.hoverEnter) {
+      props.hoverEnter({
         element: event.detail.element,
         preventDrop: () => {
           event.detail.preventDrop();
@@ -39,15 +39,15 @@
     }
   }
 
-  function onHoverExit(event: CustomEvent<BdgHoverExitEvent>) {
-    if (props.onHoverexit) {
-      props.onHoverexit({
+  function onHoverExit(event: CustomEvent<CbrHoverExitEvent>) {
+    if (props.hoverExit) {
+      props.hoverExit({
         element: event.detail.element
       });
     }
   }
 
-  function onDraggableDrop(event: CustomEvent<BdgDropEvent>) {
+  function onDraggableDrop(event: CustomEvent<CbrDropEvent>) {
     let preventDefault = false;
 
     if (props.onDrop) {

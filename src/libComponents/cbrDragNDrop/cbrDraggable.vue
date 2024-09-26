@@ -46,8 +46,10 @@
 
   import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
   import {
-    type BdgHoverEnterEvent,
-    type BdgHoverExitEvent,
+    type CbrDraggableState,
+    CbrDraggableStateEnum,
+    type CbrHoverEnterEvent,
+    type CbrHoverExitEvent,
     DragnDropEvents
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
@@ -57,13 +59,17 @@
   const orgPosition: Ref<string> = ref('');
   const currentDropArea: Ref<Element | undefined> = ref(undefined);
   const originalParent : Ref<HTMLElement | null | undefined> = ref(undefined);
-  const indroparea: Ref<boolean> = ref(false)
+  const indroparea: Ref<boolean> = ref(false);
+  const state: Ref<CbrDraggableState> = ref({
+    state: CbrDraggableStateEnum.FREE
+  });
 
   const props = defineProps<
     {
       dropAreaClass: string
-      onHoverenter?: (event: BdgHoverEnterEvent) => void,
-      onHoverexit?: (event: BdgHoverExitEvent) => void,
+      hoverEnter?: (event: CbrHoverEnterEvent) => void,
+      hoverExit?: (event: CbrHoverExitEvent) => void,
+      stateChanged?: (state: CbrDraggableState) => void
     }>()
 
   const dropAreaClassSelector = `.${props.dropAreaClass}`
@@ -71,12 +77,22 @@
 
   const hoverDropArea = computed(() => {
     return currentDropArea.value != null;
-  })
+  });
 
 
   onMounted(() => {
     originalParent.value = slotRef.value?.parentElement;
-  })
+    if (props.stateChanged) {
+      props.stateChanged(state.value);
+    }
+  });
+
+  function setState(newState: CbrDraggableState) {
+    state.value = newState;
+    if (props.stateChanged) {
+      props.stateChanged(state.value);
+    }
+  }
 
   function getDropElementFromPoint(x: number, y: number): Element | undefined {
     if (dropAreaClassSelector == '') {
@@ -117,8 +133,8 @@
             }
           });
 
-          if (props.onHoverenter) {
-            props.onHoverenter({
+          if (props.hoverEnter) {
+            props.hoverEnter({
               element: draggedElm.value,
               preventDrop: () => {
                 console.log('drop prevented');
@@ -127,7 +143,7 @@
             });
           }
 
-          dropArea?.dispatchEvent(hoverEnterEvent)
+          dropArea?.dispatchEvent(hoverEnterEvent);
         }
         else {
           const hoverExitEvent = new CustomEvent(DragnDropEvents.HOVER_EXIT, {
@@ -136,16 +152,20 @@
             }
           });
 
-          if (props.onHoverexit) {
-            props.onHoverexit({
+          if (props.hoverExit) {
+            props.hoverExit({
               element: draggedElm.value
             });
           }
 
-          currentDropArea.value?.dispatchEvent(hoverExitEvent)
+          currentDropArea.value?.dispatchEvent(hoverExitEvent);
         }
 
         currentDropArea.value = dropArea;
+        setState({
+          state: CbrDraggableStateEnum.DRAGGING,
+          hoverElement: dropArea
+        });
       }
     }
   }
@@ -169,12 +189,19 @@
       });
       currentDropArea.value.dispatchEvent(dropEvent)
       indroparea.value = true;
+      setState({
+        state: CbrDraggableStateEnum.PINNED,
+        pinnedElement: currentDropArea.value
+      });
     }
     else {
       if (originalParent.value && draggedElm.value) {
         originalParent.value.appendChild(draggedElm.value)
       }
       indroparea.value = false;
+      setState({
+        state: CbrDraggableStateEnum.FREE
+      });
     }
 
     draggedElm.value.style.position = orgPosition.value;
@@ -191,6 +218,9 @@
       draggedElm.value = slotRef.value as HTMLElement
       orgPosition.value = draggedElm.value.style.position
       draggedElm.value.style.position = 'fixed'
+      setState({
+        state: CbrDraggableStateEnum.DRAGGING
+      });
     }
 
     window.addEventListener('mousemove', onMouseMove)
