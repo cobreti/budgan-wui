@@ -10,16 +10,6 @@
   <div class="draggable-content" @mousedown="onMouseDown" ref="draggableContent">
     <slot>
     </slot>
-    <span :hidden="!hoverDropArea">
-      <slot name="hoverdroparea">
-        <div class="add-icon">+</div>
-      </slot>
-    </span>
-    <span :hidden="!indroparea">
-      <slot name="indroparea">
-        <div class="remove-icon">X</div>
-      </slot>
-    </span>
   </div>
 </template>
 
@@ -44,7 +34,7 @@
 
 <script setup lang="ts">
 
-  import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
+  import { onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
   import {
     type CbrDraggableState,
     CbrDraggableStateEnum,
@@ -53,13 +43,10 @@
     DragnDropEvents
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
-  // let elm: HTMLElement | null = null
   const draggedElm: Ref<HTMLElement | null> = ref(null)
   const slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
   const orgPosition: Ref<string> = ref('');
-  const currentDropArea: Ref<Element | undefined> = ref(undefined);
   const originalParent : Ref<HTMLElement | null | undefined> = ref(undefined);
-  const indroparea: Ref<boolean> = ref(false);
   const state: Ref<CbrDraggableState> = ref({
     state: CbrDraggableStateEnum.FREE
   });
@@ -73,11 +60,6 @@
     }>()
 
   const dropAreaClassSelector = `.${props.dropAreaClass}`
-
-
-  const hoverDropArea = computed(() => {
-    return currentDropArea.value != null;
-  });
 
 
   onMounted(() => {
@@ -121,7 +103,7 @@
 
       let dropArea = getDropElementFromPoint(event.clientX, event.clientY)
 
-      if (dropArea !== currentDropArea.value) {
+      if (dropArea !== state.value.hoverElement) {
         if (dropArea) {
           const hoverEnterEvent = new CustomEvent(DragnDropEvents.HOVER_ENTER, {
             detail: {
@@ -158,10 +140,10 @@
             });
           }
 
-          currentDropArea.value?.dispatchEvent(hoverExitEvent);
+          state.value.hoverElement?.dispatchEvent(hoverExitEvent);
         }
 
-        currentDropArea.value = dropArea;
+        // currentDropArea.value = dropArea;
         setState({
           state: CbrDraggableStateEnum.DRAGGING,
           hoverElement: dropArea
@@ -180,25 +162,23 @@
       return
     }
 
-    if (currentDropArea.value && draggedElm.value) {
+    if (state.value.hoverElement && draggedElm.value) {
 
       const dropEvent = new CustomEvent(DragnDropEvents.DROP, {
         detail: {
           element: draggedElm.value
         }
       });
-      currentDropArea.value.dispatchEvent(dropEvent)
-      indroparea.value = true;
+      state.value.hoverElement?.dispatchEvent(dropEvent)
       setState({
         state: CbrDraggableStateEnum.PINNED,
-        pinnedElement: currentDropArea.value
+        pinnedElement: state.value.hoverElement
       });
     }
     else {
       if (originalParent.value && draggedElm.value) {
         originalParent.value.appendChild(draggedElm.value)
       }
-      indroparea.value = false;
       setState({
         state: CbrDraggableStateEnum.FREE
       });
@@ -206,7 +186,7 @@
 
     draggedElm.value.style.position = orgPosition.value;
     draggedElm.value = null;
-    currentDropArea.value = undefined;
+    // currentDropArea.value = undefined;
   }
 
   function onMouseDown(event: MouseEvent) {
@@ -214,7 +194,6 @@
     console.log('mouse down')
 
     if (slotRef.value) {
-      indroparea.value = false;
       draggedElm.value = slotRef.value as HTMLElement
       orgPosition.value = draggedElm.value.style.position
       draggedElm.value.style.position = 'fixed'
