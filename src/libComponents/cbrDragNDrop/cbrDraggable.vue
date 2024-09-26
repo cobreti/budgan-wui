@@ -16,6 +16,7 @@
 <style scoped>
   .draggable-content {
     display: inline-block;
+    cursor: pointer;
   }
 
   .add-icon {

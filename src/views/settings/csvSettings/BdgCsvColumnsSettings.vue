@@ -36,20 +36,11 @@
             <v-chip>
               test
             </v-chip>
-<!--          <template v-slot:hoverdroparea>-->
-<!--&lt;!&ndash;            <span>&nbsp;+</span>&ndash;&gt;-->
-<!--          </template>-->
-<!--          <template v-slot:indroparea>-->
-<!--            <span>O</span>-->
-<!--          </template>-->
         </cbrDraggable>
         <cbrDraggable class="draggable-item" drop-area-class="drop-area">
           <v-chip>
             test 2
           </v-chip>
-          <template v-slot:hoverdroparea>
-<!--            <span>&nbsp;+</span>-->
-          </template>
         </cbrDraggable>
         <!-- </div> -->
       </div>
