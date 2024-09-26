@@ -59,12 +59,6 @@
   .chip-area {
     display: block;
     margin-top: 3em;
-
-    .draggable-item {
-      /* background-color: cyan; */
-      /* width: auto; */
-      /* display: inline-block; */
-    }
   }
 
   .selector {
