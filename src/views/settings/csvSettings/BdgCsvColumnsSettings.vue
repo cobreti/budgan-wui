@@ -15,13 +15,6 @@
                     {{ currentRow[index] }}
                 </div>
                 <div>
-                  <!-- <v-select
-                    flat
-                    :items="ColumnMappingItems"
-                    v-model="modelValues[index]"
-                  >
-
-                  </v-select> -->
                 </div>
                 <cbrDropArea class="drop-area" :hoverEnter="onHoverEnter" :hoverExit="onHoverExit" :on-drop="onDrop">
 
@@ -30,8 +23,6 @@
       </div>
 
       <div class="chip-area">
-        <!-- <div id="test" class="draggable-item" @mousedown="onMouseDown"> -->
-          <!-- <div>test</div> -->
         <cbrDraggable class="draggable-item" drop-area-class="drop-area" :state-changed="onStateChanged">
             <v-chip>
               test
@@ -42,7 +33,6 @@
             test 2
           </v-chip>
         </cbrDraggable>
-        <!-- </div> -->
       </div>
     </div>
 </template>
