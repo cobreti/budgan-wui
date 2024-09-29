@@ -195,6 +195,23 @@
     draggedElm.value = null;
   }
 
+  function onDragCanceled() {
+    if (!draggedElm.value) {
+      return
+    }
+
+    if (originalParent.value && draggedElm.value) {
+        originalParent.value.appendChild(draggedElm.value)
+    }
+
+    setState({
+      state: CbrDraggableStateEnum.FREE
+    });
+
+    draggedElm.value.style.position = orgPosition.value;
+    draggedElm.value = null;
+  }
+
   function onTouchMove(event: TouchEvent) {
     event.preventDefault();
 
@@ -217,12 +234,23 @@
   }
 
   function onTouchEnd(event: TouchEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
-    window.removeEventListener('touchmove', onTouchMove)
-    window.removeEventListener('touchend', onTouchEnd)
+    window.removeEventListener('touchmove', onTouchMove);
+    window.removeEventListener('touchend', onTouchEnd);
+    window.removeEventListener('touchcancel', onTouchCancel);
 
     onDragEnd();
+  }
+
+  function onTouchCancel(event: TouchEvent) {
+    event.preventDefault();
+
+    onDragCanceled();
+
+    window.removeEventListener('touchmove', onTouchMove);
+    window.removeEventListener('touchend', onTouchEnd);
+    window.removeEventListener('touchcancel', onTouchCancel);
   }
 
   function onMouseDown(event: MouseEvent) {
@@ -242,6 +270,7 @@
 
     window.addEventListener('touchmove', onTouchMove);
     window.addEventListener('touchend', onTouchEnd);
+    window.addEventListener('touchcancel', onTouchCancel);
   }
 
 
