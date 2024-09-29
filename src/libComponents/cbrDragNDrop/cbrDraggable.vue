@@ -7,7 +7,7 @@
   */
 
 <template>
-  <div class="draggable-content" @mousedown="onMouseDown" ref="draggableContent">
+  <div class="draggable-content" @mousedown="onMouseDown" @touchstart="onTouchStart" ref="draggableContent">
     <slot>
     </slot>
   </div>
@@ -96,13 +96,24 @@
     return dropArea;
   }
 
-  function onMouseMove(event: MouseEvent) {
-    event.preventDefault()
-    if (draggedElm.value) {
-      draggedElm.value.style.left = `${event.clientX - draggedElm.value.clientWidth / 2}px`
-      draggedElm.value.style.top = `${event.clientY - draggedElm.value.clientHeight / 2}px`
+  function onDragStart() {
+    if (!slotRef.value)
+      return;
 
-      let dropArea = getDropElementFromPoint(event.clientX, event.clientY)
+    draggedElm.value = slotRef.value as HTMLElement
+    orgPosition.value = draggedElm.value.style.position
+    draggedElm.value.style.position = 'fixed'
+    setState({
+      state: CbrDraggableStateEnum.DRAGGING
+    });
+  }
+
+  function onDragMove(clientX: number, clientY: number) {
+    if (draggedElm.value) {
+      draggedElm.value.style.left = `${clientX - draggedElm.value.clientWidth / 2}px`
+      draggedElm.value.style.top = `${clientY - draggedElm.value.clientHeight / 2}px`
+
+      let dropArea = getDropElementFromPoint(clientX, clientY)
 
       if (dropArea !== state.value.hoverElement) {
         if (dropArea) {
@@ -153,12 +164,7 @@
     }
   }
 
-  function onMouseUp(event: MouseEvent) {
-    event.preventDefault()
-
-    window.removeEventListener('mousemove', onMouseMove)
-    window.removeEventListener('mouseup', onMouseUp)
-
+  function onDragEnd() {
     if (!draggedElm.value) {
       return
     }
@@ -187,23 +193,56 @@
 
     draggedElm.value.style.position = orgPosition.value;
     draggedElm.value = null;
-    // currentDropArea.value = undefined;
+  }
+
+  function onTouchMove(event: TouchEvent) {
+    event.preventDefault();
+
+    onDragMove(event.touches[0].clientX, event.touches[0].clientY);
+  }
+
+  function onMouseMove(event: MouseEvent) {
+    event.preventDefault();
+
+    onDragMove(event.clientX, event.clientY);
+  }
+
+  function onMouseUp(event: MouseEvent) {
+    event.preventDefault()
+
+    window.removeEventListener('mousemove', onMouseMove)
+    window.removeEventListener('mouseup', onMouseUp)
+
+    onDragEnd();
+  }
+
+  function onTouchEnd(event: TouchEvent) {
+    event.preventDefault()
+
+    window.removeEventListener('touchmove', onTouchMove)
+    window.removeEventListener('touchend', onTouchEnd)
+
+    onDragEnd();
   }
 
   function onMouseDown(event: MouseEvent) {
     event.preventDefault()
     console.log('mouse down')
 
-    if (slotRef.value) {
-      draggedElm.value = slotRef.value as HTMLElement
-      orgPosition.value = draggedElm.value.style.position
-      draggedElm.value.style.position = 'fixed'
-      setState({
-        state: CbrDraggableStateEnum.DRAGGING
-      });
-    }
+    onDragStart();
 
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
   }
+
+  function onTouchStart(event: TouchEvent) {
+    event.preventDefault();
+
+    onDragStart();
+
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('touchend', onTouchEnd);
+  }
+
+
 </script>
