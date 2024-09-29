@@ -23,16 +23,12 @@
       </div>
 
       <div class="chip-area">
-        <cbrDraggable class="draggable-item" drop-area-class="drop-area" :state-changed="onStateChanged">
-            <v-chip>
-              test
-            </v-chip>
-        </cbrDraggable>
-        <cbrDraggable class="draggable-item" drop-area-class="drop-area">
-          <v-chip>
-            test 2
-          </v-chip>
-        </cbrDraggable>
+        <BdgDraggable class="draggable-item" drop-area-class="drop-area" :state-changed="onStateChanged">
+          test
+        </BdgDraggable>
+        <BdgDraggable class="draggable-item" drop-area-class="drop-area">
+          test 2
+        </BdgDraggable>
       </div>
     </div>
 </template>
@@ -82,7 +78,8 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
-    import cbrDraggable from '@libComponents/cbrDragNDrop/cbrDraggable.vue';
+    import BdgDraggable from '@/components/DragNDrop/BdgDraggable.vue';
+    // import cbrDraggable from '@libComponents/cbrDragNDrop/cbrDraggable.vue';
     import cbrDropArea from '@libComponents/cbrDragNDrop/cbrDropArea.vue';
     import type { CbrDraggableState, CbrDropEvent, CbrHoverEnterEvent, CbrHoverExitEvent } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
 

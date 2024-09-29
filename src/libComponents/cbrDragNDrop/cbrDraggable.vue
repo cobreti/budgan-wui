@@ -16,7 +16,6 @@
 <style scoped>
   .draggable-content {
     display: inline-block;
-    cursor: pointer;
   }
 
   .add-icon {
@@ -104,7 +103,8 @@
     orgPosition.value = draggedElm.value.style.position
     draggedElm.value.style.position = 'fixed'
     setState({
-      state: CbrDraggableStateEnum.DRAGGING
+      state: CbrDraggableStateEnum.DRAGGING,
+      hoverElement: state.value.pinnedElement
     });
   }
 
