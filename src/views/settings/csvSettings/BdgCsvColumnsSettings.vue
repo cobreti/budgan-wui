@@ -22,13 +22,13 @@
             </div>
       </div>
 
+      <BdgDraggable class="draggable-item" dropAreaSelector=".drop-area" free-area-selector=".chip-area">
+        test 2
+      </BdgDraggable>
+      <BdgDraggable class="draggable-item" dropAreaSelector=".drop-area" :state-changed="onStateChanged" free-area-selector=".chip-area">
+        test
+      </BdgDraggable>
       <div class="chip-area">
-        <BdgDraggable class="draggable-item" drop-area-class="drop-area" :state-changed="onStateChanged">
-          test
-        </BdgDraggable>
-        <BdgDraggable class="draggable-item" drop-area-class="drop-area">
-          test 2
-        </BdgDraggable>
       </div>
     </div>
 </template>
@@ -45,6 +45,8 @@
   .chip-area {
     display: block;
     margin-top: 3em;
+    border: 1px solid blue;
+    min-height: 4em;
   }
 
   .selector {

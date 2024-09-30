@@ -44,26 +44,26 @@
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
   const draggedElm: Ref<HTMLElement | null> = ref(null)
+  const freeArea : Ref<Element | null> = ref(null);
   const slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
   const orgPosition: Ref<string> = ref('');
-  const originalParent : Ref<HTMLElement | null | undefined> = ref(undefined);
   const state: Ref<CbrDraggableState> = ref({
     state: CbrDraggableStateEnum.FREE
   });
 
   const props = defineProps<
     {
-      dropAreaClass: string
+      freeAreaSelector: string,
+      dropAreaSelector: string,
       hoverEnter?: (event: CbrHoverEnterEvent) => void,
       hoverExit?: (event: CbrHoverExitEvent) => void,
       stateChanged?: (state: CbrDraggableState) => void
     }>()
 
-  const dropAreaClassSelector = `.${props.dropAreaClass}`
-
 
   onMounted(() => {
-    originalParent.value = slotRef.value?.parentElement;
+    init();
+
     if (props.stateChanged) {
       props.stateChanged(state.value);
     }
@@ -77,7 +77,7 @@
   }
 
   function getDropElementFromPoint(x: number, y: number): Element | undefined {
-    if (dropAreaClassSelector == '') {
+    if (props.dropAreaSelector === '') {
       return undefined
     }
 
@@ -88,7 +88,7 @@
       elements = document.elementsFromPoint(x, y);
 
       dropArea = elements.find((element) => {
-        return element.matches(dropAreaClassSelector)
+        return element.matches(props.dropAreaSelector)
       })
     }
 
@@ -99,7 +99,9 @@
     if (!slotRef.value)
       return;
 
-    draggedElm.value = slotRef.value as HTMLElement
+    if (!draggedElm.value)
+      return;
+
     orgPosition.value = draggedElm.value.style.position
     draggedElm.value.style.position = 'fixed'
     setState({
@@ -155,7 +157,6 @@
           state.value.hoverElement?.dispatchEvent(hoverExitEvent);
         }
 
-        // currentDropArea.value = dropArea;
         setState({
           state: CbrDraggableStateEnum.DRAGGING,
           hoverElement: dropArea
@@ -183,16 +184,13 @@
       });
     }
     else {
-      if (originalParent.value && draggedElm.value) {
-        originalParent.value.appendChild(draggedElm.value)
-      }
+      addToFreeArea();
       setState({
         state: CbrDraggableStateEnum.FREE
       });
     }
 
     draggedElm.value.style.position = orgPosition.value;
-    draggedElm.value = null;
   }
 
   function onDragCanceled() {
@@ -200,15 +198,12 @@
       return
     }
 
-    if (originalParent.value && draggedElm.value) {
-        originalParent.value.appendChild(draggedElm.value)
-    }
+    addToFreeArea();
 
     setState({
       state: CbrDraggableStateEnum.FREE
     });
 
-    draggedElm.value.style.position = orgPosition.value;
     draggedElm.value = null;
   }
 
@@ -271,6 +266,37 @@
     window.addEventListener('touchmove', onTouchMove);
     window.addEventListener('touchend', onTouchEnd);
     window.addEventListener('touchcancel', onTouchCancel);
+  }
+
+  function addToFreeArea() {
+
+    if (!freeArea.value)
+      return;
+
+    if (!draggedElm.value)
+      return;
+
+    let freeAreaParent = draggedElm.value.closest(props.freeAreaSelector);
+
+    if (!freeAreaParent) {
+      console.log('moving elmeent to free area', draggedElm.value)
+      freeArea.value.appendChild(draggedElm.value);
+      draggedElm.value.style.position = orgPosition.value;
+    }
+  }
+
+  function init() {
+    let elm = document.querySelector(props.freeAreaSelector);
+    if (!elm) {
+      console.error('Free area not found');
+      return;
+    }
+    
+    freeArea.value = elm;
+    draggedElm.value = slotRef.value as HTMLElement;
+    orgPosition.value = draggedElm.value.style.position;
+
+    addToFreeArea();
   }
 
 

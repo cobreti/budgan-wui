@@ -1,7 +1,8 @@
 <template>
   <div class="draggable-content">
     <CbrDraggable
-      :drop-area-class="dropAreaClass"
+      :drop-area-selector="dropAreaSelector"
+      :free-area-selector="freeAreaSelector"
       :hover-enter="onHoverEnter"
       :hover-exit="onHoverExit"
       :state-changed="onStateChanged"
@@ -59,9 +60,10 @@
   const refState = ref<CbrDraggableState>()
 
   const props = defineProps<{
-    dropAreaClass: string
-    hoverEnter?: (event: CbrHoverEnterEvent) => void
-    hoverExit?: (event: CbrHoverExitEvent) => void
+    freeAreaSelector: string,
+    dropAreaSelector: string,
+    hoverEnter?: (event: CbrHoverEnterEvent) => void,
+    hoverExit?: (event: CbrHoverExitEvent) => void,
     stateChanged?: (state: CbrDraggableState) => void
   }>()
 
