@@ -106,7 +106,8 @@
     draggedElm.value.style.position = 'fixed'
     setState({
       state: CbrDraggableStateEnum.DRAGGING,
-      hoverElement: state.value.pinnedElement
+      hoverElement: state.value.pinnedElement,
+      pinnedElement: state.value.pinnedElement
     });
   }
 
@@ -159,7 +160,8 @@
 
         setState({
           state: CbrDraggableStateEnum.DRAGGING,
-          hoverElement: dropArea
+          hoverElement: dropArea,
+          pinnedElement: state.value.pinnedElement
         });
       }
     }
@@ -172,18 +174,41 @@
 
     if (state.value.hoverElement && draggedElm.value) {
 
-      const dropEvent = new CustomEvent(DragnDropEvents.DROP, {
-        detail: {
-          element: draggedElm.value
-        }
-      });
-      state.value.hoverElement?.dispatchEvent(dropEvent)
+      if (state.value.hoverElement != state.value.pinnedElement) {
+        const unPinEvent = new CustomEvent(DragnDropEvents.UNPIN, {
+          detail: {
+            element: draggedElm.value
+            }
+        });
+        state.value.pinnedElement?.dispatchEvent(unPinEvent);
+
+        const pinEvent = new CustomEvent(DragnDropEvents.PIN, {
+          detail: {
+            element: draggedElm.value
+          }
+        });
+        state.value.hoverElement?.dispatchEvent(pinEvent)
+      }
+
+      draggedElm.value.style.left  = "";
+      draggedElm.value.style.top  = "";
+      draggedElm.value.style.position = orgPosition.value;
+
       setState({
         state: CbrDraggableStateEnum.PINNED,
         pinnedElement: state.value.hoverElement
       });
     }
     else {
+      if (state.value.pinnedElement) {
+        const unpinEvent = new CustomEvent(DragnDropEvents.UNPIN, {
+          detail: {
+            element: draggedElm.value
+          }
+        });
+        state.value.pinnedElement.dispatchEvent(unpinEvent);
+      }
+
       addToFreeArea();
       setState({
         state: CbrDraggableStateEnum.FREE
@@ -281,6 +306,8 @@
     if (!freeAreaParent) {
       console.log('moving elmeent to free area', draggedElm.value)
       freeArea.value.appendChild(draggedElm.value);
+      draggedElm.value.style.left  = "";
+      draggedElm.value.style.top  = "";
       draggedElm.value.style.position = orgPosition.value;
     }
   }

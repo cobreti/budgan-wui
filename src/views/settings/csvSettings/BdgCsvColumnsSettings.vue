@@ -16,17 +16,23 @@
                 </div>
                 <div>
                 </div>
-                <cbrDropArea class="drop-area" :hoverEnter="onHoverEnter" :hoverExit="onHoverExit" :on-drop="onDrop">
+                <cbrDropArea 
+                  class="drop-area" 
+                  :hoverEnter="onHoverEnter" 
+                  :hoverExit="onHoverExit" 
+                  :onPin="onPin(index)"
+                  :onUnpin="onUnpin(index)"
+                  >
 
                 </cbrDropArea>
             </div>
       </div>
 
       <BdgDraggable class="draggable-item" dropAreaSelector=".drop-area" free-area-selector=".chip-area">
-        test 2
+        <span id="test-2">test 2</span>
       </BdgDraggable>
       <BdgDraggable class="draggable-item" dropAreaSelector=".drop-area" :state-changed="onStateChanged" free-area-selector=".chip-area">
-        test
+        <span id="test">test</span>
       </BdgDraggable>
       <div class="chip-area">
       </div>
@@ -81,9 +87,8 @@
     import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
     import BdgDraggable from '@/components/DragNDrop/BdgDraggable.vue';
-    // import cbrDraggable from '@libComponents/cbrDragNDrop/cbrDraggable.vue';
     import cbrDropArea from '@libComponents/cbrDragNDrop/cbrDropArea.vue';
-    import type { CbrDraggableState, CbrDropEvent, CbrHoverEnterEvent, CbrHoverExitEvent } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
+    import type { CbrDraggableState, CbrPinEvent, CbrHoverEnterEvent, CbrHoverExitEvent, CbrUnpinEvent } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
     const csvSettingsStore = useCsvSettingsStore();
 
@@ -104,8 +109,16 @@
       console.log('onHoverExit', event);
     }
 
-    function onDrop(event: CbrDropEvent) {
-      // event.preventDefault();
+    function onPin(index: number) {
+      return function(event: CbrPinEvent) {
+        console.log(`column ${index} onPin`, event);
+      }
+    }
+
+    function onUnpin(index: number) {
+      return function(event: CbrUnpinEvent) {
+        console.log(`column ${index} onUnpin`, event);
+      }
     }
 
 

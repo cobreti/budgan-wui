@@ -7,9 +7,13 @@ export type CbrHoverExitEvent = {
   element: Element
 };
 
-export type CbrDropEvent = {
+export type CbrPinEvent = {
   element: Element,
   preventDefault: () => void
+};
+
+export type CbrUnpinEvent = {
+  element: Element
 };
 
 export enum CbrDraggableStateEnum {
@@ -27,5 +31,6 @@ export type CbrDraggableState = {
 export enum DragnDropEvents {
   HOVER_ENTER = 'bdg-dragdrop:hoverenter',
   HOVER_EXIT = 'bdg-dragdrop:hoverexit',
-  DROP = 'bdg-dragdrop:drop'
+  PIN = 'bdg-dragdrop:drop',
+  UNPIN = 'bdg-dragdrop:unpin'
 };
