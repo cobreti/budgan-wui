@@ -1,11 +1,12 @@
 <template>
   <div class="draggable-content">
     <CbrDraggable
-      :drop-area-selector="dropAreaSelector"
+      :pin-area-selector="pinAreaSelector"
       :free-area-selector="freeAreaSelector"
       :hover-enter="onHoverEnter"
       :hover-exit="onHoverExit"
       :state-changed="onStateChanged"
+      ref="cbrdraggable"
     >
       <v-chip>
         <slot></slot>
@@ -13,6 +14,7 @@
           class="remove-icon"
           icon="mdi-close"
           :hidden="hideRemoveIcon"
+          @click="onUnpin"
         >
         </v-icon>
       </v-chip>
@@ -30,7 +32,6 @@
   .draggable-content {
     display: inline-block;
     cursor: default;
-    /* cursor: pointer; */
   }
 
   .add-icon {
@@ -50,22 +51,28 @@
 
 <script setup lang="ts">
   import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue'
-  import type {
-    CbrDraggableState,
-    CbrHoverEnterEvent,
-    CbrHoverExitEvent
+  import {
+    DragnDropEvents,
+    type CbrDraggableState,
+    type CbrHoverEnterEvent,
+    type CbrHoverExitEvent,
+    type CbrUnpinEvent
   } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
-  import { computed, ref } from 'vue'
+  import { computed, onMounted, ref, useTemplateRef } from 'vue'
 
-  const refState = ref<CbrDraggableState>()
+  const refState = ref<CbrDraggableState>();
+  const slotRef = useTemplateRef('cbrdraggable');
 
   const props = defineProps<{
     freeAreaSelector: string,
-    dropAreaSelector: string,
+    pinAreaSelector: string,
     hoverEnter?: (event: CbrHoverEnterEvent) => void,
     hoverExit?: (event: CbrHoverExitEvent) => void,
     stateChanged?: (state: CbrDraggableState) => void
   }>()
+
+  onMounted(() => {
+  });
 
   const hideAddIcon = computed(() => {
     return refState.value?.hoverElement === undefined;
@@ -74,6 +81,11 @@
   const hideRemoveIcon = computed(() => {
     return refState.value?.pinnedElement === undefined;
   });
+
+  function onUnpin() {
+    const unpinEvent = new CustomEvent<CbrUnpinEvent>(DragnDropEvents.UNPIN, {});
+    slotRef.value?.$el?.dispatchEvent(unpinEvent);
+  }
 
   function onHoverEnter(event: CbrHoverEnterEvent) {
     if (props.hoverEnter) {

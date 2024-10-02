@@ -12,11 +12,11 @@
 
   import { onMounted, onUnmounted, useTemplateRef, type Ref } from 'vue'
   import {
-    type CbrPinEvent,
+    type CbrPinnedEvent,
     type CbrHoverEnterEvent,
     type CbrHoverExitEvent,
     DragnDropEvents,
-    type CbrUnpinEvent
+    type CbrUnpinnedEvent
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
   import '@libComponents/cbrDragNDrop/cbrDragNDropEventMap'
 
@@ -24,8 +24,8 @@
   const props = defineProps<{
     hoverEnter?: (event: CbrHoverEnterEvent) => void,
     hoverExit?: (event: CbrHoverExitEvent) => void,
-    onPin?: (event: CbrPinEvent) => void,
-    onUnpin?: (event: CbrUnpinEvent) => void,
+    onPin?: (event: CbrPinnedEvent) => void,
+    onUnpin?: (event: CbrUnpinnedEvent) => void,
   }>();
 
   const dropRoot : Ref<HTMLSpanElement | null> = useTemplateRef('drop-root');
@@ -49,7 +49,7 @@
     }
   }
 
-  function onDraggablePin(event: CustomEvent<CbrPinEvent>) {
+  function onDraggablePin(event: CustomEvent<CbrPinnedEvent>) {
     let preventDefault = false;
 
     if (props.onPin) {
@@ -66,7 +66,7 @@
     }
   }
 
-  function onDraggableUnpin(event: CustomEvent<CbrUnpinEvent>) {
+  function onDraggableUnpin(event: CustomEvent<CbrUnpinnedEvent>) {
     if (props.onUnpin) {
       props.onUnpin({
         element: event.detail.element
@@ -77,14 +77,14 @@
   onMounted(() => {
     dropRoot.value?.addEventListener(DragnDropEvents.HOVER_ENTER, onHoverEnter);
     dropRoot.value?.addEventListener(DragnDropEvents.HOVER_EXIT, onHoverExit);
-    dropRoot.value?.addEventListener(DragnDropEvents.PIN, onDraggablePin);
-    dropRoot.value?.addEventListener(DragnDropEvents.UNPIN, onDraggableUnpin);
+    dropRoot.value?.addEventListener(DragnDropEvents.PINNED, onDraggablePin);
+    dropRoot.value?.addEventListener(DragnDropEvents.UNPINNED, onDraggableUnpin);
   });
 
   onUnmounted(() => {
     dropRoot.value?.removeEventListener(DragnDropEvents.HOVER_ENTER, onHoverEnter);
     dropRoot.value?.removeEventListener(DragnDropEvents.HOVER_EXIT, onHoverExit);
-    dropRoot.value?.removeEventListener(DragnDropEvents.PIN, onDraggablePin);
-    dropRoot.value?.removeEventListener(DragnDropEvents.UNPIN, onDraggableUnpin);
+    dropRoot.value?.removeEventListener(DragnDropEvents.PINNED, onDraggablePin);
+    dropRoot.value?.removeEventListener(DragnDropEvents.UNPINNED, onDraggableUnpin);
   });
 </script>

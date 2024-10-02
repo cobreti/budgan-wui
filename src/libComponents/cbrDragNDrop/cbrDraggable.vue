@@ -34,12 +34,13 @@
 
 <script setup lang="ts">
 
-  import { onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
+  import { onMounted, onUnmounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
   import {
     type CbrDraggableState,
     CbrDraggableStateEnum,
     type CbrHoverEnterEvent,
     type CbrHoverExitEvent,
+    type CbrUnpinEvent,
     DragnDropEvents
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
 
@@ -54,21 +55,48 @@
   const props = defineProps<
     {
       freeAreaSelector: string,
-      dropAreaSelector: string,
+      pinAreaSelector: string,
       hoverEnter?: (event: CbrHoverEnterEvent) => void,
       hoverExit?: (event: CbrHoverExitEvent) => void,
       stateChanged?: (state: CbrDraggableState) => void
     }>()
 
 
+  /**
+   * Mounted hook
+   */
   onMounted(() => {
-    init();
+    let elm = document.querySelector(props.freeAreaSelector);
+    if (!elm) {
+      console.error('Free area not found');
+      return;
+    }
+    
+    freeArea.value = elm;
+    draggedElm.value = slotRef.value as HTMLElement;
+    orgPosition.value = draggedElm.value.style.position;
+
+    draggedElm.value.addEventListener(DragnDropEvents.UNPIN, onUnpinHandler);
 
     if (props.stateChanged) {
       props.stateChanged(state.value);
     }
   });
 
+  /**
+   * Unmounted hook
+   */
+  onUnmounted(() => {
+    if (draggedElm.value) {
+      draggedElm.value.removeEventListener(DragnDropEvents.UNPIN, onUnpinHandler);
+    }
+  });
+
+
+  /**
+   * set the state of the draggable element
+   * @param newState : state to set
+   */
   function setState(newState: CbrDraggableState) {
     state.value = newState;
     if (props.stateChanged) {
@@ -76,8 +104,13 @@
     }
   }
 
-  function getDropElementFromPoint(x: number, y: number): Element | undefined {
-    if (props.dropAreaSelector === '') {
+  /**
+   * return the pin element where the draggable can be pinnedfrom a point
+   * @param x 
+   * @param y 
+   */
+  function getPinElementFromPoint(x: number, y: number): Element | undefined {
+    if (props.pinAreaSelector === '') {
       return undefined
     }
 
@@ -88,13 +121,43 @@
       elements = document.elementsFromPoint(x, y);
 
       dropArea = elements.find((element) => {
-        return element.matches(props.dropAreaSelector)
+        return element.matches(props.pinAreaSelector)
       })
     }
 
     return dropArea;
   }
 
+  /**
+   * custom unpin event handler
+   * @param event : CustomEvent<CbrUnpinEvent>
+   */
+  function onUnpinHandler(event: CustomEvent<CbrUnpinEvent>) {
+    if (!draggedElm.value) {
+      return
+    }
+
+    if (state.value.pinnedElement) {
+      const unpinEvent = new CustomEvent(DragnDropEvents.UNPINNED, {
+        detail: {
+          element: draggedElm.value
+        }
+      });
+      state.value.pinnedElement.dispatchEvent(unpinEvent);
+    }
+
+    addToFreeArea();
+    setState({
+      state: CbrDraggableStateEnum.FREE
+    });
+
+    draggedElm.value.style.position = orgPosition.value;
+  }
+
+  /**
+   * on drag start event handler
+   *  called by mouse down or touch start event
+   */
   function onDragStart() {
     if (!slotRef.value)
       return;
@@ -111,12 +174,19 @@
     });
   }
 
+  /**
+   * on drag move event handler
+   *  called by mouse move or touch move event
+   * 
+   * @param clientX 
+   * @param clientY 
+   */
   function onDragMove(clientX: number, clientY: number) {
     if (draggedElm.value) {
       draggedElm.value.style.left = `${clientX - draggedElm.value.clientWidth / 2}px`
       draggedElm.value.style.top = `${clientY - draggedElm.value.clientHeight / 2}px`
 
-      let dropArea = getDropElementFromPoint(clientX, clientY)
+      let dropArea = getPinElementFromPoint(clientX, clientY)
 
       if (dropArea !== state.value.hoverElement) {
         if (dropArea) {
@@ -167,6 +237,10 @@
     }
   }
 
+  /**
+   * on drag end event handler
+   *  called by mouse up or touch end event
+   */
   function onDragEnd() {
     if (!draggedElm.value) {
       return
@@ -175,14 +249,14 @@
     if (state.value.hoverElement && draggedElm.value) {
 
       if (state.value.hoverElement != state.value.pinnedElement) {
-        const unPinEvent = new CustomEvent(DragnDropEvents.UNPIN, {
+        const unPinEvent = new CustomEvent(DragnDropEvents.UNPINNED, {
           detail: {
             element: draggedElm.value
             }
         });
         state.value.pinnedElement?.dispatchEvent(unPinEvent);
 
-        const pinEvent = new CustomEvent(DragnDropEvents.PIN, {
+        const pinEvent = new CustomEvent(DragnDropEvents.PINNED, {
           detail: {
             element: draggedElm.value
           }
@@ -201,7 +275,7 @@
     }
     else {
       if (state.value.pinnedElement) {
-        const unpinEvent = new CustomEvent(DragnDropEvents.UNPIN, {
+        const unpinEvent = new CustomEvent(DragnDropEvents.UNPINNED, {
           detail: {
             element: draggedElm.value
           }
@@ -218,6 +292,10 @@
     draggedElm.value.style.position = orgPosition.value;
   }
 
+  /**
+   * on drag canceled event handler
+   *  called when the touch is canceled by the user
+   */
   function onDragCanceled() {
     if (!draggedElm.value) {
       return
@@ -232,18 +310,30 @@
     draggedElm.value = null;
   }
 
+  /**
+   * touch move event handler
+   * @param event 
+   */
   function onTouchMove(event: TouchEvent) {
     event.preventDefault();
 
     onDragMove(event.touches[0].clientX, event.touches[0].clientY);
   }
 
+  /**
+   * mouse move event handler
+   * @param event 
+   */
   function onMouseMove(event: MouseEvent) {
     event.preventDefault();
 
     onDragMove(event.clientX, event.clientY);
   }
 
+  /**
+   * mouse up event handler
+   * @param event 
+   */
   function onMouseUp(event: MouseEvent) {
     event.preventDefault()
 
@@ -253,6 +343,10 @@
     onDragEnd();
   }
 
+  /**
+   * touch end event handler
+   * @param event 
+   */
   function onTouchEnd(event: TouchEvent) {
     event.preventDefault();
 
@@ -263,6 +357,10 @@
     onDragEnd();
   }
 
+  /**
+   * touch cancel event handler
+   * @param event 
+   */
   function onTouchCancel(event: TouchEvent) {
     event.preventDefault();
 
@@ -273,6 +371,10 @@
     window.removeEventListener('touchcancel', onTouchCancel);
   }
 
+  /**
+   * mouse down event handler
+   * @param event 
+   */
   function onMouseDown(event: MouseEvent) {
     event.preventDefault()
     console.log('mouse down')
@@ -283,6 +385,10 @@
     window.addEventListener('mouseup', onMouseUp)
   }
 
+  /**
+   * touch start event handler
+   * @param event 
+   */
   function onTouchStart(event: TouchEvent) {
     event.preventDefault();
 
@@ -293,6 +399,9 @@
     window.addEventListener('touchcancel', onTouchCancel);
   }
 
+  /**
+   * add the draggable element to the free area element
+   */
   function addToFreeArea() {
 
     if (!freeArea.value)
@@ -311,20 +420,5 @@
       draggedElm.value.style.position = orgPosition.value;
     }
   }
-
-  function init() {
-    let elm = document.querySelector(props.freeAreaSelector);
-    if (!elm) {
-      console.error('Free area not found');
-      return;
-    }
-    
-    freeArea.value = elm;
-    draggedElm.value = slotRef.value as HTMLElement;
-    orgPosition.value = draggedElm.value.style.position;
-
-    addToFreeArea();
-  }
-
 
 </script>
