@@ -1,5 +1,5 @@
 <template>
-    <div v-if="hasCsvPreview">
+    <div>
         Showing columns settings
 
         <div>
@@ -29,7 +29,7 @@
       </div>
 
       <div class="chip-area">
-        <BdgDraggable class="draggable-item" pin-area-selector=".drop-area" free-area-selector=".chip-area">
+        <BdgDraggable class="draggable-item" pin-area-selector=".drop-area" free-area-selector=".chip-area" :controller="draggableController">
           <span id="test-2">test 2</span>
         </BdgDraggable>
         <BdgDraggable class="draggable-item" pin-area-selector=".drop-area" :state-changed="onStateChanged" free-area-selector=".chip-area">
@@ -89,11 +89,15 @@
     import BdgDraggable from '@/components/DragNDrop/BdgDraggable.vue';
     import cbrDropArea from '@libComponents/cbrDragNDrop/cbrDropArea.vue';
     import type { CbrDraggableState, CbrPinnedEvent, CbrHoverEnterEvent, CbrHoverExitEvent, CbrUnpinnedEvent } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
+    import { CbrDraggableController } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
 
     const csvSettingsStore = useCsvSettingsStore();
 
     const currentRowIndex = ref(0);
-    const hasCsvPreview = computed(() => csvSettingsStore.csvRows.length > 0);
+    const draggableController = ref(new CbrDraggableController({
+      pinAreaSelector: '.drop-area',
+      freeAreaSelector: '.chip-area',
+    }));
     const currentRow = computed(() => csvSettingsStore.csvRows[currentRowIndex.value].records || []);
     const columnsCount = computed(() => currentRow.value.length);
 

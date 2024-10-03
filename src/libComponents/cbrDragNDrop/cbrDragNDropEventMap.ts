@@ -1,4 +1,4 @@
-import type { CbrPinnedEvent, CbrHoverEnterEvent, CbrHoverExitEvent, DragnDropEvents, CbrUnpinnedEvent, CbrPinEvent, CbrUnpinEvent } from "./cbrDragNDropTypes";
+import type { CbrPinnedEvent, CbrHoverEnterEvent, CbrHoverExitEvent, DragnDropEvents, CbrUnpinnedEvent, CbrPinEvent } from "./cbrDragNDropTypes";
 
 declare global {
     interface HTMLElementEventMap {
@@ -7,6 +7,5 @@ declare global {
       [DragnDropEvents.PINNED]: CustomEvent<CbrPinnedEvent>;
       [DragnDropEvents.UNPINNED]: CustomEvent<CbrUnpinnedEvent>;
       [DragnDropEvents.PIN]: CustomEvent<CbrPinEvent>;
-      [DragnDropEvents.UNPIN]: CustomEvent<CbrUnpinEvent>;
     }
   }

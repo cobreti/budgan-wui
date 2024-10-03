@@ -40,12 +40,13 @@
     CbrDraggableStateEnum,
     type CbrHoverEnterEvent,
     type CbrHoverExitEvent,
-    type CbrUnpinEvent,
     DragnDropEvents
   } from '@libComponents/cbrDragNDrop/cbrDragNDropTypes'
+import type { CbrDraggableControllerInterface } from './cbrDraggableController';
+import type { CbrDraggableInterface } from './cbrDraggableInterface';
 
   const draggedElm: Ref<HTMLElement | null> = ref(null)
-  const freeArea : Ref<Element | null> = ref(null);
+  const freeArea : Ref<Element | undefined> = ref();
   const slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
   const orgPosition: Ref<string> = ref('');
   const state: Ref<CbrDraggableState> = ref({
@@ -56,27 +57,50 @@
     {
       freeAreaSelector: string,
       pinAreaSelector: string,
+      controller?: CbrDraggableControllerInterface,
       hoverEnter?: (event: CbrHoverEnterEvent) => void,
       hoverExit?: (event: CbrHoverExitEvent) => void,
       stateChanged?: (state: CbrDraggableState) => void
     }>()
 
 
+  class DraggableObject implements CbrDraggableInterface {
+    unpin() {
+      if (!draggedElm.value) {
+        return
+      }
+
+      if (state.value.pinnedElement) {
+        const unpinEvent = new CustomEvent(DragnDropEvents.UNPINNED, {
+          detail: {
+            element: draggedElm.value
+          }
+        });
+        state.value.pinnedElement.dispatchEvent(unpinEvent);
+      }
+
+      addToFreeArea();
+      setState({
+        state: CbrDraggableStateEnum.FREE
+      });
+
+      draggedElm.value.style.position = orgPosition.value;
+    }
+  };
+  const refObject = new DraggableObject();
+
+
   /**
    * Mounted hook
    */
-  onMounted(() => {
-    let elm = document.querySelector(props.freeAreaSelector);
-    if (!elm) {
-      console.error('Free area not found');
-      return;
-    }
-    
-    freeArea.value = elm;
+  onMounted(() => {   
+    freeArea.value = props.controller?.freeAreaElement;
     draggedElm.value = slotRef.value as HTMLElement;
     orgPosition.value = draggedElm.value.style.position;
 
-    draggedElm.value.addEventListener(DragnDropEvents.UNPIN, onUnpinHandler);
+    props.controller?.registerDraggable(refObject);
+
+    // draggedElm.value.addEventListener(DragnDropEvents.UNPIN, onUnpinHandler);
 
     if (props.stateChanged) {
       props.stateChanged(state.value);
@@ -87,9 +111,9 @@
    * Unmounted hook
    */
   onUnmounted(() => {
-    if (draggedElm.value) {
-      draggedElm.value.removeEventListener(DragnDropEvents.UNPIN, onUnpinHandler);
-    }
+    // if (draggedElm.value) {
+      // draggedElm.value.removeEventListener(DragnDropEvents.UNPIN, onUnpinHandler);
+    // }
   });
 
 
@@ -110,49 +134,34 @@
    * @param y 
    */
   function getPinElementFromPoint(x: number, y: number): Element | undefined {
-    if (props.pinAreaSelector === '') {
-      return undefined
-    }
-
-    let elements: Element[] | null = null
-    let dropArea : Element | undefined = undefined;
-
-    if (draggedElm.value) {
-      elements = document.elementsFromPoint(x, y);
-
-      dropArea = elements.find((element) => {
-        return element.matches(props.pinAreaSelector)
-      })
-    }
-
-    return dropArea;
+    return props.controller?.getPinElementFromPoint(x, y);
   }
 
-  /**
-   * custom unpin event handler
-   * @param event : CustomEvent<CbrUnpinEvent>
-   */
-  function onUnpinHandler(event: CustomEvent<CbrUnpinEvent>) {
-    if (!draggedElm.value) {
-      return
-    }
+  // /**
+  //  * custom unpin event handler
+  //  * @param event : CustomEvent<CbrUnpinEvent>
+  //  */
+  // function onUnpinHandler(event: CustomEvent<CbrUnpinEvent>) {
+  //   if (!draggedElm.value) {
+  //     return
+  //   }
 
-    if (state.value.pinnedElement) {
-      const unpinEvent = new CustomEvent(DragnDropEvents.UNPINNED, {
-        detail: {
-          element: draggedElm.value
-        }
-      });
-      state.value.pinnedElement.dispatchEvent(unpinEvent);
-    }
+  //   if (state.value.pinnedElement) {
+  //     const unpinEvent = new CustomEvent(DragnDropEvents.UNPINNED, {
+  //       detail: {
+  //         element: draggedElm.value
+  //       }
+  //     });
+  //     state.value.pinnedElement.dispatchEvent(unpinEvent);
+  //   }
 
-    addToFreeArea();
-    setState({
-      state: CbrDraggableStateEnum.FREE
-    });
+  //   addToFreeArea();
+  //   setState({
+  //     state: CbrDraggableStateEnum.FREE
+  //   });
 
-    draggedElm.value.style.position = orgPosition.value;
-  }
+  //   draggedElm.value.style.position = orgPosition.value;
+  // }
 
   /**
    * on drag start event handler

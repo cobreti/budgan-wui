@@ -16,9 +16,6 @@ export type CbrUnpinnedEvent = {
   element: Element
 };
 
-export type CbrUnpinEvent = {
-};
-
 export type CbrPinEvent = {
   pinElement: Element
 };
@@ -42,8 +39,6 @@ export enum DragnDropEvents {
   PINNED = 'cbr-dragdrop:pinned',
   // sent after the draggable element has been unpinned
   UNPINNED = 'cbr-dragdrop:unpinned',
-  // sent to unpin the draggable element
-  UNPIN = 'cbr-dragdrop:unpin',
   // sent to pin the draggable element
   PIN = 'cbr-dragdrop:pin'
 };

@@ -10,7 +10,7 @@
         accept=".csv"
         :multiple="false"
       ></v-file-input>
-      <BdgCsvColumnsSettings></BdgCsvColumnsSettings>
+      <BdgCsvColumnsSettings v-if="hasCsvPreview"></BdgCsvColumnsSettings>
     </div>
   </div>
 </template>
@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
   import BdgCsvColumnsSettings from './BdgCsvColumnsSettings.vue'
-  import { defineModel, type Ref, ref, watch } from 'vue'
+  import { computed, defineModel, type Ref, ref, watch } from 'vue'
   import { container } from '@/core/setupInversify'
   import { ServicesTypes } from '@services/types'
   import type { IStreamFactory } from '@services/StreamFactory'
@@ -75,6 +75,8 @@
 
   const csvContentPreview : Ref<CsvParseResult | null> = ref(null);
   const csvHeaderIndex : Ref<number> = ref(-1);
+
+  const hasCsvPreview = computed(() => csvSettingsStore.csvRows.length > 0);
 
   watch(selectedColumn, (newVal) => {
     console.log('selectedColumn : ', newVal);

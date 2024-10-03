@@ -6,6 +6,7 @@
       :hover-enter="onHoverEnter"
       :hover-exit="onHoverExit"
       :state-changed="onStateChanged"
+      :controller="props.controller"
       ref="cbrdraggable"
     >
       <v-chip>
@@ -51,21 +52,20 @@
 
 <script setup lang="ts">
   import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue'
+import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
   import {
-    DragnDropEvents,
     type CbrDraggableState,
     type CbrHoverEnterEvent,
     type CbrHoverExitEvent,
-    type CbrUnpinEvent
   } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
-  import { computed, onMounted, ref, useTemplateRef } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
 
   const refState = ref<CbrDraggableState>();
-  const slotRef = useTemplateRef('cbrdraggable');
 
   const props = defineProps<{
     freeAreaSelector: string,
     pinAreaSelector: string,
+    controller?: CbrDraggableControllerInterface,
     hoverEnter?: (event: CbrHoverEnterEvent) => void,
     hoverExit?: (event: CbrHoverExitEvent) => void,
     stateChanged?: (state: CbrDraggableState) => void
@@ -83,8 +83,7 @@
   });
 
   function onUnpin() {
-    const unpinEvent = new CustomEvent<CbrUnpinEvent>(DragnDropEvents.UNPIN, {});
-    slotRef.value?.$el?.dispatchEvent(unpinEvent);
+    props.controller?.unpin();
   }
 
   function onHoverEnter(event: CbrHoverEnterEvent) {
