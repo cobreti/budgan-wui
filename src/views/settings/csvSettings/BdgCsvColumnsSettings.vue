@@ -9,6 +9,7 @@
         <div class="d-flex flex-row justify-start align-content-space-evenly selector">
             <div v-for="(n, index) in columnsCount"
                 :key="index"
+                :id="'csv-column-' + index"
                 class="column-cell"
             >
                 <div class="column-cell-text">
@@ -16,7 +17,7 @@
                 </div>
                 <div>
                 </div>
-                <div class="drop-area">
+                <div :id="'csv-drop-column-' + index" class="drop-area">
                 </div>
             </div>
       </div>
@@ -86,7 +87,7 @@
 </style>
 
 <script setup lang="ts">
-    import { computed, ref } from 'vue';
+    import { computed, onMounted, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
     import { CbrDraggableController } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
     import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue';
@@ -101,5 +102,9 @@
     }));
     const currentRow = computed(() => csvSettingsStore.csvRows[currentRowIndex.value].records || []);
     const columnsCount = computed(() => currentRow.value.length);
+
+    onMounted(() => {
+      draggableController.value.getDraggable('test2')?.pin(document.getElementById('csv-drop-column-0') as HTMLElement);
+    });
 
 </script>
