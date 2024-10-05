@@ -22,12 +22,15 @@
       </div>
 
       <div class="chip-area">
-        <BdgDraggable class="draggable-item" pin-area-selector=".drop-area" free-area-selector=".chip-area" :controller="draggableController">
-          <span id="test-2">test 2</span>
-        </BdgDraggable>
-        <BdgDraggable class="draggable-item" pin-area-selector=".drop-area" :state-changed="onStateChanged" free-area-selector=".chip-area">
+        <CbrDraggable id="test2" class="draggable-item" pin-area-selector=".drop-area" free-area-selector=".chip-area" :controller="draggableController">
+          <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test2')">
+            <span>test 2</span>
+          </BdgDraggableItem>
+          
+        </CbrDraggable>
+        <CbrDraggable id="test" class="draggable-item" pin-area-selector=".drop-area" :state-changed="onStateChanged" :controller="draggableController" free-area-selector=".chip-area">
           <span id="test">test</span>
-        </BdgDraggable>
+        </CbrDraggable>
       </div>
     </div>
 </template>
@@ -79,9 +82,10 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
-    import BdgDraggable from '@/components/DragNDrop/BdgDraggable.vue';
     import type { CbrDraggableState } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
     import { CbrDraggableController } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
+    import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue';
+    import BdgDraggableItem from '@/components/DragNDrop/BdgDraggableItem.vue';
 
     const csvSettingsStore = useCsvSettingsStore();
 

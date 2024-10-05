@@ -1,6 +1,7 @@
 <template>
   <div class="draggable-content">
     <CbrDraggable
+      :id="props.id"
       :pin-area-selector="pinAreaSelector"
       :free-area-selector="freeAreaSelector"
       :hover-enter="onHoverEnter"
@@ -53,7 +54,7 @@
 
 <script setup lang="ts">
   import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue'
-import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
+  import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
   import {
     type CbrDraggableState,
     type CbrHoverEnterEvent,
@@ -64,6 +65,7 @@ import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDr
   const refState = ref<CbrDraggableState>();
 
   const props = defineProps<{
+    id: string,
     freeAreaSelector: string,
     pinAreaSelector: string,
     controller?: CbrDraggableControllerInterface,
@@ -81,7 +83,7 @@ import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDr
   });
 
   function onUnpin() {
-    props.controller?.unpin();
+    props.controller?.getDraggable(props.id)?.unpin();
   }
 
   function onHoverEnter(event: CbrHoverEnterEvent) {

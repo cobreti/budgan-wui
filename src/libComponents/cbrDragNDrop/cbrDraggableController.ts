@@ -1,3 +1,4 @@
+import { BehaviorSubject, Observable } from 'rxjs';
 import type { CbrDraggableInterface } from "./cbrDraggableInterface";
 import type { CbrHoverEnterDelegate, CbrHoverEnterEvent, CbrHoverExitDelegate, CbrHoverExitEvent, CbrPinEvent, CbrUnpinnedEvent } from "./cbrDragNDropTypes";
 
@@ -19,6 +20,8 @@ export interface CbrDraggableControllerInterface extends CbrDraggableControllerE
     getPinAreaFromPoint(x: number, y: number): Element | undefined;
 
     registerDraggable(draggable: CbrDraggableInterface): void;
+    getDraggable(id: string): CbrDraggableInterface;
+    getDraggableObserver(id: string): Observable<CbrDraggableInterface | undefined>;
 
     /**
      * return if the given element can be used to start a drag operation
@@ -27,8 +30,6 @@ export interface CbrDraggableControllerInterface extends CbrDraggableControllerE
      * @returns true if the element can be used to start a drag operation, false otherwise
      */
     canPick(elm: HTMLElement): boolean;
-
-    unpin(): void;
 
     addToFreeArea(elm: HTMLElement, freeArea: HTMLElement): void;
 }
@@ -39,12 +40,14 @@ export type CbrDraggableControllerOptions = {
     freeAreaSelector: string;
 }
 
+type DraggablesTable = {[key: string]: BehaviorSubject<CbrDraggableInterface | undefined>};
+
 
 export class CbrDraggableController implements CbrDraggableControllerInterface {
 
     pinAreaSelector_: string;
     freeAreaSelector_: string;
-    draggable_: CbrDraggableInterface | undefined;
+    draggables_: DraggablesTable = {};
 
     constructor(options: CbrDraggableControllerOptions) {
         this.pinAreaSelector_ = options.pinAreaSelector;
@@ -102,15 +105,35 @@ export class CbrDraggableController implements CbrDraggableControllerInterface {
         console.log('onUnpin', event);
     }
 
-
-    unpin(): void {
-        if (this.draggable_) {
-            this.draggable_.unpin();
+    registerDraggable(draggable: CbrDraggableInterface): void {
+        const id = draggable.id;
+        if (id in this.draggables_) {
+            this.draggables_[id].next(draggable);
+        }
+        else {
+            this.draggables_[id] = new BehaviorSubject<CbrDraggableInterface | undefined>(draggable);
         }
     }
 
-    registerDraggable(draggable: CbrDraggableInterface): void {
-        this.draggable_ = draggable;
+    getDraggableObserver(id: string): Observable<CbrDraggableInterface | undefined> {
+        if (!(id in this.draggables_)) {
+            this.draggables_[id] = new BehaviorSubject<CbrDraggableInterface | undefined>(undefined);
+        }
+
+        return this.draggables_[id];
+    }
+
+    getDraggable(id: string): CbrDraggableInterface {
+        if (!(id in this.draggables_)) {
+            throw new Error(`Draggable with id ${id} not found`);
+        }
+
+        const value = this.draggables_[id].getValue();
+        if (!value) {
+            throw new Error(`Draggable with id ${id} not found`);
+        }
+        
+        return value;
     }
 
     addToFreeArea(elm: HTMLElement, freeArea: HTMLElement): void {

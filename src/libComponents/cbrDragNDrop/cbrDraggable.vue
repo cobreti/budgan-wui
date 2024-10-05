@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 
-  import { onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
+  import { computed, onMounted, type Ref, ref, type ShallowRef, useTemplateRef } from 'vue'
   import {
     type CbrDraggableState,
     CbrDraggableStateEnum,
@@ -52,24 +52,41 @@
 
   const draggedElm: Ref<HTMLElement | null> = ref(null)
   const freeArea : Ref<Element | undefined> = ref();
-  const slotRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
+  const draggableRef: ShallowRef<HTMLElement | null | undefined> = useTemplateRef('draggableContent');
   const orgPosition: Ref<string> = ref('');
   const state: Ref<CbrDraggableState> = ref({
     state: CbrDraggableStateEnum.FREE
   });
 
-  const props = defineProps<
-    {
-      freeAreaSelector: string,
-      pinAreaSelector: string,
-      controller?: CbrDraggableControllerInterface,
-      hoverEnter?: CbrHoverEnterDelegate,
-      hoverExit?: (event: CbrHoverExitEvent) => void,
-      stateChanged?: (state: CbrDraggableState) => void
-    }>()
+  const showAddIcon : Ref<boolean> = computed(() => {
+    return state.value?.hoverArea != undefined;
+  });
+
+  const showRemoveIcon: Ref<boolean> = computed(() => {
+    return state.value?.pinArea != undefined && state.value?.state != 'dragging';
+  });
+
+  const props = defineProps<{
+    id: string,
+    freeAreaSelector: string,
+    pinAreaSelector: string,
+    controller?: CbrDraggableControllerInterface,
+    hoverEnter?: CbrHoverEnterDelegate,
+    hoverExit?: (event: CbrHoverExitEvent) => void,
+    stateChanged?: (state: CbrDraggableState) => void
+  }>()
 
 
   class DraggableObject implements CbrDraggableInterface {
+    get id(): string { return props.id}
+
+    get showAddIcon(): Ref<boolean> { return showAddIcon }
+    get showRemoveIcon(): Ref<boolean> { return showRemoveIcon }
+
+    // get id() : string { return props.id; }
+    // get showAddIcon() : Ref<boolean> { return showAddIcon; }
+    // get showRemoveIcon() : Ref<boolean> { return showRemoveIcon; }
+
     unpin() {
       if (!draggedElm.value) {
         return
@@ -81,7 +98,7 @@
           pinArea: state.value.pinArea!
         }
 
-        props.controller?.onUnpin(refObject, unpinEvent);
+        props.controller?.onUnpin(this, unpinEvent);
       }
 
       addToFreeArea();
@@ -92,7 +109,7 @@
       draggedElm.value.style.position = orgPosition.value;
     }
 
-    pin(pinArea: Element) {
+    pin(pinArea: HTMLElement) {
       if (!draggedElm.value) {
         return
       }
@@ -103,7 +120,7 @@
           pinArea: state.value.pinArea!
         }
 
-        props.controller?.onUnpin(refObject, unpinEvent);
+        props.controller?.onUnpin(draggableObject, unpinEvent);
       }
 
       const pinEvent: CbrPinEvent = {
@@ -123,18 +140,21 @@
       });
     }
   };
-  const refObject = new DraggableObject();
+  
+  const draggableObject : CbrDraggableInterface = new DraggableObject();
 
 
   /**
    * Mounted hook
    */
-  onMounted(() => {   
+  onMounted(() => {
+    console.log('CbrDraggable mounted');
+
     freeArea.value = props.controller?.freeAreaElement;
-    draggedElm.value = slotRef.value as HTMLElement;
+    draggedElm.value = draggableRef.value as HTMLElement;
     orgPosition.value = draggedElm.value.style.position;
 
-    props.controller?.registerDraggable(refObject);
+    props.controller?.registerDraggable(draggableObject);
 
     if (props.stateChanged) {
       props.stateChanged(state.value);
@@ -167,7 +187,7 @@
    *  called by mouse down or touch start event
    */
   function onDragStart() {
-    if (!slotRef.value)
+    if (!draggableRef.value)
       return;
 
     if (!draggedElm.value)
@@ -218,7 +238,7 @@
           }
         };
 
-        props.controller?.onHoverEnter(refObject, hoverEnterEvent, createNext(props.hoverEnter));
+        props.controller?.onHoverEnter(draggableObject, hoverEnterEvent, createNext(props.hoverEnter));
 
         if (hoverEnterEvent.dropPrevented) {
           console.log('drop prevented');
@@ -231,7 +251,7 @@
           dropArea: state.value.hoverArea
         };
 
-        props.controller?.onHoverExit(refObject, hoverExitEvent, createNext(props.hoverExit));
+        props.controller?.onHoverExit(draggableObject, hoverExitEvent, createNext(props.hoverExit));
       }
 
       setState({
@@ -252,10 +272,10 @@
     }
 
     if (state.value.hoverArea && draggedElm.value) {
-      refObject.pin(state.value.hoverArea);
+      draggableObject.pin(state.value.hoverArea as HTMLElement);
     }
     else {
-      refObject.unpin();
+      draggableObject.unpin();
     }
 
     draggedElm.value.style.position = orgPosition.value;
