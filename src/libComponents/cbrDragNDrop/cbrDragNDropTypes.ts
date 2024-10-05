@@ -1,23 +1,23 @@
 export type CbrHoverEnterEvent = {
   element: Element,
+  dropArea?: Element,
+  dropPrevented: boolean,
   preventDrop: () => void
 };
 
 export type CbrHoverExitEvent = {
-  element: Element
-};
-
-export type CbrPinnedEvent = {
   element: Element,
-  preventDefault: () => void
+  dropArea?: Element
 };
 
 export type CbrUnpinnedEvent = {
-  element: Element
+  element: Element,
+  pinArea: Element
 };
 
 export type CbrPinEvent = {
-  pinElement: Element
+  draggableElement: Element
+  pinArea: Element
 };
 
 export enum CbrDraggableStateEnum {
@@ -28,8 +28,8 @@ export enum CbrDraggableStateEnum {
 
 export type CbrDraggableState = {
   state: CbrDraggableStateEnum,
-  pinnedElement?: Element,
-  hoverElement?: Element
+  pinArea?: Element,
+  hoverArea?: Element
 };
 
 export enum DragnDropEvents {
@@ -42,3 +42,7 @@ export enum DragnDropEvents {
   // sent to pin the draggable element
   PIN = 'cbr-dragdrop:pin'
 };
+
+
+export type CbrHoverEnterDelegate = (event: CbrHoverEnterEvent) => void;
+export type CbrHoverExitDelegate = (event: CbrHoverExitEvent) => void;

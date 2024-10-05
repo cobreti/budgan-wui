@@ -1,18 +1,36 @@
 import type { CbrDraggableInterface } from "./cbrDraggableInterface";
-import type { CbrHoverEnterEvent } from "./cbrDragNDropTypes";
+import type { CbrHoverEnterDelegate, CbrHoverEnterEvent, CbrHoverExitDelegate, CbrHoverExitEvent, CbrPinEvent, CbrUnpinnedEvent } from "./cbrDragNDropTypes";
 
-export interface CbrDraggableControllerInterface {
+
+export interface CbrDraggableControllerEventsInterface {
+
+    onHoverEnter(draggable: CbrDraggableInterface, event: CbrHoverEnterEvent, delegate: CbrHoverEnterDelegate): void;
+    onHoverExit(draggable: CbrDraggableInterface, event: CbrHoverExitEvent, delegate: CbrHoverExitDelegate): void
+    onPin(draggable: CbrDraggableInterface, event: CbrPinEvent): void;
+    onUnpin(draggable: CbrDraggableInterface, event: CbrUnpinnedEvent): void;
+}
+
+
+export interface CbrDraggableControllerInterface extends CbrDraggableControllerEventsInterface {
 
     pinAreaElement: HTMLElement;
     freeAreaElement: HTMLElement;
 
-    getPinElementFromPoint(x: number, y: number): Element | undefined;
+    getPinAreaFromPoint(x: number, y: number): Element | undefined;
 
     registerDraggable(draggable: CbrDraggableInterface): void;
 
-    onHoverEnter(draggable: CbrDraggableInterface, event: CbrHoverEnterEvent): void;
+    /**
+     * return if the given element can be used to start a drag operation
+     * 
+     * @param elm: HTMLElement
+     * @returns true if the element can be used to start a drag operation, false otherwise
+     */
+    canPick(elm: HTMLElement): boolean;
 
     unpin(): void;
+
+    addToFreeArea(elm: HTMLElement, freeArea: HTMLElement): void;
 }
 
 
@@ -41,7 +59,7 @@ export class CbrDraggableController implements CbrDraggableControllerInterface {
         return document.querySelector(this.freeAreaSelector_) as HTMLElement;
     }
 
-    getPinElementFromPoint(x: number, y: number): Element | undefined {
+    getPinAreaFromPoint(x: number, y: number): Element | undefined {
         if (this.pinAreaSelector_ === '') {
           return undefined
         }
@@ -58,8 +76,32 @@ export class CbrDraggableController implements CbrDraggableControllerInterface {
         return dropArea;
     }
 
-    onHoverEnter(draggable: CbrDraggableInterface, event: CbrHoverEnterEvent): void {
+    canPick(elm: HTMLElement): boolean {
+        return !(elm && elm.hasAttribute('cbr-dragndrop-no-pick'));
     }
+
+    onHoverEnter(draggable: CbrDraggableInterface, event: CbrHoverEnterEvent, delegate: CbrHoverEnterDelegate): void {
+        console.log('onHoverEnter', event);
+
+        delegate(event);
+    }
+    
+    onHoverExit(draggable: CbrDraggableInterface, event: CbrHoverExitEvent, delegate: CbrHoverExitDelegate): void {
+        console.log('onHoverExit', event);
+
+        delegate(event);
+    }
+
+    onPin(draggable: CbrDraggableInterface, event: CbrPinEvent) {
+        console.log('onPin', event);
+
+        event.pinArea.appendChild(event.draggableElement);
+    }
+
+    onUnpin(draggable: CbrDraggableInterface, event: CbrUnpinnedEvent): void {
+        console.log('onUnpin', event);
+    }
+
 
     unpin(): void {
         if (this.draggable_) {
@@ -69,5 +111,12 @@ export class CbrDraggableController implements CbrDraggableControllerInterface {
 
     registerDraggable(draggable: CbrDraggableInterface): void {
         this.draggable_ = draggable;
+    }
+
+    addToFreeArea(elm: HTMLElement, freeArea: HTMLElement): void {
+        freeArea.appendChild(elm);
+        elm.style.left  = "";
+        elm.style.top  = "";
+        elm.style.position = '';  
     }
 }

@@ -16,15 +16,8 @@
                 </div>
                 <div>
                 </div>
-                <cbrDropArea 
-                  class="drop-area" 
-                  :hoverEnter="onHoverEnter" 
-                  :hoverExit="onHoverExit" 
-                  :onPin="onPin(index)"
-                  :onUnpin="onUnpin(index)"
-                  >
-
-                </cbrDropArea>
+                <div class="drop-area">
+                </div>
             </div>
       </div>
 
@@ -87,8 +80,7 @@
     import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
     import BdgDraggable from '@/components/DragNDrop/BdgDraggable.vue';
-    import cbrDropArea from '@libComponents/cbrDragNDrop/cbrDropArea.vue';
-    import type { CbrDraggableState, CbrPinnedEvent, CbrHoverEnterEvent, CbrHoverExitEvent, CbrUnpinnedEvent } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
+    import type { CbrDraggableState } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
     import { CbrDraggableController } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
 
     const csvSettingsStore = useCsvSettingsStore();
@@ -103,26 +95,6 @@
 
     function onStateChanged(state: CbrDraggableState) {
       console.log('new state: ', state);
-    }
-
-    function onHoverEnter(event: CbrHoverEnterEvent) {
-      console.log('onHoverEnter', event);
-    }
-
-    function onHoverExit(event: CbrHoverExitEvent) {
-      console.log('onHoverExit', event);
-    }
-
-    function onPin(index: number) {
-      return function(event: CbrPinnedEvent) {
-        console.log(`column ${index} onPin`, event);
-      }
-    }
-
-    function onUnpin(index: number) {
-      return function(event: CbrUnpinnedEvent) {
-        console.log(`column ${index} onUnpin`, event);
-      }
     }
 
 

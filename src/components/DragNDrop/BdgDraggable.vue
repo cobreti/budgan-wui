@@ -12,6 +12,7 @@
       <v-chip>
         <slot></slot>
         <v-icon
+          cbr-dragndrop-no-pick
           class="remove-icon"
           icon="mdi-close"
           :hidden="hideRemoveIcon"
@@ -58,7 +59,7 @@ import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDr
     type CbrHoverEnterEvent,
     type CbrHoverExitEvent,
   } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, ref } from 'vue'
 
   const refState = ref<CbrDraggableState>();
 
@@ -71,15 +72,12 @@ import type { CbrDraggableControllerInterface } from '@/libComponents/cbrDragNDr
     stateChanged?: (state: CbrDraggableState) => void
   }>()
 
-  onMounted(() => {
-  });
-
   const hideAddIcon = computed(() => {
-    return refState.value?.hoverElement === undefined;
+    return refState.value?.hoverArea === undefined;
   });
 
   const hideRemoveIcon = computed(() => {
-    return refState.value?.pinnedElement === undefined;
+    return refState.value?.pinArea === undefined || refState.value?.state === 'dragging';
   });
 
   function onUnpin() {
