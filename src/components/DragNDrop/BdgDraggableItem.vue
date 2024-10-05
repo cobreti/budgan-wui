@@ -22,6 +22,24 @@
 
 
 <style scoped>
+  .draggable-content {
+    display: inline-block;
+    cursor: default;
+  }
+
+  .add-icon {
+    transform: translate(-50%, -50%);
+    color: green;
+  }
+
+  .remove-icon {
+    margin-left: 0.5em;
+    cursor: pointer;
+  }
+
+  .remove-icon:hover {
+    color: red;
+  }
 </style>
 
 

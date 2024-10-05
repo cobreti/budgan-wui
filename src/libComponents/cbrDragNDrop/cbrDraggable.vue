@@ -68,8 +68,6 @@
 
   const props = defineProps<{
     id: string,
-    freeAreaSelector: string,
-    pinAreaSelector: string,
     controller?: CbrDraggableControllerInterface,
     hoverEnter?: CbrHoverEnterDelegate,
     hoverExit?: (event: CbrHoverExitEvent) => void,
@@ -82,10 +80,6 @@
 
     get showAddIcon(): Ref<boolean> { return showAddIcon }
     get showRemoveIcon(): Ref<boolean> { return showRemoveIcon }
-
-    // get id() : string { return props.id; }
-    // get showAddIcon() : Ref<boolean> { return showAddIcon; }
-    // get showRemoveIcon() : Ref<boolean> { return showRemoveIcon; }
 
     unpin() {
       if (!draggedElm.value) {
@@ -402,14 +396,14 @@
     if (!draggedElm.value)
       return;
 
-    let freeAreaParent = draggedElm.value.closest(props.freeAreaSelector);
+    if (!props.controller) {
+      return;
+    }
+
+    let freeAreaParent = draggedElm.value.closest(props.controller.freeAreaSelector);
 
     if (!freeAreaParent) {
-      props.controller?.addToFreeArea(draggedElm.value, freeArea.value as HTMLElement);
-      // freeArea.value.appendChild(draggedElm.value);
-      // draggedElm.value.style.left  = "";
-      // draggedElm.value.style.top  = "";
-      // draggedElm.value.style.position = orgPosition.value;
+      props.controller.addToFreeArea(draggedElm.value, freeArea.value as HTMLElement);
     }
   }
 

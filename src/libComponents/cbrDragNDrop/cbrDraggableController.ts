@@ -16,6 +16,7 @@ export interface CbrDraggableControllerInterface extends CbrDraggableControllerE
 
     pinAreaElement: HTMLElement;
     freeAreaElement: HTMLElement;
+    freeAreaSelector: string;
 
     getPinAreaFromPoint(x: number, y: number): Element | undefined;
 
@@ -56,6 +57,10 @@ export class CbrDraggableController implements CbrDraggableControllerInterface {
 
     get pinAreaElement(): HTMLElement {
         return document.querySelector(this.pinAreaSelector_) as HTMLElement;
+    }
+
+    get freeAreaSelector(): string {
+        return this.freeAreaSelector_;
     }
 
     get freeAreaElement(): HTMLElement {

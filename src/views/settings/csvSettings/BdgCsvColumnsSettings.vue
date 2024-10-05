@@ -22,14 +22,20 @@
       </div>
 
       <div class="chip-area">
-        <CbrDraggable id="test2" class="draggable-item" pin-area-selector=".drop-area" free-area-selector=".chip-area" :controller="draggableController">
+        <CbrDraggable id="test2" class="draggable-item" :controller="draggableController">
           <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test2')">
             <span>test 2</span>
           </BdgDraggableItem>
           
         </CbrDraggable>
-        <CbrDraggable id="test" class="draggable-item" pin-area-selector=".drop-area" :state-changed="onStateChanged" :controller="draggableController" free-area-selector=".chip-area">
-          <span id="test">test</span>
+        <CbrDraggable id="test" class="draggable-item" :controller="draggableController">
+          <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test')">
+            <span>test</span>
+          </BdgDraggableItem>
+        </CbrDraggable>
+
+        <CbrDraggable id="test 3" class="draggable-item" :controller="draggableController">
+            <span>test 3</span>
         </CbrDraggable>
       </div>
     </div>
@@ -82,7 +88,6 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
-    import type { CbrDraggableState } from '@/libComponents/cbrDragNDrop/cbrDragNDropTypes'
     import { CbrDraggableController } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
     import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue';
     import BdgDraggableItem from '@/components/DragNDrop/BdgDraggableItem.vue';
@@ -96,10 +101,5 @@
     }));
     const currentRow = computed(() => csvSettingsStore.csvRows[currentRowIndex.value].records || []);
     const columnsCount = computed(() => currentRow.value.length);
-
-    function onStateChanged(state: CbrDraggableState) {
-      console.log('new state: ', state);
-    }
-
 
 </script>
