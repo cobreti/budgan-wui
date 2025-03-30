@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-chip>
+        <!-- <v-chip>
             <slot></slot>
             <v-icon
             cbr-dragndrop-no-pick
@@ -16,7 +16,7 @@
             icon="mdi-plus-circle-outline"
             :hidden="!draggable?.showAddIcon"
         >
-        </v-icon>
+        </v-icon> -->
     </div>
 </template>
 
@@ -44,7 +44,7 @@
 
 
 <script setup lang="ts">
-    import type { CbrDraggableInterface } from '@/libComponents/cbrDragNDrop/cbrDraggableInterface';
+    import type { CbrDraggableInterface } from '@cobreti/cbr-draggable';
     import { Subject, takeUntil, type Observable } from 'rxjs';
     import { onMounted, onUnmounted, ref } from 'vue';
 

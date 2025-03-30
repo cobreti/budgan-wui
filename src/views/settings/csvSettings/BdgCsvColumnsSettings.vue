@@ -24,15 +24,24 @@
 
       <div class="chip-area">
         <CbrDraggable id="test2" class="draggable-item" :controller="draggableController">
-          <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test2')">
-            <span>test 2</span>
-          </BdgDraggableItem>
+          <!-- <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test2')">
+            
+          </BdgDraggableItem> -->
+          <span>test 2</span>
           
         </CbrDraggable>
         <CbrDraggable id="test" class="draggable-item" :controller="draggableController">
-          <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test')">
-            <span>test</span>
-          </BdgDraggableItem>
+            <div>test</div>
+            <template v-slot:decorator>
+              <cbr-draggable-on-add class="draggable-item-icon">
+                <v-icon class="add-icon" icon="mdi-plus-circle-outline"></v-icon>
+              </cbr-draggable-on-add>
+              <cbr-draggable-on-remove class="draggable-item-icon"  @click="onRemoveClicked">
+                 <v-icon class="remove-icon" icon="mdi-close-circle-outline"></v-icon>
+              </cbr-draggable-on-remove>
+            </template>
+
+          <!-- </BdgDraggableItem> -->
         </CbrDraggable>
 
         <CbrDraggable id="test 3" class="draggable-item" :controller="draggableController">
@@ -41,6 +50,9 @@
       </div>
     </div>
 </template>
+
+<style src="@cobreti/cbr-draggable/dist/style.css">
+</style>
 
 <style scoped>
 
@@ -84,14 +96,49 @@
     }
   }
 
+  
+  .draggable-item {
+    display: inline-block;
+    position: relative;
+    background-color: lightgray;
+    padding: 0.25em;
+    border: 1px solid blue;
+    border-radius: 0.5em;
+    min-width: 3em;
+    text-align: center;
+    cursor: grab;
+
+    div {
+      display: inline-block;
+    }
+
+    .draggable-item-icon {
+      display: inline-block;
+      width: 0;
+      height: 0;
+    }
+
+    .add-icon {
+      color: green;
+      width: 0;
+      transform: translate(-25%, -50%);
+      cursor: default;
+    }
+
+    .remove-icon {
+      color: red;
+      transform: translate(-25%, -50%);
+      cursor: pointer;
+    }
+
+  }
+
 </style>
 
 <script setup lang="ts">
     import { computed, onMounted, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
-    import { CbrDraggableController } from '@/libComponents/cbrDragNDrop/cbrDraggableController';
-    import CbrDraggable from '@/libComponents/cbrDragNDrop/cbrDraggable.vue';
-    import BdgDraggableItem from '@/components/DragNDrop/BdgDraggableItem.vue';
+    import { CbrDraggable, CbrDraggableController, CbrDraggableOnRemove, CbrDraggableOnAdd, type CbrDraggableInterface } from "@cobreti/cbr-draggable";
 
     const csvSettingsStore = useCsvSettingsStore();
 
@@ -104,7 +151,11 @@
     const columnsCount = computed(() => currentRow.value.length);
 
     onMounted(() => {
-      draggableController.value.getDraggable('test2')?.pin(document.getElementById('csv-drop-column-0') as HTMLElement);
+      // draggableController.value.getDraggable('test2')?.pin(document.getElementById('csv-drop-column-0') as HTMLElement);
     });
+
+    function onRemoveClicked(draggable: CbrDraggableInterface) {
+    draggable.unpin();
+  }
 
 </script>
