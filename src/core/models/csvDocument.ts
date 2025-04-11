@@ -7,7 +7,6 @@ export type CSVRawRow = {
 };
 
 export enum CSVColumnContent {
-  UNKNOWN = 0,
   CARD_NUMBER = 1,
   DATE_INSCRIPTION = 2,
   DATE_TRANSACTION = 3,

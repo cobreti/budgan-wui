@@ -1,60 +1,62 @@
 <template>
-    <div>
-        Showing columns settings
+  <v-container class="d-flex flex-column align-left justify-center mt-8">
+    <!-- Header -->
+    <h1 class="text-center mb-6">Match CSV Columns with Tags</h1>
 
-        <div>
-            {{ currentRow }}
-        </div>
+    <!-- Matching Section -->
+    <v-row>
+      <!-- Matching Constant Tags -->
+      <v-col cols="12">
+        <v-row>
+          <v-col cols="4" v-for="(tag, index) in csvColumns" :key="`tag-${index}`">
+            <h2 class="text-center mb-4">{{ tag }}</h2>
+            <v-select
+              :items="currentRow"
+              item-value="key"
+              item-title="text"
+              v-model="matchedColumns[index]"
+              label="Select a column..."
+              outlined
+              dense
+              clearable
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
 
-        <div class="d-flex flex-row justify-start align-content-space-evenly selector">
-            <div v-for="(n, index) in columnsCount"
-                :key="index"
-                :id="'csv-column-' + index"
-                class="column-cell"
-            >
-                <div class="column-cell-text">
-                    {{ currentRow[index] }}
-                </div>
-                <div>
-                </div>
-                <div :id="'csv-drop-column-' + index" class="drop-area">
-                </div>
-            </div>
-      </div>
-
-      <div class="chip-area">
-        <CbrDraggable id="test2" class="draggable-item" :controller="draggableController">
-          <!-- <BdgDraggableItem :draggableObserver="draggableController.getDraggableObserver('test2')">
-            
-          </BdgDraggableItem> -->
-          <span>test 2</span>
-          
-        </CbrDraggable>
-        <CbrDraggable id="test" class="draggable-item" :controller="draggableController">
-            <div>test</div>
-            <template v-slot:decorator>
-              <cbr-draggable-on-add class="draggable-item-icon">
-                <v-icon class="add-icon" icon="mdi-plus-circle-outline"></v-icon>
-              </cbr-draggable-on-add>
-              <cbr-draggable-on-remove class="draggable-item-icon"  @click="onRemoveClicked">
-                 <v-icon class="remove-icon" icon="mdi-close-circle-outline"></v-icon>
-              </cbr-draggable-on-remove>
-            </template>
-
-          <!-- </BdgDraggableItem> -->
-        </CbrDraggable>
-
-        <CbrDraggable id="test 3" class="draggable-item" :controller="draggableController">
-            <span>test 3</span>
-        </CbrDraggable>
-      </div>
-    </div>
+    <!-- Matched Results Display -->
+    <v-row class="mt-8">
+      <v-col cols="12">
+        <h2 class="text-center mb-4">Matched Results</h2>
+        <ul>
+          <li v-for="(matchedColumn, index) in matchedColumns" :key="`result-${index}`">
+            {{ csvColumns[index] }} → <strong>{{ matchedColumn !== null ? currentRow[matchedColumn].text : 'None' }}</strong>
+          </li>
+        </ul>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style src="@cobreti/cbr-draggable/dist/style.css">
 </style>
 
 <style scoped>
+  h1, h2 {
+    color: #4A4A4A;
+    text-align: center;
+  }
+
+  .csv-column-item,
+  .tag-item {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+  }
+
 
   .drop-area {
     display: block;
@@ -136,26 +138,31 @@
 </style>
 
 <script setup lang="ts">
-    import { computed, onMounted, ref } from 'vue';
+    import { computed, ref } from 'vue';
     import { useCsvSettingsStore } from './csvSettings-store';
-    import { CbrDraggable, CbrDraggableController, CbrDraggableOnRemove, CbrDraggableOnAdd, type CbrDraggableInterface } from "@cobreti/cbr-draggable";
 
     const csvSettingsStore = useCsvSettingsStore();
 
-    const currentRowIndex = ref(0);
-    const draggableController = ref(new CbrDraggableController({
-      pinAreaSelector: '.drop-area',
-      freeAreaSelector: '.chip-area',
-    }));
-    const currentRow = computed(() => csvSettingsStore.csvRows[currentRowIndex.value].records || []);
-    const columnsCount = computed(() => currentRow.value.length);
 
-    onMounted(() => {
-      // draggableController.value.getDraggable('test2')?.pin(document.getElementById('csv-drop-column-0') as HTMLElement);
-    });
+    const csvColumns = [
+      'card number',
+      'date inscription',
+      'date transaction',
+      'amount',
+      'description',
+      'type'
+    ];
 
-    function onRemoveClicked(draggable: CbrDraggableInterface) {
-    draggable.unpin();
-  }
+    const currentRowIndex = ref(1);
+    const currentRow = computed(() => (csvSettingsStore.csvRows[currentRowIndex.value].records || [])
+      .reduce((acc: any[], value:string, index: number) => {
+        acc.push({
+          key: index,
+          text: value
+        });
+        return acc;
+      }, []));
+
+    const matchedColumns = ref(Array(currentRow.value.length).fill(null)); // Array to track user's selections
 
 </script>
