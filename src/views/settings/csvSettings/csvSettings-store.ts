@@ -1,17 +1,13 @@
-import type { CSVColumnContent } from "@/core/models/csvDocument";
+import { CSVColumnContent, type CSVColumnContentMapping } from "@/core/models/csvDocument";
 import type { CsvParseResult, CsvRow } from "@/core/services/CsvParser";
 import { defineStore } from "pinia";
-import { ref, type ModelRef, type Ref, defineModel } from "vue";
-
-export type CsvColumnMappingItemModelValue = {
-    csvColumnContent: CSVColumnContent | undefined;
-};
+import { ref, type Ref } from "vue";
 
 
 export type CsvSettingsStore = {
     csvContentPreview: Ref<CsvParseResult | undefined>;
     csvRows: Ref<CsvRow[]>;
-    columnsMappingModelValues: Ref<ModelRef<CsvColumnMappingItemModelValue>[]>;
+    csvColumnContentMapping: Ref<CSVColumnContentMapping>;
 
     setCsvContentPreview: (csvContent: CsvParseResult) => void;
 };
@@ -23,7 +19,12 @@ export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSet
 
     const csvRows = ref<CsvRow[]>([]);
 
-    const columnsMappingModelValues: Ref<ModelRef<CsvColumnMappingItemModelValue>[]> = ref<[]>([]);
+    const csvColumnContentMapping = ref<CSVColumnContentMapping>(Object.values(CSVColumnContent).reduce(
+        (acc : CSVColumnContentMapping, column: any, value: number) => {
+            const contentValue = CSVColumnContent[column as keyof typeof CSVColumnContent];
+            acc[contentValue] = undefined;
+            return acc;
+        }, {} as CSVColumnContentMapping));
 
     function setCsvContentPreview(csvContent: CsvParseResult) {
         csvContentPreview.value = csvContent;
@@ -36,31 +37,13 @@ export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSet
 
         rows.push(...csvContent.content.rows);
 
-        if (rows.length > 0) {
-            const colsCount = rows[0].records.length || 0;
-            const newItems: ModelRef<CsvColumnMappingItemModelValue>[] = [];
-
-            for (let i = columnsMappingModelValues.value.length; i < colsCount; i++) {
-
-                const model = defineModel<CsvColumnMappingItemModelValue>(`CsvColumnMappingItemModelValue-${i}`, {
-                        default: () => ({
-                            csvColumnContent: undefined
-                        })
-                    });
-
-                newItems.push(model);
-            }
-
-            columnsMappingModelValues.value.push(...newItems);
-        }
-
         csvRows.value = rows;
     }
 
     return {
         csvContentPreview,
         csvRows,
-        columnsMappingModelValues,
+        csvColumnContentMapping,
 
         setCsvContentPreview
     };
