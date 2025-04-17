@@ -12,6 +12,7 @@
           density="compact"
           variant="outlined"
           hide-details
+          :disabled="!csvContentPresent"
         />
       </v-col>
     </v-row>
@@ -35,6 +36,7 @@
               outlined
               dense
               clearable
+              :disabled="!csvContentPresent"
             />
           </v-col>
         </v-row>
@@ -44,7 +46,7 @@
     <!-- Matched Results Display -->
     <v-row>
       <v-col cols="12">
-        <h2 class="text-center mb-4">Matched results example</h2>
+        <h2 class="text-center mb-4">Matched results</h2>
         <ul>
           <li v-for="(index) in Object.keys(csvColumns)" :key="index">
             {{ index }} → <strong>{{ mapping[csvColumns[index]] !== undefined ? currentRow[mapping[csvColumns[index]] as number].text : 'None' }}</strong>
@@ -82,16 +84,23 @@
     'type': CSVColumnContent.TYPE,
   };
 
+  const csvContentPresent = computed(() => csvSettingsStore.csvRows.length > 0);
 
-  const rows = computed(() => csvSettingsStore.csvRows.map((row: any, index: number) => {
+  const csvRows = computed(() => {
+    return csvSettingsStore.csvRows.length > 0 ? csvSettingsStore.csvRows : [{
+      records: ['No CSV file selected']
+    }];
+  });
+
+  const rows = computed(() => csvRows.value.map((row: any, index: number) => {
     return {
       lineNumber: index,
-      record: row.records.join(', ')
+      record: row?.records?.join(', ')
     };
   }));
 
   const currentRowIndex = ref(0);
-  const currentRow = computed(() => (csvSettingsStore.csvRows[currentRowIndex.value].records || [])
+  const currentRow = computed(() => (csvSettingsStore.csvRows[currentRowIndex.value]?.records || [])
     .reduce((acc: any[], value:string, index: number) => {
       acc.push({
         key: index,

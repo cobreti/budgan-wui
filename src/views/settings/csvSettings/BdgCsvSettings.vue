@@ -1,6 +1,17 @@
 <template>
   <div>
     <h1 class="h1-header">CSV Columns Settings</h1>
+    <div class="setting-name-container controls-container">
+      <label for="setting-name" class="setting-name-label">Setting Name:</label>
+      <v-text-field
+        id="setting-name"
+        v-model="settingName"
+        outlined
+        dense
+        clearable
+        class="setting-name-input"
+      />
+    </div>
     <div class="controls-container">
       <v-file-input
         id="csv-file-input"
@@ -11,7 +22,7 @@
         accept=".csv"
         :multiple="false"
       ></v-file-input>
-      <BdgCsvColumnsSettings v-if="hasCsvPreview"></BdgCsvColumnsSettings>
+      <BdgCsvColumnsSettings></BdgCsvColumnsSettings>
     </div>
   </div>
 </template>
@@ -92,6 +103,7 @@
 
   const csvFileName = defineModel<File[]>();
   const selectedColumn = ref(-1);
+  const settingName = ref('');
 
   const csvContentPreview : Ref<CsvParseResult | null> = ref(null);
   const csvHeaderIndex : Ref<number> = ref(-1);
