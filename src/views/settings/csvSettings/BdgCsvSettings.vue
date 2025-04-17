@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 class="h1-header">CSV Columns Settings</h1>
     <div class="controls-container">
       <v-file-input
         id="csv-file-input"
@@ -17,12 +18,31 @@
 
 <style scoped>
 
+  h2 {
+    color: #4A4A4A;
+    text-align: center;
+  }
+
+  .h1-header {
+    font-size: 2em;
+    font-weight: bolder;
+    margin-left: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid black;
+  }
+
+  .h2-header {
+    margin-left: 3em;
+  }
+
   .csv-file-input {
   }
 
   .controls-container {
     width: 90%;
     margin: 2em;
+    margin-bottom: 0;
   }
 
   .columns-count-field {

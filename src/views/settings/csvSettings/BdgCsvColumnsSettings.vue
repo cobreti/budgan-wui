@@ -1,9 +1,9 @@
 <template>
-  <v-container class="d-flex flex-column align-left justify-center mt-8">
+  <v-container class="d-flex flex-column align-left justify-center">
 
     <v-row class="mb-4">
       <v-col cols="12">
-        <h2 class="mb-6">Selected row </h2>
+        <!-- <h2 class="mb-6">Selected row </h2> -->
         <v-select
           v-model="currentRowIndex"
           :items="rows"
@@ -17,7 +17,7 @@
     </v-row>
 
     <!-- Header -->
-    <h2 class="text-center mt-4 mb-6">Match Tags with the right CSV column</h2>
+    <h2 class="text-center mt-4 mb-6">Match information with the right CSV column</h2>
 
     <!-- Matching Section -->
     <v-row class="mt-4 mb-4">
@@ -44,7 +44,7 @@
     <!-- Matched Results Display -->
     <v-row>
       <v-col cols="12">
-        <h2 class="text-center mb-4">Matched Results Example</h2>
+        <h2 class="text-center mb-4">Matched results example</h2>
         <ul>
           <li v-for="(index) in Object.keys(csvColumns)" :key="index">
             {{ index }} → <strong>{{ mapping[csvColumns[index]] !== undefined ? currentRow[mapping[csvColumns[index]] as number].text : 'None' }}</strong>
