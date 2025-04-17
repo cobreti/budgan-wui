@@ -92,14 +92,14 @@
 
 <script setup lang="ts">
   import BdgCsvColumnsSettings from './BdgCsvColumnsSettings.vue'
-  import { computed, defineModel, type Ref, ref, watch } from 'vue'
+  import { defineModel, type Ref, ref, watch } from 'vue'
   import { container } from '@/core/setupInversify'
   import { ServicesTypes } from '@services/types'
   import type { IStreamFactory } from '@services/StreamFactory'
   import type { CsvParseResult, ICsvParser } from '@services/CsvParser'
-  import { useCsvSettingsStore } from './csvSettings-store'
+  import { useCsvPreviewStore } from './csvPreview-store'
 
-  const csvSettingsStore = useCsvSettingsStore();
+  const csvPreviewStore = useCsvPreviewStore();
 
   const csvFileName = defineModel<File[]>();
   const selectedColumn = ref(-1);
@@ -107,8 +107,6 @@
 
   const csvContentPreview : Ref<CsvParseResult | null> = ref(null);
   const csvHeaderIndex : Ref<number> = ref(-1);
-
-  const hasCsvPreview = computed(() => csvSettingsStore.csvRows.length > 0);
 
   watch(selectedColumn, (newVal) => {
     console.log('selectedColumn : ', newVal);
@@ -134,7 +132,7 @@
     csvParser.minimumColumnsCount = 4;
     csvContentPreview.value = csvParser.parse(text);
 
-    csvSettingsStore.setCsvContentPreview(csvContentPreview.value);
+    csvPreviewStore.setCsvContentPreview(csvContentPreview.value);
 
     csvHeaderIndex.value = -1;
     selectedColumn.value = -1;

@@ -69,11 +69,11 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue';
-  import { useCsvSettingsStore } from './csvSettings-store';
+  import { useCsvPreviewStore } from './csvPreview-store';
   import { CSVColumnContent } from '@/core/models/csvDocument';
 
-  const csvSettingsStore = useCsvSettingsStore();
-  const mapping = csvSettingsStore.csvColumnContentMapping;
+  const csvPreviewStore = useCsvPreviewStore();
+  const mapping = csvPreviewStore.csvColumnContentMapping;
   
   const csvColumns : {[key: string]:CSVColumnContent} = {
     'card number': CSVColumnContent.CARD_NUMBER,
@@ -84,10 +84,10 @@
     'type': CSVColumnContent.TYPE,
   };
 
-  const csvContentPresent = computed(() => csvSettingsStore.csvRows.length > 0);
+  const csvContentPresent = computed(() => csvPreviewStore.csvRows.length > 0);
 
   const csvRows = computed(() => {
-    return csvSettingsStore.csvRows.length > 0 ? csvSettingsStore.csvRows : [{
+    return csvPreviewStore.csvRows.length > 0 ? csvPreviewStore.csvRows : [{
       records: ['No CSV file selected']
     }];
   });
@@ -100,7 +100,7 @@
   }));
 
   const currentRowIndex = ref(0);
-  const currentRow = computed(() => (csvSettingsStore.csvRows[currentRowIndex.value]?.records || [])
+  const currentRow = computed(() => (csvPreviewStore.csvRows[currentRowIndex.value]?.records || [])
     .reduce((acc: any[], value:string, index: number) => {
       acc.push({
         key: index,

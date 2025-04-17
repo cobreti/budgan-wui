@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 import { ref, type Ref } from "vue";
 
 
-export type CsvSettingsStore = {
+export type CsvPreviewStore = {
     csvContentPreview: Ref<CsvParseResult | undefined>;
     csvRows: Ref<CsvRow[]>;
     csvColumnContentMapping: Ref<CSVColumnContentMapping>;
@@ -13,7 +13,7 @@ export type CsvSettingsStore = {
 };
 
 
-export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSettings',  () => {
+export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvSettings',  () => {
 
     const csvContentPreview = ref<CsvParseResult | undefined>();
 
