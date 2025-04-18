@@ -10,6 +10,7 @@ export type CsvPreviewStore = {
     csvColumnContentMapping: Ref<CSVColumnContentMapping>;
 
     setCsvContentPreview: (csvContent: CsvParseResult) => void;
+    clearCsvContentPreview: () => void;
 };
 
 
@@ -22,7 +23,7 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvSetti
     const csvColumnContentMapping = ref<CSVColumnContentMapping>(Object.values(CSVColumnContent).reduce(
         (acc : CSVColumnContentMapping, column: any, value: number) => {
             const contentValue = CSVColumnContent[column as keyof typeof CSVColumnContent];
-            acc[contentValue] = undefined;
+            acc[contentValue] = null;
             return acc;
         }, {} as CSVColumnContentMapping));
 
@@ -40,11 +41,17 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvSetti
         csvRows.value = rows;
     }
 
+    function clearCsvContentPreview() {
+        csvContentPreview.value = undefined;
+        csvRows.value = [];
+    }
+
     return {
         csvContentPreview,
         csvRows,
         csvColumnContentMapping,
 
-        setCsvContentPreview
+        setCsvContentPreview,
+        clearCsvContentPreview
     };
 });
