@@ -5,7 +5,7 @@ import { ref, type Ref } from "vue";
 export type CsvSettingsStore = {
     settings: Ref<CSVSettingsList>,
     addSetting: (setting: CSVSettings) => void,
-    removeSetting: (name: string) => void
+    removeSetting: (id: string) => void
 }
 
 export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSettings', () => {
@@ -15,8 +15,8 @@ export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSet
         settings.value.push(setting);
     }
 
-    function removeSetting(name: string) {
-        settings.value = settings.value.filter((setting) => setting.name !== name);
+    function removeSetting(id: string) {
+        settings.value = settings.value.filter((setting) => setting.id !== id);
     }
 
     return {
