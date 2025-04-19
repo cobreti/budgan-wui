@@ -24,16 +24,3 @@ export type CSVSettings = {
 
 export type CSVSettingsTable = {[index: string]: CSVSettings};
 
-//
-// Deprecated csv types
-/////////////////////////
-
-export type CSVContentByColumn_Deprecated = {[index: string]: CSVColumnContent}
-
-export type CSVFileSettings_Deprecated = {
-  delimiter: string;
-  columns: CSVContentByColumn_Deprecated;
-};
-
-
-export type NamedCSVFileSettings_Deprecated = {[name: string]: CSVFileSettings_Deprecated};

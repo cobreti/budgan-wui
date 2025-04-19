@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import { type Ref, ref } from 'vue'
-import type { NamedCSVFileSettings_Deprecated } from '@models/csvDocument'
 
 export type AppSettings = {
   drawerVisible: boolean;
   version: string;
-  csvSettings: NamedCSVFileSettings_Deprecated;
 }
 
 
