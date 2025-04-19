@@ -8,5 +8,11 @@ export const settingsRoutes = [
         path: '/settings/csvsettings/new',
         name: 'new-csv-settings',
         component: () => import('@views/settings/csvSettings/BdgCsvColumnsSettings.vue')
+    },
+    {
+        path: '/settings/csvsettings/edit/:id',
+        name: 'new-csv-settings',
+        component: () => import('@views/settings/csvSettings/BdgCsvColumnsSettings.vue')
     }
+
 ];

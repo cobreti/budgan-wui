@@ -14,7 +14,9 @@ export type CsvPreviewStore = {
     setCsvContentPreview: (csvContent: CsvParseResult) => void;
     clearCsvContentPreview: () => void;
     newSettings: () => CSVSettings;
-    save: () => void;
+    saveSettings: () => void;
+    loadSettings: (id: string) => void;
+    clearSettings: () => void;
 };
 
 
@@ -84,7 +86,7 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
         }
     }
 
-    function save() {
+    function saveSettings() {
         if (originalSettings.value) {
             csvSettingsStore.removeSetting(originalSettings.value.id);
         }
@@ -99,6 +101,35 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
         originalSettings.value = newSetting;
     }
 
+    function loadSettings(id: string) {
+        const setting = csvSettingsStore.settings.find((setting) => setting.id === id);
+
+        if (setting) {
+            originalSettings.value = setting;
+            settings.value = {
+                ...setting
+            };
+        }
+    }
+
+    function clearSettings() {
+        settings.value = {
+            id: "",
+            name: "",
+            delimiter: ",",
+            columnsMapping: {
+                [CSVColumnContent.CARD_NUMBER]: null,
+                [CSVColumnContent.DATE_INSCRIPTION]: null,
+                [CSVColumnContent.DATE_TRANSACTION]: null,
+                [CSVColumnContent.AMOUNT]: null,
+                [CSVColumnContent.DESCRIPTION]: null,
+                [CSVColumnContent.TYPE]: null
+            }
+        };
+        
+        originalSettings.value = undefined;
+    }
+
     return {
         csvContentPreview,
         csvRows,
@@ -107,6 +138,8 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
         setCsvContentPreview,
         clearCsvContentPreview,
         newSettings,
-        save
+        saveSettings,
+        loadSettings,
+        clearSettings
     };
 });

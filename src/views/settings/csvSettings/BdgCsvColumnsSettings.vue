@@ -67,18 +67,13 @@
         </v-row>
 
         <!-- Matched Results Display -->
-        <v-row v-if="settings">
+        <v-row v-if="csvContentPresent">
             <v-col cols="12">
                 <h2 class="text-center mb-4">Matched results</h2>
                 <ul>
                     <li v-for="index in Object.keys(csvColumns)" :key="index">
                         {{ index }} →
-                        <strong>{{
-                            settings.columnsMapping[csvColumns[index]] !== null
-                                ? currentRow[settings.columnsMapping[csvColumns[index]] as number]
-                                      .text
-                                : 'None'
-                        }}</strong>
+                        <strong>{{ getColumnText(index) }}</strong>
                     </li>
                 </ul>
             </v-col>
@@ -143,8 +138,10 @@
     const csvContentPresent = computed(() => csvPreviewStore.csvRows.length > 0)
 
     onMounted(() => {
+        csvPreviewStore.clearCsvContentPreview()
+
         if (settingsId.value) {
-            // csvPreviewStore.loadSettings(settingsId.value)
+            csvPreviewStore.loadSettings(settingsId.value)
         } else {
             csvPreviewStore.newSettings()
         }
@@ -184,12 +181,34 @@
     )
 
     function save() {
-        csvPreviewStore.save()
-        router.push({ path: '/settings' })
+        csvPreviewStore.saveSettings()
+        router.go(-1)
     }
 
     function cancel() {
         router.go(-1)
+    }
+
+    function getColumnText(index: string): string {
+        if (settings.value === undefined) {
+            return ''
+        }
+
+        if (!csvContentPresent.value) {
+            return ''
+        }
+
+        const mappingIndex = csvColumns[index]
+        if (mappingIndex === undefined) {
+            return 'None'
+        }
+
+        const rowIndex = settings.value.columnsMapping[mappingIndex] as number
+        if (rowIndex === null) {
+            return 'None'
+        }
+
+        return currentRow.value[rowIndex].text
     }
 
     async function onFileNameUpdated(files: File[] | File): Promise<void> {

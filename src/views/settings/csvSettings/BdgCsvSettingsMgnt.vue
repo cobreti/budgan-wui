@@ -25,7 +25,7 @@
                         </v-toolbar>
                     </template>
                     <template v-slot:[`item.actions`]="{ item }">
-                        <v-btn icon @click="editSettings(item)">
+                        <v-btn icon :to="{ path: `/settings/csvsettings/edit/${item.id}` }">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn icon @click="deleteSetting(item)">

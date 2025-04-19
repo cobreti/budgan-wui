@@ -5,7 +5,7 @@ import { ref, type Ref } from "vue";
 export type CsvSettingsStore = {
     settings: Ref<CSVSettingsList>,
     addSetting: (setting: CSVSettings) => void,
-    removeSetting: (id: string) => void
+    removeSetting: (id: string) => void,
 }
 
 export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSettings', () => {
@@ -26,6 +26,6 @@ export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSet
     };
 },{
     persist: {
-      storage: sessionStorage
+      storage: localStorage
     },
   });
