@@ -14,7 +14,7 @@ export type CsvPreviewStore = {
 };
 
 
-export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvSettings',  () => {
+export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPreview',  () => {
 
     const csvContentPreview = ref<CsvParseResult | undefined>();
 

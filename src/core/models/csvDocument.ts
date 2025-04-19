@@ -18,9 +18,11 @@ export enum CSVColumnContent {
 export type CSVColumnContentMapping = {[index in CSVColumnContent]: number | null}
 
 export type CSVSettings = {
+  name: string;
   delimiter: string;
-  columns: CSVColumnContentMapping;
+  columnsMapping: CSVColumnContentMapping;
 };
 
-export type CSVSettingsTable = {[index: string]: CSVSettings};
+export type CSVSettingsList = CSVSettings[];
+
 
