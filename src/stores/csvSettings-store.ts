@@ -24,4 +24,8 @@ export const useCsvSettingsStore = defineStore<string, CsvSettingsStore>('csvSet
         addSetting,
         removeSetting
     };
-});
+},{
+    persist: {
+      storage: sessionStorage
+    },
+  });

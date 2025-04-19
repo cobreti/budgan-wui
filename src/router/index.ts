@@ -3,12 +3,14 @@ import HomeView from '@views/BdgHomeView.vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 import { accountsManagementRoutes } from '@/router/accountsManagementRoutes'
 import { accountRoutes } from '@/router/accountRoutes'
+import { settingsRoutes } from '@/router/settingsRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     ...accountsManagementRoutes,
     ...accountRoutes,
+    ...settingsRoutes,
     {
       path: '/',
       name: 'home',
@@ -40,11 +42,6 @@ const router = createRouter({
       path: '/open',
       name: 'open',
       component: () => import('@views/BdgImportAccountData.vue')
-    },
-    {
-      path: '/settings',
-      name: 'settings',
-      component: () => import('@views/settings/BdgSettingsPage.vue')
     }
   ]
 })

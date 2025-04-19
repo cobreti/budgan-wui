@@ -5,7 +5,7 @@
             <label for="setting-name" class="setting-name-label">Setting Name:</label>
             <v-text-field
                 id="setting-name"
-                v-model="settingName"
+                v-model="settings.name"
                 outlined
                 dense
                 clearable
@@ -47,14 +47,14 @@
         <v-row class="mt-4 mb-4">
             <!-- Matching Constant Tags -->
             <v-col cols="12">
-                <v-row>
+                <v-row v-if="settings">
                     <v-col cols="4" v-for="key in Object.keys(csvColumns)" :key="key">
                         <h3 class="text-center mb-4">{{ key }}</h3>
                         <v-select
                             :items="currentRow"
                             item-value="key"
                             item-title="text"
-                            v-model="mapping[csvColumns[key]]"
+                            v-model="settings.columnsMapping[csvColumns[key]]"
                             label="Select a column..."
                             outlined
                             dense
@@ -67,19 +67,27 @@
         </v-row>
 
         <!-- Matched Results Display -->
-        <v-row>
+        <v-row v-if="settings">
             <v-col cols="12">
                 <h2 class="text-center mb-4">Matched results</h2>
                 <ul>
                     <li v-for="index in Object.keys(csvColumns)" :key="index">
                         {{ index }} →
                         <strong>{{
-                            mapping[csvColumns[index]] !== null
-                                ? currentRow[mapping[csvColumns[index]] as number].text
+                            settings.columnsMapping[csvColumns[index]] !== null
+                                ? currentRow[settings.columnsMapping[csvColumns[index]] as number]
+                                      .text
                                 : 'None'
                         }}</strong>
                     </li>
                 </ul>
+            </v-col>
+        </v-row>
+
+        <v-row class="mt-4">
+            <v-col cols="12" class="d-flex justify-end">
+                <v-btn text class="mr-2" @click="cancel">Cancel</v-btn>
+                <v-btn color="primary" @click="save">Save</v-btn>
             </v-col>
         </v-row>
     </v-container>
@@ -94,19 +102,30 @@
 </style>
 
 <script setup lang="ts">
-    import { computed, ref, type Ref } from 'vue'
+    import { computed, onMounted, ref, type Ref } from 'vue'
     import { useCsvPreviewStore } from './csvPreview-store'
     import { CSVColumnContent } from '@/core/models/csvDocument'
     import { container } from '@/core/setupInversify'
     import type { IStreamFactory } from '@services/StreamFactory'
     import type { CsvParseResult, ICsvParser } from '@services/CsvParser'
     import { ServicesTypes } from '@services/types'
+    import { useRoute, useRouter } from 'vue-router'
+
+    const router = useRouter()
+    const route = useRoute()
 
     const csvPreviewStore = useCsvPreviewStore()
-    const mapping = csvPreviewStore.csvColumnContentMapping
+    // const mapping = csvPreviewStore.csvColumnContentMapping
+
+    const settings = computed(() => {
+        return csvPreviewStore.settings
+    })
+
+    const settingsId = computed(() => {
+        return route.params.id as string
+    })
 
     const csvFileName = defineModel<File[]>()
-    const settingName = ref('')
 
     const csvColumns: { [key: string]: CSVColumnContent } = {
         'card number': CSVColumnContent.CARD_NUMBER,
@@ -122,6 +141,14 @@
     const selectedColumn = ref(-1)
 
     const csvContentPresent = computed(() => csvPreviewStore.csvRows.length > 0)
+
+    onMounted(() => {
+        if (settingsId.value) {
+            // csvPreviewStore.loadSettings(settingsId.value)
+        } else {
+            csvPreviewStore.newSettings()
+        }
+    })
 
     const csvRows = computed(() => {
         return csvPreviewStore.csvRows.length > 0
@@ -155,6 +182,15 @@
             []
         )
     )
+
+    function save() {
+        csvPreviewStore.save()
+        router.push({ path: '/settings' })
+    }
+
+    function cancel() {
+        router.go(-1)
+    }
 
     async function onFileNameUpdated(files: File[] | File): Promise<void> {
         if (files) {
