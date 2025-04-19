@@ -9,12 +9,12 @@ export type CsvColumnsToBankAccountTransactionMapperOptions = {
 
 export class CsvColumnsToBankAccountTransactionMapper {
 
-  dateInscriptionColIndex: number | undefined;
-  dateTransactionColIndex: number | undefined;
-  amountColIndex: number | undefined;
-  cardNumberColIndex: number | undefined;
-  descriptionColIndex: number | undefined;
-  typeColIndex: number | undefined;
+  dateInscriptionColIndex: number | null;
+  dateTransactionColIndex: number | null;
+  amountColIndex: number | null;
+  cardNumberColIndex: number | null;
+  descriptionColIndex: number | null;
+  typeColIndex: number | null;
   dateFormat: string = 'YYYYMMDD';
 
   constructor(private columnsMapping : CSVColumnContentMapping, options?: CsvColumnsToBankAccountTransactionMapperOptions) {
@@ -33,26 +33,26 @@ export class CsvColumnsToBankAccountTransactionMapper {
     }
   }
 
-  getColumnIndex(column: CSVColumnContent) : number | undefined {
+  getColumnIndex(column: CSVColumnContent) : number | null {
     if (column in this.columnsMapping) {
       return this.columnsMapping[column];
     }
 
-    return undefined;
+    return null;
   }
 
   get valid() : boolean {
     return (
-      this.dateInscriptionColIndex !== undefined &&
-      this.amountColIndex !== undefined &&
-      this.descriptionColIndex !== undefined &&
-      this.typeColIndex !== undefined
+      this.dateInscriptionColIndex !== null &&
+      this.amountColIndex !== null &&
+      this.descriptionColIndex !== null &&
+      this.typeColIndex !== null
     );
   }
 
-  mapCsvToTransaction(row: CsvRow) : BankAccountTransaction | undefined {
+  mapCsvToTransaction(row: CsvRow) : BankAccountTransaction | null {
     if (!this.valid) {
-      return undefined;
+      return null;
     }
 
     const maxColIndex = Math.max(
@@ -63,7 +63,7 @@ export class CsvColumnsToBankAccountTransactionMapper {
     );
 
     if (!(row.records.length > maxColIndex)) {
-      return undefined;
+      return null;
     }
 
     const dateInscription = row.records[this.dateInscriptionColIndex!];

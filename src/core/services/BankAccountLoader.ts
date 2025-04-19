@@ -144,7 +144,8 @@ export class BankAccountLoader implements IBankAccountLoader {
             [CSVColumnContent.TYPE]: 1,
             [CSVColumnContent.DATE_INSCRIPTION]: 2,
             [CSVColumnContent.AMOUNT]: 3,
-            [CSVColumnContent.DESCRIPTION]: 4
+            [CSVColumnContent.DESCRIPTION]: 4,
+            [CSVColumnContent.DATE_TRANSACTION]: null
         };
 
         const transactionsGroup = this.csvToBankAccount.convertToBankAccountTransactionsGroup(csvResult.content, csvColumnsMapping);

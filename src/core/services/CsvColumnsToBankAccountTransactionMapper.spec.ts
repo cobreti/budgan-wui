@@ -11,14 +11,17 @@ describe('CsvColumnsToBankAccountTransactionMapper', () => {
     [CSVColumnContent.TYPE]: 1,
     [CSVColumnContent.DATE_INSCRIPTION]: 2,
     [CSVColumnContent.AMOUNT]: 3,
-    [CSVColumnContent.DESCRIPTION]: 4
+    [CSVColumnContent.DESCRIPTION]: 4,
+    [CSVColumnContent.DATE_TRANSACTION]: null
   };
 
   const invalidColumnsMapping : CSVColumnContentMapping = {
     [CSVColumnContent.CARD_NUMBER]: 0,
     [CSVColumnContent.TYPE]: 1,
     [CSVColumnContent.DATE_INSCRIPTION]: 2,
-    [CSVColumnContent.AMOUNT]: 3
+    [CSVColumnContent.AMOUNT]: 3,
+    [CSVColumnContent.DESCRIPTION]: null,
+    [CSVColumnContent.DATE_TRANSACTION]: null
   };
 
   const OutofBoundColumnsMapping : CSVColumnContentMapping = {
@@ -60,7 +63,7 @@ describe('CsvColumnsToBankAccountTransactionMapper', () => {
     const mapper = new  CsvColumnsToBankAccountTransactionMapper(columnsMapping);
 
     expect(mapper.dateInscriptionColIndex).toBe(2);
-    expect(mapper.dateTransactionColIndex).toBe(undefined);
+    expect(mapper.dateTransactionColIndex).toBe(null);
     expect(mapper.amountColIndex).toBe(3);
     expect(mapper.cardNumberColIndex).toBe(0);
     expect(mapper.descriptionColIndex).toBe(4);
@@ -75,7 +78,7 @@ describe('CsvColumnsToBankAccountTransactionMapper', () => {
       const mapper = new  CsvColumnsToBankAccountTransactionMapper(columnsMapping, {dateFormat: 'YYYY-MM-DD'});
 
       expect(mapper.dateInscriptionColIndex).toBe(2);
-      expect(mapper.dateTransactionColIndex).toBe(undefined);
+      expect(mapper.dateTransactionColIndex).toBe(null);
       expect(mapper.amountColIndex).toBe(3);
       expect(mapper.cardNumberColIndex).toBe(0);
       expect(mapper.descriptionColIndex).toBe(4);
@@ -107,7 +110,7 @@ describe('CsvColumnsToBankAccountTransactionMapper', () => {
       const transaction = mapper.mapCsvToTransaction(sampleCsvContent.rows[0]);
 
       expect(mapper.valid).toBe(false);
-      expect(transaction).toBe(undefined);
+      expect(transaction).toBe(null);
   });
 
   test('mapCsvToTransaction with out of bound columns', () => {
@@ -117,7 +120,7 @@ describe('CsvColumnsToBankAccountTransactionMapper', () => {
       const transaction = mapper.mapCsvToTransaction(sampleCsvContent.rows[0]);
 
       expect(mapper.valid).toBe(true);
-      expect(transaction).toBe(undefined);
+      expect(transaction).toBe(null);
   });
 
   test('mapCsvToTransaction with another date format', () => {

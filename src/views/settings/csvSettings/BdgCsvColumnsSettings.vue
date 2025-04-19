@@ -85,8 +85,6 @@
     </v-container>
 </template>
 
-<style src="@cobreti/cbr-draggable/dist/style.css"></style>
-
 <style scoped>
     h1,
     h2 {
