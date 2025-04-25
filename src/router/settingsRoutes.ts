@@ -11,8 +11,7 @@ export const settingsRoutes = [
     },
     {
         path: '/settings/csvsettings/edit/:id',
-        name: 'new-csv-settings',
+        name: 'edit-csv-settings',
         component: () => import('@views/settings/csvSettings/BdgCsvColumnsSettings.vue')
     }
-
-];
+]
