@@ -1,39 +1,35 @@
-import { CSVColumnContent, type CSVSettings } from "@/core/models/csvDocument";
-import type { CsvParseResult, CsvRow } from "@/core/services/CsvParser";
-import { useCsvSettingsStore } from "@/stores/csvSettings-store";
-import { defineStore } from "pinia";
-import { ref, type Ref } from "vue";
-
+import { CSVColumnContent, type CSVSettings } from '@/core/models/csvDocument'
+import type { CsvParseResult, CsvRow } from '@/core/services/CsvParser'
+import { useCsvSettingsStore } from '@/stores/csvSettings-store'
+import { defineStore } from 'pinia'
+import { ref, type Ref } from 'vue'
 
 export type CsvPreviewStore = {
-    csvContentPreview: Ref<CsvParseResult | undefined>;
-    csvRows: Ref<CsvRow[]>;
-    settings: CSVSettings;
-    // csvColumnContentMapping: Ref<CSVColumnContentMapping>;
+    csvContentPreview: Ref<CsvParseResult | undefined>
+    csvRows: Ref<CsvRow[]>
+    settings: Ref<CSVSettings>
 
-    setCsvContentPreview: (csvContent: CsvParseResult) => void;
-    clearCsvContentPreview: () => void;
-    newSettings: () => CSVSettings;
-    saveSettings: () => void;
-    loadSettings: (id: string) => void;
-    clearSettings: () => void;
-};
+    setCsvContentPreview: (csvContent: CsvParseResult) => void
+    clearCsvContentPreview: () => void
+    newSettings: () => void
+    saveSettings: () => void
+    loadSettings: (id: string) => void
+    clearSettings: () => void
+}
 
+export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPreview', () => {
+    const csvSettingsStore = useCsvSettingsStore()
 
-export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPreview',  () => {
+    const csvContentPreview = ref<CsvParseResult | undefined>()
 
-    const csvSettingsStore = useCsvSettingsStore();
+    const csvRows = ref<CsvRow[]>([])
 
-    const csvContentPreview = ref<CsvParseResult | undefined>();
-
-    const csvRows = ref<CsvRow[]>([]);
-
-    const originalSettings = ref<CSVSettings | undefined>(undefined);
+    const originalSettings = ref<CSVSettings | undefined>(undefined)
 
     const settings = ref<CSVSettings>({
-        id: "",
-        name: "",
-        delimiter: ",",
+        id: '',
+        name: '',
+        delimiter: ',',
         columnsMapping: {
             [CSVColumnContent.CARD_NUMBER]: null,
             [CSVColumnContent.DATE_INSCRIPTION]: null,
@@ -42,7 +38,7 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
             [CSVColumnContent.DESCRIPTION]: null,
             [CSVColumnContent.TYPE]: null
         }
-    });
+    })
     // const csvColumnContentMapping = ref<CSVColumnContentMapping>(Object.values(CSVColumnContent).reduce(
     //     (acc : CSVColumnContentMapping, column: any, value: number) => {
     //         const contentValue = CSVColumnContent[column as keyof typeof CSVColumnContent];
@@ -51,30 +47,30 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
     //     }, {} as CSVColumnContentMapping));
 
     function setCsvContentPreview(csvContent: CsvParseResult) {
-        csvContentPreview.value = csvContent;
+        csvContentPreview.value = csvContent
 
-        const rows : CsvRow[] = [];
+        const rows: CsvRow[] = []
 
-        if(csvContent.content.header) {
-            rows.push(csvContent.content.header);
+        if (csvContent.content.header) {
+            rows.push(csvContent.content.header)
         }
 
-        rows.push(...csvContent.content.rows);
+        rows.push(...csvContent.content.rows)
 
-        csvRows.value = rows;
+        csvRows.value = rows
     }
 
-    function clearCsvContentPreview() {
-        csvContentPreview.value = undefined;
-        csvRows.value = [];
+    function clearCsvContentPreview(): void {
+        csvContentPreview.value = undefined
+        csvRows.value = []
     }
 
-    function newSettings() {
-        originalSettings.value = undefined;
+    function newSettings(): void {
+        originalSettings.value = undefined
         settings.value = {
             id: crypto.randomUUID(),
-            name: "",
-            delimiter: ",",
+            name: '',
+            delimiter: ',',
             columnsMapping: {
                 [CSVColumnContent.CARD_NUMBER]: null,
                 [CSVColumnContent.DATE_INSCRIPTION]: null,
@@ -86,37 +82,37 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
         }
     }
 
-    function saveSettings() {
+    function saveSettings(): void {
         if (originalSettings.value) {
-            csvSettingsStore.removeSetting(originalSettings.value.id);
+            csvSettingsStore.removeSetting(originalSettings.value.id)
         }
 
         const newSetting = {
             ...settings.value,
             name: settings.value.name || `CSV Settings ${new Date().toLocaleDateString()}`
-        };
+        }
 
-        csvSettingsStore.addSetting(newSetting);
+        csvSettingsStore.addSetting(newSetting)
 
-        originalSettings.value = newSetting;
+        originalSettings.value = newSetting
     }
 
-    function loadSettings(id: string) {
-        const setting = csvSettingsStore.settings.find((setting) => setting.id === id);
+    function loadSettings(id: string): void {
+        const setting = csvSettingsStore.settings.find((setting) => setting.id === id)
 
         if (setting) {
-            originalSettings.value = setting;
+            originalSettings.value = setting
             settings.value = {
                 ...setting
-            };
+            }
         }
     }
 
-    function clearSettings() {
+    function clearSettings(): void {
         settings.value = {
-            id: "",
-            name: "",
-            delimiter: ",",
+            id: '',
+            name: '',
+            delimiter: ',',
             columnsMapping: {
                 [CSVColumnContent.CARD_NUMBER]: null,
                 [CSVColumnContent.DATE_INSCRIPTION]: null,
@@ -125,9 +121,9 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
                 [CSVColumnContent.DESCRIPTION]: null,
                 [CSVColumnContent.TYPE]: null
             }
-        };
-        
-        originalSettings.value = undefined;
+        }
+
+        originalSettings.value = undefined
     }
 
     return {
@@ -141,5 +137,5 @@ export const useCsvPreviewStore = defineStore<string, CsvPreviewStore>('csvPrevi
         saveSettings,
         loadSettings,
         clearSettings
-    };
-});
+    }
+})
