@@ -9,5 +9,7 @@ export const ServicesTypes = {
     BankAccountOperations: 'BankAccountOperations',
     BankAccountTransactionsSanitizer: 'BankAccountTransactionsSanitizer',
     BankAccountTransactionsSanitizerFactory: 'BankAccountTransactionsSanitizerFactory',
-    BankAccountLoader: 'BankAccountLoader'
+    BankAccountLoader: 'BankAccountLoader',
+    StreamFactory: 'StreamFactory',
+    CsvParser: 'CsvParser',
 }

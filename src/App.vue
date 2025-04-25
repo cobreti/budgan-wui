@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import NavigationDrawer from '@components/NavigationDrawer.vue';
+import NavigationDrawer from '@components/BdgNavigationDrawer.vue';
 import { useAppSettingsStore } from '@/stores/appSettings-store'
 import settings from './assets/settings.json';
 import { computed } from 'vue'

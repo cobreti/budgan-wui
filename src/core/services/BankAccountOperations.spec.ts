@@ -11,6 +11,7 @@ import {
     data_sortTransactionsGroupByStartDateAscending_ordered_result,
     data_sortTransactionsGroupByStartDateAscending_unordered_input
 } from '@services/tests-files/BankAccountOperations/sortTransactionsGroupByStartDateAscending-test-data'
+import { start } from 'node:repl'
 
 describe('BankAccountOperations', () => {
 
@@ -28,6 +29,10 @@ describe('BankAccountOperations', () => {
 
         test('getTransactionsInBothAccounts success', () => {
 
+            const startDate = new Date();
+            const endDate = new Date(startDate.getDate() + 1);
+            const dateInscription = new Date();
+
             const account1: BankAccount = {
                 accountId: '1',
                 name: 'Account 1',
@@ -35,26 +40,26 @@ describe('BankAccountOperations', () => {
                 transactionsGroups: [{
                     name: 'Group 1',
                     id: '1',
-                    dateStart: new Date(),
-                    dateEnd: new Date(),
+                    dateStart: startDate,
+                    dateEnd: endDate,
                     transactions: [
                         {
                             transactionId: '1',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '2',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -70,26 +75,26 @@ describe('BankAccountOperations', () => {
                 transactionsGroups: [{
                     name: 'Group 1',
                     id: '1',
-                    dateStart: new Date(),
-                    dateEnd: new Date(),
+                    dateStart: startDate,
+                    dateEnd: endDate,
                     transactions: [
                         {
                             transactionId: '1',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '4',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -105,6 +110,10 @@ describe('BankAccountOperations', () => {
 
         test('getTransactionsInBothAccounts in multiple transactions groups success', () => {
 
+            const startDate = new Date();
+            const endDate = new Date(startDate.getDate() + 1);
+            const dateInscription = new Date();
+
             const account1: BankAccount = {
                 accountId: '1',
                 name: 'Account 1',
@@ -113,26 +122,26 @@ describe('BankAccountOperations', () => {
                     {
                         name: 'Group 1',
                         id: '1',
-                        dateStart: new Date(),
-                        dateEnd: new Date(),
+                        dateStart: startDate,
+                        dateEnd: endDate,
                         transactions: [
                             {
                                 transactionId: '1',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '2',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -142,26 +151,26 @@ describe('BankAccountOperations', () => {
                     {
                         name: 'Group 2',
                         id: '2',
-                        dateStart: new Date(),
-                        dateEnd: new Date(),
+                        dateStart: startDate,
+                        dateEnd: endDate,
                         transactions: [
                             {
                                 transactionId: '4',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '5',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -179,26 +188,26 @@ describe('BankAccountOperations', () => {
                     {
                         name: 'Group 1',
                         id: '1',
-                        dateStart: new Date(),
-                        dateEnd: new Date(),
+                        dateStart: startDate,
+                        dateEnd: endDate,
                         transactions: [
                             {
                                 transactionId: '1',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '8',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '4',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -208,26 +217,26 @@ describe('BankAccountOperations', () => {
                     {
                         name: 'Group 2',
                         id: '2',
-                        dateStart: new Date(),
-                        dateEnd: new Date(),
+                        dateStart: startDate,
+                        dateEnd: endDate,
                         transactions: [
                             {
                                 transactionId: '7',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '9',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -245,6 +254,10 @@ describe('BankAccountOperations', () => {
 
         test('account id does not match', () => {
 
+            const startDate = new Date();
+            const endDate = new Date(startDate.getDate() + 1);
+            const dateInscription = new Date();
+
             const account1 : BankAccount = {
                 accountId: '1',
                 name: 'Account 1',
@@ -252,26 +265,26 @@ describe('BankAccountOperations', () => {
                 transactionsGroups: [{
                     name: 'Group 1',
                     id: '1',
-                    dateStart: new Date(),
-                    dateEnd: new Date(),
+                    dateStart: startDate,
+                    dateEnd: endDate,
                     transactions:[
                         {
                             transactionId: '1',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '2',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -287,26 +300,26 @@ describe('BankAccountOperations', () => {
                 transactionsGroups: [{
                     name: 'Group 1',
                     id: '1',
-                    dateStart: new Date(),
-                    dateEnd: new Date(),
+                    dateStart: startDate,
+                    dateEnd: endDate,
                     transactions:[
                         {
                             transactionId: '1',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '4',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -323,6 +336,10 @@ describe('BankAccountOperations', () => {
 
         test('removeTransactionsFromBankAccount success', () => {
 
+            const startDate = new Date();
+            const endDate = new Date(startDate.getDate() + 1);
+            const dateInscription = new Date();
+
             const account: BankAccount = {
                 accountId: '1',
                 name: 'Account 1',
@@ -330,26 +347,26 @@ describe('BankAccountOperations', () => {
                 transactionsGroups: [{
                     name: 'Group 1',
                     id: '1',
-                    dateStart: new Date(),
-                    dateEnd: new Date(),
+                    dateStart: startDate,
+                    dateEnd: endDate,
                     transactions: [
                         {
                             transactionId: '1',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '2',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
                         },
                         {
                             transactionId: '3',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -369,12 +386,12 @@ describe('BankAccountOperations', () => {
                 transactionsGroups: [{
                     name: 'Group 1',
                     id: '1',
-                    dateStart: new Date(),
-                    dateEnd: new Date(),
+                    dateStart: startDate,
+                    dateEnd: endDate,
                     transactions: [
                         {
                             transactionId: '2',
-                            dateInscription: new Date(),
+                            dateInscription: dateInscription,
                             amount: 100,
                             type: 'Deposit',
                             description: 'Deposit'
@@ -388,6 +405,8 @@ describe('BankAccountOperations', () => {
 
             const startDate = new Date();
             const endDate = new Date(startDate.getDate() + 1);
+            const dateInscription = new Date();
+
             const account: BankAccount = {
                 accountId: '1',
                 name: 'Account 1',
@@ -401,21 +420,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '1',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '2',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -430,21 +449,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '5',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -469,7 +488,7 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '2',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -484,14 +503,14 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -510,6 +529,8 @@ describe('BankAccountOperations', () => {
 
             const startDate = new Date();
             const endDate = new Date(startDate.getDate() + 1);
+            const dateInscription = new Date();
+
             const account: BankAccount = {
                 accountId: '1',
                 name: 'Account 1',
@@ -523,21 +544,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '1',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '2',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '3',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -552,21 +573,21 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '5',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
                             },
                             {
                                 transactionId: '6',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'
@@ -591,7 +612,7 @@ describe('BankAccountOperations', () => {
                         transactions: [
                             {
                                 transactionId: '4',
-                                dateInscription: new Date(),
+                                dateInscription: dateInscription,
                                 amount: 100,
                                 type: 'Deposit',
                                 description: 'Deposit'

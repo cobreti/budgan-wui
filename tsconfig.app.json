@@ -12,6 +12,7 @@
       "@models/*": ["./src/core/models/*"],
       "@services/*": ["./src/core/services/*"],
       "@components/*": ["./src/components/*"],
+      "@libComponents/*": ["./src/libComponents/*"],
       "@filters/*": ["./src/core/models/filters/*"],
       "@views/*": ["./src/views/*"],
     },

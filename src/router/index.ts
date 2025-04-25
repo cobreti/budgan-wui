@@ -1,23 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@views/BdgHomeView.vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
-import { addStatementRoutes } from '@/router/addStatementRoutes'
-import { manageAccountsRoutes } from '@/router/manageAccountsRoutes'
+import { accountsManagementRoutes } from '@/router/accountsManagementRoutes'
+import { accountRoutes } from '@/router/accountRoutes'
+import { settingsRoutes } from '@/router/settingsRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    ...addStatementRoutes,
-    ...manageAccountsRoutes,
+    ...accountsManagementRoutes,
+    ...accountRoutes,
+    ...settingsRoutes,
     {
       path: '/',
       name: 'home',
       component: HomeView
-    },
-    {
-      path: '/account/:id',
-      name: 'account',
-      component: () => import('../views/AccountView.vue')
     },
     {
       path: '/about',
@@ -25,12 +22,12 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('@views/BdgAboutView.vue')
     },
     {
       path: '/save',
       name: 'save',
-      component: () => import('../views/ExportAccountData.vue'),
+      component: () => import('@views/BdgExportAccountData.vue'),
       beforeEnter: (to, from, next) => {
         const bankAccountsStore = useBankAccountsStore()
 
@@ -44,12 +41,7 @@ const router = createRouter({
     {
       path: '/open',
       name: 'open',
-      component: () => import('../views/ImportAccountData.vue')
-    },
-    {
-      path: '/settings',
-      name: 'settings',
-      component: () => import('@views/settings/SettingsPage.vue')
+      component: () => import('@views/BdgImportAccountData.vue')
     }
   ]
 })

@@ -30,6 +30,14 @@ module.exports = {
       'extends': [
         'plugin:cypress/recommended'
       ]
+    },
+    {
+      files: [
+        '**/*.spec.{js,ts,jsx,tsx}'
+      ],
+      rules: {
+        "@typescript-eslint/no-unused-parameter": "off",
+      }
     }
   ],
   parserOptions: {

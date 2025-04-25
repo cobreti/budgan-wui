@@ -26,6 +26,8 @@ import {
 } from '@services/tests-files/BankAccountLoader/sanitize-test-data'
 import { accountsById_test_data } from '@services/tests-files/BankAccountLoader/accountsById-test-data'
 import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
+import type { IStreamFactory } from '@services/StreamFactory'
+import type { ICsvParser } from '@services/CsvParser'
 
 describe('BankAccountLoader', async () => {
 
@@ -54,10 +56,14 @@ describe('BankAccountLoader', async () => {
         }
     } as IBankAccountTransactionsSanitizerFactory;
 
+    const streamFactory = {} as IStreamFactory;
+
+    const csvParser = {} as ICsvParser;
+
     let bankAccountLoader : BankAccountLoader = {} as BankAccountLoader;
 
     beforeEach( async() => {
-        bankAccountLoader = new BankAccountLoader(ofxToBankAccount, csvToBankAccount, bankAccountOperations, bankAccountTransactionsSanitizerFactory);
+        bankAccountLoader = new BankAccountLoader(ofxToBankAccount, csvToBankAccount, bankAccountOperations, bankAccountTransactionsSanitizerFactory, streamFactory, csvParser);
     });
 
     afterEach( async() => {

@@ -18,7 +18,8 @@ export const useAppSettingsStore = defineStore<string, AppSettingsStore>('appSet
 
   const appSettings = ref({
     drawerVisible: true,
-    version: '0.0.0.0'
+    version: '0.0.0.0',
+    csvSettings: {}
   })
 
   function setVersion(version: string) {
@@ -32,5 +33,9 @@ export const useAppSettingsStore = defineStore<string, AppSettingsStore>('appSet
     appSettings,
     setVersion
   };
+}, {
+  persist: {
+    storage: sessionStorage
+  },
 });
 
