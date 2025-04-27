@@ -1,6 +1,7 @@
+import 'reflect-metadata'
+
 import { type IOfxToBankAccount } from './OfxToBankAccount'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { ServicesTypes } from './types'
 import type { BankAccount, BankAccountsDictionary } from '@models/BankAccountTypes'
 import type { IBankAccountOperations } from './BankAccountOperations'
@@ -147,15 +148,6 @@ export class BankAccountLoader implements IBankAccountLoader {
         this.csvParser.minimumColumnsCount = 3
         const csvResult = this.csvParser.parse(text)
 
-        // const csvColumnsMapping: CSVColumnContentMapping = {
-        //     [CSVColumnContent.CARD_NUMBER]: 0,
-        //     [CSVColumnContent.TYPE]: 1,
-        //     [CSVColumnContent.DATE_INSCRIPTION]: 2,
-        //     [CSVColumnContent.AMOUNT]: 3,
-        //     [CSVColumnContent.DESCRIPTION]: 4,
-        //     [CSVColumnContent.DATE_TRANSACTION]: null
-        // }
-
         const transactionsGroup = this.csvToBankAccount.convertToBankAccountTransactionsGroup(
             csvResult.content,
             csvMapping
@@ -171,8 +163,6 @@ export class BankAccountLoader implements IBankAccountLoader {
             accountType: account.accountType,
             transactionsGroups: [transactionsGroup]
         } as BankAccount
-
-        // return await this.csvToBankAccount.loadCsvFile(file);
     }
 
     public sanitize(accounts: BankAccountsDictionary) {
