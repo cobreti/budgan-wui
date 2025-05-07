@@ -25,6 +25,23 @@ export type BankAccountsStore = {
     removeAccount: (accountId: string) => void
 }
 
+const dateUUID = '7f5e8a12-09b3-4dfc-a726-89ed4731cb56'
+
+function AccountReplacer(key: string, value: any): any {
+    if (this[key] instanceof Date) {
+        return { type: dateUUID, value: this[key].toISOString() }
+    }
+    return value
+}
+
+function AccountReviver(key: string, value: any): any {
+    if (typeof value === 'object' && value['type'] === dateUUID) {
+        return new Date(value.value)
+    }
+
+    return value
+}
+
 export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
     'bankTransactions',
     () => {
@@ -175,31 +192,17 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
     },
     {
         persist: {
-            storage: sessionStorage,
-            afterRestore(context) {
-                const accounts = context.store.accounts
-
-                for (const accountId in accounts) {
-                    const account = accounts[accountId]
-                    account.transactionsGroups = account.transactionsGroups.map(
-                        (transactionsGroup: BankAccountTransactionsGroup) => {
-                            return {
-                                ...transactionsGroup,
-                                dateStart: new Date(transactionsGroup.dateStart),
-                                dateEnd: new Date(transactionsGroup.dateEnd),
-                                transactions: transactionsGroup.transactions.map(
-                                    (transaction: BankAccountTransaction) => {
-                                        return {
-                                            ...transaction,
-                                            date: new Date(transaction.dateInscription)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    )
+            paths: ['accounts'],
+            storage: localStorage,
+            serializer: {
+                serialize: (state) => {
+                    return JSON.stringify(state, AccountReplacer)
+                },
+                deserialize: (value) => {
+                    return JSON.parse(value, AccountReviver)
                 }
-            }
+            },
+            afterRestore(context) {}
         }
     }
 )

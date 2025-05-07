@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 
-  import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+  import { useBankAccountsStore } from '@/stores/bankAccounts-store';
   import { computed } from 'vue'
   import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
 
