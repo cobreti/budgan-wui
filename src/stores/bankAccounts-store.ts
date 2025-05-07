@@ -27,7 +27,7 @@ export type BankAccountsStore = {
 
 const dateUUID = '7f5e8a12-09b3-4dfc-a726-89ed4731cb56'
 
-function AccountReplacer(key: string, value: any): any {
+function AccountReplacer(this: any, key: string, value: any): any {
     if (this[key] instanceof Date) {
         return { type: dateUUID, value: this[key].toISOString() }
     }
