@@ -1,62 +1,66 @@
 import type { BankAccount, TransactionIdsTable } from '@models/BankAccountTypes'
 
 export const getTransactionsIdsForAccount_success_input: BankAccount = {
-  name: 'Sample Account',
-  accountId: '123456',
-  accountType: 'Checking',
-  transactionsGroups: [
-    {
-      name: 'Group 1',
-      id: '1',
-      dateStart: new Date('2022-01-01'),
-      dateEnd: new Date('2022-01-31'),
-      transactions: [
+    name: 'Sample Account',
+    accountId: '123456',
+    accountType: 'Checking',
+    transactionsGroups: [
         {
-          transactionId: '10',
-          dateInscription: new Date('2022-01-01'),
-          amount: 100,
-          type: 'Deposit',
-          description: 'Deposit 1'
+            name: 'Group 1',
+            id: '1',
+            dateStart: new Date('2022-01-01'),
+            dateEnd: new Date('2022-01-31'),
+            transactions: [
+                {
+                    transactionId: '10',
+                    transactionGroupId: '1',
+                    dateInscription: new Date('2022-01-01'),
+                    amount: 100,
+                    type: 'Deposit',
+                    description: 'Deposit 1'
+                },
+                {
+                    transactionId: '11',
+                    transactionGroupId: '1',
+                    dateInscription: new Date('2022-01-02'),
+                    amount: 100,
+                    type: 'Deposit',
+                    description: 'Deposit 2'
+                }
+                // ... add more transactions as needed
+            ]
         },
         {
-          transactionId: '11',
-          dateInscription: new Date('2022-01-02'),
-          amount: 100,
-          type: 'Deposit',
-          description: 'Deposit 2'
-        },
-        // ... add more transactions as needed
-      ]
-    },
-    {
-      name: 'Group 2',
-      id: '2',
-      dateStart: new Date('2022-02-01'),
-      dateEnd: new Date('2022-02-28'),
-      transactions: [
-        {
-          transactionId: '20',
-          dateInscription: new Date('2022-02-01'),
-          amount: 200,
-          type: 'Withdrawal',
-          description: 'Withdrawal 1'
-        },
-        {
-          transactionId: '21',
-          dateInscription: new Date('2022-02-02'),
-          amount: 200,
-          type: 'Withdrawal',
-          description: 'Withdrawal 2'
-        },
-        // ... add more transactions as needed
-      ]
-    }
-  ]
-};
+            name: 'Group 2',
+            id: '2',
+            dateStart: new Date('2022-02-01'),
+            dateEnd: new Date('2022-02-28'),
+            transactions: [
+                {
+                    transactionId: '20',
+                    transactionGroupId: '2',
+                    dateInscription: new Date('2022-02-01'),
+                    amount: 200,
+                    type: 'Withdrawal',
+                    description: 'Withdrawal 1'
+                },
+                {
+                    transactionId: '21',
+                    transactionGroupId: '2',
+                    dateInscription: new Date('2022-02-02'),
+                    amount: 200,
+                    type: 'Withdrawal',
+                    description: 'Withdrawal 2'
+                }
+                // ... add more transactions as needed
+            ]
+        }
+    ]
+}
 
-export const getTransactionsIdsForAccount_expected_output : TransactionIdsTable = {
-  '10': {},
-  '11': {},
-  '20': {},
-  '21': {}
-};
+export const getTransactionsIdsForAccount_expected_output: TransactionIdsTable = {
+    '10': {},
+    '11': {},
+    '20': {},
+    '21': {}
+}

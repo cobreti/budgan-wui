@@ -50,7 +50,7 @@ export class CsvColumnsToBankAccountTransactionMapper {
         )
     }
 
-    mapCsvToTransaction(row: CsvRow): BankAccountTransaction | null {
+    mapCsvToTransaction(row: CsvRow, transactionGroupId: string): BankAccountTransaction | null {
         if (!this.valid) {
             return null
         }
@@ -77,6 +77,7 @@ export class CsvColumnsToBankAccountTransactionMapper {
 
         return {
             transactionId: id,
+            transactionGroupId,
             dateInscription: moment(dateInscription, this.dateFormat).toDate(),
             amount: parseFloat(amoount),
             description: description,

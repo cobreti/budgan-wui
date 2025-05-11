@@ -9,6 +9,7 @@ export declare type TransactionIdsTable = { [key: string]: object }
 
 export type BankAccountTransaction = {
     transactionId: string
+    transactionGroupId: string
     dateInscription: Date
     dateTransaction?: Date
     amount: number
