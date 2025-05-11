@@ -1,25 +1,24 @@
 import './assets/main.css'
 import { createApp } from 'vue'
-import {createVuetify} from 'vuetify';
+import { createVuetify } from 'vuetify'
 import { createPinia } from 'pinia'
-import * as components from 'vuetify/components';
-import * as directives from 'vuetify/directives';
-import 'vuetify/styles';
-import { container } from './core/setupInversify';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import 'vuetify/styles'
+import { container } from './core/setupInversify'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import '@mdi/font/css/materialdesignicons.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css' 
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 import App from './App.vue'
 import router from './router'
 
-
 const app = createApp(App)
-const pinia = createPinia();
+const pinia = createPinia()
 
 pinia.use(piniaPluginPersistedstate)
 
-app.provide('container', container);
+app.provide('container', container)
 
 const vuetify = createVuetify({
     theme: {
@@ -39,14 +38,13 @@ const vuetify = createVuetify({
     },
     components,
     directives
-});
-
+})
 
 app.use<any>(vuetify, {
     options: {
         customProperties: true
     }
-});
+})
 
 app.use(pinia)
 app.use(router)
