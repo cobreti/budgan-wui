@@ -48,7 +48,8 @@ describe('OfxToBankAccount', () => {
                         name: 'account',
                         accountId: '1234',
                         accountType: 'account-type',
-                        transactionsGroups: []
+                        transactionsGroups: [],
+                        transactions: []
                     }
                 }
             )
@@ -59,7 +60,8 @@ describe('OfxToBankAccount', () => {
                 name: 'account',
                 accountId: '1234',
                 accountType: 'account-type',
-                transactionsGroups: []
+                transactionsGroups: [],
+                transactions: []
             })
         })
 
@@ -185,7 +187,8 @@ describe('OfxToBankAccount', () => {
                 name: 'account',
                 accountId: '1234',
                 accountType: 'account-type',
-                transactionsGroups: []
+                transactionsGroups: [],
+                transactions: []
             }
 
             const fctSpy = vi
@@ -360,7 +363,8 @@ describe('OfxToBankAccount', () => {
                             }
                         ]
                     }
-                ]
+                ],
+                transactions: []
             })
         })
 
@@ -389,7 +393,8 @@ describe('OfxToBankAccount', () => {
                 name: '1234',
                 accountId: '1234',
                 accountType: 'account-type',
-                transactionsGroups: []
+                transactionsGroups: [],
+                transactions: []
             })
         })
 
