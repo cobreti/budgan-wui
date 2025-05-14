@@ -25,6 +25,7 @@ export const combineAndSortTransactionsGroup_success_input: BankAccountListById 
       accountId: '123456789',
       name: 'Savings Account',
       accountType: 'SAVINGS',
+      transactions: [],
       transactionsGroups: [
         {
           id: 'group1',
@@ -54,6 +55,7 @@ export const combineAndSortTransactionsGroup_success_input: BankAccountListById 
       accountId: '123456789',
       name: 'Checking Account',
       accountType: 'SAVINGS',
+      transactions: [],
       transactionsGroups: [
         {
           id: 'group2',
@@ -181,6 +183,7 @@ export const combineAndSortTransactionsGroup_success_expected : BankAccountsDict
       accountId: '123456789',
       name: 'Savings Account',
       accountType: 'SAVINGS',
+      transactions: [],
       transactionsGroups: [
         {
           id: 'group1',
