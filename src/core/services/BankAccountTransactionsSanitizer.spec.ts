@@ -37,7 +37,8 @@ describe('BankAccountTransactionsSanitizer', () => {
         name: 'name',
         accountId: 'accountId',
         accountType: 'accountType',
-        transactionsGroups: []
+        transactionsGroups: [],
+        transactions: []
       };
 
       // Act
@@ -64,7 +65,8 @@ describe('BankAccountTransactionsSanitizer', () => {
         name: 'name',
         accountId: 'accountId',
         accountType: 'accountType',
-        transactionsGroups: []
+        transactionsGroups: [],
+        transactions: []
       };
 
       // Act

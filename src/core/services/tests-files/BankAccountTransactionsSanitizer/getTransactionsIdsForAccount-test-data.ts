@@ -4,6 +4,7 @@ export const getTransactionsIdsForAccount_success_input: BankAccount = {
     name: 'Sample Account',
     accountId: '123456',
     accountType: 'Checking',
+    transactions: [],
     transactionsGroups: [
         {
             name: 'Group 1',
