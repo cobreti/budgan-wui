@@ -106,7 +106,8 @@ export class OfxToBankAccount implements IOfxToBankAccount {
             name: document.accountId,
             accountId: document.accountId,
             accountType: document.accountType || '',
-            transactionsGroups: []
+            transactionsGroups: [],
+            transactions: []
         }
 
         if (document.transactions && document.transactions.length > 0) {
