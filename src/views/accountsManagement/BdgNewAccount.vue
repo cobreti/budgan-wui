@@ -123,6 +123,7 @@
             accountId: accountNumber.value,
             accountType: accountType.value,
             transactionsGroups: [],
+            transactions: [],
             csvSettingId: selectedCsvSetting.value
         }
 
