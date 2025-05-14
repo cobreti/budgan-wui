@@ -5,6 +5,7 @@ export const data_getCombinedTransactionsGroup_Success_input: BankAccount[] = [
         accountId: '1',
         name: 'Account 1',
         accountType: 'Checking',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'Group 1',
@@ -76,6 +77,7 @@ export const data_getCombinedTransactionsGroup_Success_input: BankAccount[] = [
         accountId: '1',
         name: 'Account 2',
         accountType: 'Savings',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'Group 1',
@@ -281,12 +283,14 @@ export const data_getCombinedTransactionsGroup_Different_account_ids: BankAccoun
         accountId: '1',
         name: 'Account 1',
         accountType: 'Checking',
+        transactions: [],
         transactionsGroups: []
     },
     {
         accountId: '2',
         name: 'Account 2',
         accountType: 'Savings',
+        transactions: [],
         transactionsGroups: []
     }
 ]
