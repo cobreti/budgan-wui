@@ -5,6 +5,7 @@ export const sanitizeNewAccounts_existingAccount: BankAccountsDictionary = {
         name: 'test',
         accountId: '123456789',
         accountType: 'checking',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'test',
@@ -31,6 +32,7 @@ export const sanitizeNewAccounts_newAccounts: BankAccountsDictionary = {
         name: 'Account One',
         accountId: '987654321',
         accountType: 'savings',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'Group 1',
@@ -70,6 +72,7 @@ export const sanitizeNewAccounts_newAccounts: BankAccountsDictionary = {
         name: 'test',
         accountId: '123456789',
         accountType: 'checking',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'Group 1',
@@ -200,6 +203,7 @@ export const sanitizeNewAccounts_accountsById_expected_data: BankAccountsDiction
         name: 'Account One',
         accountId: '987654321',
         accountType: 'savings',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'Group 1',
@@ -239,6 +243,7 @@ export const sanitizeNewAccounts_accountsById_expected_data: BankAccountsDiction
         name: 'test',
         accountId: '123456789',
         accountType: 'checking',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'test',
