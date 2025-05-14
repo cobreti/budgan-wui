@@ -43,6 +43,7 @@ export type BankAccount = {
     accountId: string
     accountType: string | undefined
     transactionsGroups: BankAccountTransactionsGroup[]
+    transactions: BankAccountTransaction[]
     csvSettingId?: string
 }
 
