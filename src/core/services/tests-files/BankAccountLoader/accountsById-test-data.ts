@@ -6,6 +6,7 @@ export const accountsById_test_data: BankAccountsDictionary = {
         name: 'Primary Checking Account',
         accountId: '123456789',
         accountType: 'checking',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'January Transactions',
@@ -37,6 +38,7 @@ export const accountsById_test_data: BankAccountsDictionary = {
         name: 'Savings Account',
         accountId: '987654321',
         accountType: 'savings',
+        transactions: [],
         transactionsGroups: [
             {
                 name: 'February Transactions',
