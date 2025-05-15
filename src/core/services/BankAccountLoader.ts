@@ -148,12 +148,12 @@ export class BankAccountLoader implements IBankAccountLoader {
         this.csvParser.minimumColumnsCount = 3
         const csvResult = this.csvParser.parse(text)
 
-        const transactionsGroup = this.csvToBankAccount.convertToBankAccountTransactionsGroup(
+        const result = this.csvToBankAccount.convertToBankAccountTransactionsGroup(
             csvResult.content,
             csvMapping
         )
 
-        if (transactionsGroup == undefined) {
+        if (result == undefined) {
             throw new Error('Unable to convert CSV file to transactions group')
         }
 
@@ -161,7 +161,8 @@ export class BankAccountLoader implements IBankAccountLoader {
             name: account.name,
             accountId: account.accountId,
             accountType: account.accountType,
-            transactionsGroups: [transactionsGroup]
+            transactionsGroups: [result.transactionsGroup],
+            transactions: result.transactions
         } as BankAccount
     }
 

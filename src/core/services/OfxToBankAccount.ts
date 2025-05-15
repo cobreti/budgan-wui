@@ -115,6 +115,8 @@ export class OfxToBankAccount implements IOfxToBankAccount {
                 this.OfxToBankAccountTransaction
             )
 
+            account.transactions = bankAccountTransactions
+
             account.transactionsGroups = [
                 {
                     name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,

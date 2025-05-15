@@ -14,12 +14,17 @@ import type { CsvContent } from '@services/CsvParser'
 import { CsvColumnsToBankAccountTransactionMapper } from '@services/CsvColumnsToBankAccountTransactionMapper'
 import type { IdGenerator } from '@services/IdGenerator'
 
+export type TransactionsConvertionResult = {
+    transactions: BankAccountTransaction[]
+    transactionsGroup: BankAccountTransactionsGroup
+}
+
 export interface ICsvToBankAccount {
     loadCsvFile(file: File): Promise<BankAccount>
     convertToBankAccountTransactionsGroup(
         csvContent: CsvContent,
         columnsMapping: CSVColumnContentMapping
-    ): BankAccountTransactionsGroup | undefined
+    ): TransactionsConvertionResult | undefined
 }
 
 @injectable()
@@ -86,7 +91,7 @@ export class CsvToBankAccount implements ICsvToBankAccount {
     convertToBankAccountTransactionsGroup(
         csvContent: CsvContent,
         columnsMapping: CSVColumnContentMapping
-    ): BankAccountTransactionsGroup | undefined {
+    ): TransactionsConvertionResult | undefined {
         const mapper = new CsvColumnsToBankAccountTransactionMapper(columnsMapping)
 
         const transactions: BankAccountTransaction[] = []
@@ -119,12 +124,17 @@ export class CsvToBankAccount implements ICsvToBankAccount {
 
         const name = `${dateStart.toDateString()} - ${dateEnd.toDateString()}`
 
-        return {
+        const transactionsGroup = {
             id: transactionGroupId,
             name,
             dateStart,
             dateEnd,
-            transactions
+            transactions: []
         } as BankAccountTransactionsGroup
+
+        return {
+            transactions,
+            transactionsGroup
+        }
     }
 }
