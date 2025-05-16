@@ -1,78 +1,100 @@
 import 'reflect-metadata'
 
 import { injectable } from 'inversify'
-import type { BankAccount, BankAccountTransactionsGroup, TransactionIdsTable } from '@models/BankAccountTypes'
+import type {
+    BankAccount,
+    BankAccountTransaction,
+    BankAccountTransactionsGroup,
+    TransactionIdsTable
+} from '@models/BankAccountTypes'
 import { InvalidTransactionReason } from '@models/BankAccountTypes'
 
 export interface IBankAccountTransactionsSanitizer {
-  initWithAccount(account: BankAccount) : void;
-  getTransactionsIdsForAccount(account: BankAccount) : TransactionIdsTable;
-  addTransactionsGroup(group: BankAccountTransactionsGroup) : void;
+    initWithAccount(account: BankAccount): void
+    getTransactionsIdsForAccount(account: BankAccount): TransactionIdsTable
+    addTransactions(transactions: BankAccountTransaction[]): void
+    addTransactionsGroup(group: BankAccountTransactionsGroup): void
 
-  get transactionsGroups() : BankAccountTransactionsGroup[];
+    get transactionsGroups(): BankAccountTransactionsGroup[]
+    get transactions(): BankAccountTransaction[]
 }
 
 @injectable()
 export class BankAccountTransactionsSanitizer implements IBankAccountTransactionsSanitizer {
+    public accountId: string | undefined
+    public transactionsIds: TransactionIdsTable = {}
+    public transactionsGroups: BankAccountTransactionsGroup[] = []
+    public rejectedGroups: BankAccountTransactionsGroup[] = []
+    public transactions: BankAccountTransaction[] = []
+    public rejectedTransactions: BankAccountTransaction[] = []
 
-  public accountId : string | undefined;
-  public transactionsIds : TransactionIdsTable = {};
-  public transactionsGroups : BankAccountTransactionsGroup[] = [];
-  public rejectedGroups : BankAccountTransactionsGroup[] = [];
+    public initWithAccount(account: BankAccount): void {
+        if (this.accountId != undefined) {
+            throw new Error('Account already initialized')
+        }
 
-  public initWithAccount(account : BankAccount) : void {
-    if (this.accountId != undefined) {
-      throw new Error('Account already initialized');
+        this.accountId = account.accountId
+        this.transactionsIds = this.getTransactionsIdsForAccount(account)
     }
 
-    this.accountId = account.accountId;
-    this.transactionsIds = this.getTransactionsIdsForAccount(account);
-  }
-
-  public getTransactionsIdsForAccount(account: BankAccount) : TransactionIdsTable {
-    return account.transactionsGroups.reduce((acc, group) => {
-      group.transactions.forEach((transaction) => {
-        acc[transaction.transactionId] = {};
-      });
-      return acc;
-    }, {} as TransactionIdsTable);
-  }
-
-  public addTransactionsGroup(group: BankAccountTransactionsGroup) : void {
-
-    //
-    // check if group already added first
-    //
-
-    const groupIdx = this.transactionsGroups.findIndex((g) => g.id === group.id);
-    if (groupIdx >= 0) {
-      this.rejectedGroups.push(group);
-      return;
+    public getTransactionsIdsForAccount(account: BankAccount): TransactionIdsTable {
+        return account.transactions.reduce((acc, transaction) => {
+            acc[transaction.transactionId] = {}
+            return acc
+        }, {} as TransactionIdsTable)
+        // return account.transactionsGroups.reduce((acc, group) => {
+        //     group.transactions.forEach((transaction) => {
+        //         acc[transaction.transactionId] = {}
+        //     })
+        //     return acc
+        // }, {} as TransactionIdsTable)
     }
 
-    //
-    // check if group contains duplicated transactions
-    //  and add the groups list
-    //
+    public addTransactions(transactions: BankAccountTransaction[]): void {
+        for (const transaction of transactions) {
+            if (this.transactionsIds[transaction.transactionId]) {
+                this.rejectedTransactions.push(transaction)
+            } else {
+                this.transactions.push(transaction)
+                this.transactionsIds[transaction.transactionId] = {}
+            }
+        }
+    }
 
-    const newGroup: BankAccountTransactionsGroup = {
-      ...group,
-      transactions: [],
-      invalidTransactions: []
-    };
+    public addTransactionsGroup(group: BankAccountTransactionsGroup): void {
+        //
+        // check if group already added first
+        //
 
-    group.transactions.forEach((transaction) => {
-      if (this.transactionsIds[transaction.transactionId]) {
-        newGroup.invalidTransactions?.push({
-          ...transaction,
-          invalidReason: InvalidTransactionReason.duplicate
-        });
-      } else {
-        newGroup.transactions.push(transaction);
-        this.transactionsIds[transaction.transactionId] = {};
-      }
-    });
+        const groupIdx = this.transactionsGroups.findIndex((g) => g.id === group.id)
+        if (groupIdx >= 0) {
+            this.rejectedGroups.push(group)
+            return
+        }
 
-    this.transactionsGroups.push(newGroup);
-  };
+        //
+        // check if group contains duplicated transactions
+        //  and add the groups list
+        //
+
+        const newGroup: BankAccountTransactionsGroup = {
+            ...group,
+            transactions: [],
+            invalidTransactions: []
+        }
+
+        group.transactions.forEach((transaction) => {
+            if (this.transactionsIds[transaction.transactionId]) {
+                newGroup.invalidTransactions?.push({
+                    ...transaction,
+                    invalidReason: InvalidTransactionReason.duplicate
+                })
+            } else {
+                newGroup.transactions.push(transaction)
+                this.transactionsIds[transaction.transactionId] = {}
+            }
+        })
+
+        this.transactionsGroups.push(newGroup)
+    }
 }
