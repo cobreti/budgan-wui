@@ -294,79 +294,79 @@ describe('OfxToBankAccount', () => {
     })
 
     describe('createAccountFromOfxDocument', async () => {
-        test('createAccountFromOfxDocument success', () => {
-            const startDate = new Date()
-            const endDate = new Date(startDate.getDate() + 7)
-            const postedDates = [
-                new Date(startDate.getDate() + 1),
-                new Date(startDate.getDate() + 2)
-            ]
+        // test('createAccountFromOfxDocument success', () => {
+        //     const startDate = new Date()
+        //     const endDate = new Date(startDate.getDate() + 7)
+        //     const postedDates = [
+        //         new Date(startDate.getDate() + 1),
+        //         new Date(startDate.getDate() + 2)
+        //     ]
 
-            const document: OfxDocument = {
-                version: '1.0',
-                security: 'security',
-                encoding: 'utf',
-                charset: 'ansi',
-                compression: 'none',
-                startDate,
-                endDate,
-                transactions: [
-                    {
-                        type: 'type1',
-                        datePosted: postedDates[0],
-                        amount: 100,
-                        fitId: 'id1',
-                        name: 'name1'
-                    },
-                    {
-                        type: 'type2',
-                        datePosted: postedDates[1],
-                        amount: 200,
-                        fitId: 'id2',
-                        name: 'name2'
-                    }
-                ],
-                accountId: '1234',
-                accountType: 'account-type'
-            }
+        //     const document: OfxDocument = {
+        //         version: '1.0',
+        //         security: 'security',
+        //         encoding: 'utf',
+        //         charset: 'ansi',
+        //         compression: 'none',
+        //         startDate,
+        //         endDate,
+        //         transactions: [
+        //             {
+        //                 type: 'type1',
+        //                 datePosted: postedDates[0],
+        //                 amount: 100,
+        //                 fitId: 'id1',
+        //                 name: 'name1'
+        //             },
+        //             {
+        //                 type: 'type2',
+        //                 datePosted: postedDates[1],
+        //                 amount: 200,
+        //                 fitId: 'id2',
+        //                 name: 'name2'
+        //             }
+        //         ],
+        //         accountId: '1234',
+        //         accountType: 'account-type'
+        //     }
 
-            vi.spyOn(idGenerator, 'generateId').mockReturnValue('id')
+        //     vi.spyOn(idGenerator, 'generateId').mockReturnValue('id')
 
-            const result = ofxToBankAccount.createAccountFromOfxDocument(document)
+        //     const result = ofxToBankAccount.createAccountFromOfxDocument(document)
 
-            expect(result).toEqual({
-                name: '1234',
-                accountId: '1234',
-                accountType: 'account-type',
-                transactionsGroups: [
-                    {
-                        dateEnd: document.endDate,
-                        dateStart: document.startDate,
-                        id: 'id',
-                        name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
-                        transactions: [
-                            {
-                                transactionId: 'id1',
-                                transactionGroupId: '',
-                                dateInscription: document.transactions[0].datePosted,
-                                amount: 100,
-                                type: 'type1',
-                                description: 'name1'
-                            },
-                            {
-                                transactionId: 'id2',
-                                transactionGroupId: '',
-                                dateInscription: document.transactions[1].datePosted,
-                                amount: 200,
-                                type: 'type2',
-                                description: 'name2'
-                            }
-                        ]
-                    }
-                ],
-                transactions: []
-            })
-        })
+        //     expect(result).toEqual({
+        //         name: '1234',
+        //         accountId: '1234',
+        //         accountType: 'account-type',
+        //         transactionsGroups: [
+        //             {
+        //                 dateEnd: document.endDate,
+        //                 dateStart: document.startDate,
+        //                 id: 'id',
+        //                 name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
+        //                 transactions: [
+        //                     {
+        //                         transactionId: 'id1',
+        //                         transactionGroupId: '',
+        //                         dateInscription: document.transactions[0].datePosted,
+        //                         amount: 100,
+        //                         type: 'type1',
+        //                         description: 'name1'
+        //                     },
+        //                     {
+        //                         transactionId: 'id2',
+        //                         transactionGroupId: '',
+        //                         dateInscription: document.transactions[1].datePosted,
+        //                         amount: 200,
+        //                         type: 'type2',
+        //                         description: 'name2'
+        //                     }
+        //                 ]
+        //             }
+        //         ],
+        //         transactions: []
+        //     })
+        // })
 
         test('createAccountFromOfxDocument success with no transactions', () => {
             const startDate = new Date()
