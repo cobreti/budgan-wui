@@ -9,6 +9,7 @@ export declare type TransactionIdsTable = { [key: string]: object }
 
 export type BankAccountTransaction = {
     transactionId: string
+    transactionGroupId: string
     dateInscription: Date
     dateTransaction?: Date
     amount: number
@@ -42,6 +43,7 @@ export type BankAccount = {
     accountId: string
     accountType: string | undefined
     transactionsGroups: BankAccountTransactionsGroup[]
+    transactions: BankAccountTransaction[]
     csvSettingId?: string
 }
 

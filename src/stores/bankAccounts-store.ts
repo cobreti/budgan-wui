@@ -120,17 +120,13 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
             if (!existingAccount) {
                 accounts.value[targetAccountId] = account
             } else {
-                const sanitizedTransactionsGroup = account.transactionsGroups
-                    .map((transactionsGroup) => {
-                        return sanitizeTransactionsGroup(accountTransactionsIds, transactionsGroup)
-                    })
-                    .filter((transactionsGroup) => transactionsGroup.transactions.length > 0)
-
-                if (sanitizedTransactionsGroup.length > 0) {
-                    existingAccount.transactionsGroups = [
-                        ...existingAccount.transactionsGroups,
-                        ...sanitizedTransactionsGroup
-                    ]
+                for (const transaction of account.transactions) {
+                    const transactionId = transaction.transactionId
+                    if (transactionId in accountTransactionsIds) {
+                        // mark transaction as rejected
+                    } else {
+                        existingAccount.transactions.push(transaction)
+                    }
                 }
             }
 
@@ -140,20 +136,10 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
         }
 
         function buildTransactionIdsForAccount(account: BankAccount): TransactionIdsTable {
-            return account.transactionsGroups
-                .map((transactionsGroup) => {
-                    return transactionsGroup.transactions
-                        .map((transaction) => {
-                            return transaction.transactionId
-                        })
-                        .reduce((acc: TransactionIdsTable, id) => {
-                            acc[id] = {}
-                            return acc
-                        }, {})
-                })
-                .reduce((acc: TransactionIdsTable, ids) => {
-                    return { ...acc, ...ids }
-                }, {})
+            return account.transactions.reduce((acc: TransactionIdsTable, transaction) => {
+                acc[transaction.transactionId] = {}
+                return acc
+            }, {})
         }
 
         function getTransactionsIdsForAccountId(accountId: string): TransactionIdsTable {
