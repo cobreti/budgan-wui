@@ -42,12 +42,6 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
             acc[transaction.transactionId] = {}
             return acc
         }, {} as TransactionIdsTable)
-        // return account.transactionsGroups.reduce((acc, group) => {
-        //     group.transactions.forEach((transaction) => {
-        //         acc[transaction.transactionId] = {}
-        //     })
-        //     return acc
-        // }, {} as TransactionIdsTable)
     }
 
     public addTransactions(transactions: BankAccountTransaction[]): void {

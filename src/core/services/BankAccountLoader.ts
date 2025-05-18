@@ -206,10 +206,6 @@ export class BankAccountLoader implements IBankAccountLoader {
             const account = newAccounts[id]
             sanitizer.addTransactions(account.transactions)
             account.transactions = sanitizer.transactions
-            // for (const group of account.transactionsGroups) {
-            //     sanitizer.addTransactionsGroup(group)
-            // }
-            // account.transactionsGroups = sanitizer.transactionsGroups
 
             sanitizedAccountsById[id] = account
         }
