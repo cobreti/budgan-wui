@@ -3,9 +3,7 @@ import { defineStore } from 'pinia'
 import { type Ref, ref } from 'vue'
 import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
-export type AccountViewTransaction = BankAccountTransaction & {
-    groupId: string
-}
+export type AccountViewTransaction = BankAccountTransaction
 
 export type AccountView = {
     account: BankAccount | undefined
@@ -38,21 +36,7 @@ export const useAccountViewStore = defineStore<string, AccountViewStore>('accoun
     }
 
     function addBankAccount(bankAccount: BankAccount) {
-        const transactions = bankAccount.transactionsGroups.reduce(
-            (acc: AccountViewTransaction[], group) => {
-                const groupId = group.id
-
-                const viewTransactions = group.transactions.reduce(
-                    (tacc: AccountViewTransaction[], transaction) => {
-                        return [...tacc, { ...transaction, groupId }]
-                    },
-                    []
-                )
-
-                return [...acc, ...viewTransactions]
-            },
-            []
-        )
+        const transactions = bankAccount.transactions
 
         accountView.value = {
             account: bankAccount,
