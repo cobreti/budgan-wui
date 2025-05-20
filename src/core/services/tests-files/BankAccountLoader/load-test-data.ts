@@ -26,8 +26,7 @@ export const LoadSingleFileTestSuccess_Input: BankAccount = {
             id: '123456789',
             name: 'Sample Transactions',
             dateStart: dateStart[0],
-            dateEnd: dateEnd[0],
-            transactions: []
+            dateEnd: dateEnd[0]
         }
     ]
 }
@@ -43,7 +42,6 @@ export const LoadSingleFileTestSuccess_Expected: BankAccount = {
             name: 'Sample Transactions',
             dateStart: dateStart[0],
             dateEnd: dateEnd[0],
-            transactions: [],
             filename: 'test.ofx'
         }
     ]
@@ -60,8 +58,7 @@ export const LoadMultipleAccountsTest_Input: BankAccount[] = [
                 id: '123456789',
                 name: 'Sample Transactions',
                 dateStart: dateStart[0],
-                dateEnd: dateEnd[0],
-                transactions: []
+                dateEnd: dateEnd[0]
             }
         ]
     },
@@ -75,8 +72,7 @@ export const LoadMultipleAccountsTest_Input: BankAccount[] = [
                 id: '987654321',
                 name: 'Sample Transactions',
                 dateStart: dateStart[1],
-                dateEnd: dateEnd[1],
-                transactions: []
+                dateEnd: dateEnd[1]
             }
         ]
     }
@@ -94,7 +90,6 @@ export const LoadMultipleAccountsTest_Expected: BankAccount[] = [
                 name: 'Sample Transactions',
                 dateStart: dateStart[0],
                 dateEnd: dateEnd[0],
-                transactions: [],
                 filename: 'test.ofx'
             }
         ]
@@ -110,7 +105,6 @@ export const LoadMultipleAccountsTest_Expected: BankAccount[] = [
                 name: 'Sample Transactions',
                 dateStart: dateStart[1],
                 dateEnd: dateEnd[1],
-                transactions: [],
                 filename: 'test3.ofx'
             }
         ]
@@ -128,8 +122,7 @@ export const LoadSortLoadedAccountByIdTest_Input: BankAccount[] = [
                 id: '123456789',
                 name: 'Sample Transactions',
                 dateStart: dateStart[0],
-                dateEnd: dateEnd[0],
-                transactions: []
+                dateEnd: dateEnd[0]
             }
         ]
     },
@@ -143,8 +136,7 @@ export const LoadSortLoadedAccountByIdTest_Input: BankAccount[] = [
                 id: '123456789',
                 name: 'Sample Transactions',
                 dateStart: dateStart[1],
-                dateEnd: dateEnd[1],
-                transactions: []
+                dateEnd: dateEnd[1]
             }
         ]
     },
@@ -158,8 +150,7 @@ export const LoadSortLoadedAccountByIdTest_Input: BankAccount[] = [
                 id: '987654321',
                 name: 'Sample Transactions',
                 dateStart: dateStart[2],
-                dateEnd: dateEnd[2],
-                transactions: []
+                dateEnd: dateEnd[2]
             }
         ]
     },
@@ -173,8 +164,7 @@ export const LoadSortLoadedAccountByIdTest_Input: BankAccount[] = [
                 id: '987654321',
                 name: 'Sample Transactions',
                 dateStart: dateStart[3],
-                dateEnd: dateEnd[3],
-                transactions: []
+                dateEnd: dateEnd[3]
             }
         ]
     }
@@ -192,7 +182,6 @@ export const LoadSortLoadedAccountByIdTest_Expected: BankAccount[] = [
                 name: 'Sample Transactions',
                 dateStart: dateStart[0],
                 dateEnd: dateEnd[0],
-                transactions: [],
                 filename: 'test.ofx'
             }
         ]
@@ -208,7 +197,6 @@ export const LoadSortLoadedAccountByIdTest_Expected: BankAccount[] = [
                 name: 'Sample Transactions',
                 dateStart: dateStart[1],
                 dateEnd: dateEnd[1],
-                transactions: [],
                 filename: 'test2.ofx'
             }
         ]
@@ -224,7 +212,6 @@ export const LoadSortLoadedAccountByIdTest_Expected: BankAccount[] = [
                 name: 'Sample Transactions',
                 dateStart: dateStart[2],
                 dateEnd: dateEnd[2],
-                transactions: [],
                 filename: 'test3.ofx'
             }
         ]
@@ -240,7 +227,6 @@ export const LoadSortLoadedAccountByIdTest_Expected: BankAccount[] = [
                 name: 'Sample Transactions',
                 dateStart: dateStart[3],
                 dateEnd: dateEnd[3],
-                transactions: [],
                 filename: 'test4.ofx'
             }
         ]
