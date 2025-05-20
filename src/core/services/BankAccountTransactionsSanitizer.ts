@@ -7,7 +7,6 @@ import type {
     BankAccountTransactionsGroup,
     TransactionIdsTable
 } from '@models/BankAccountTypes'
-import { InvalidTransactionReason } from '@models/BankAccountTypes'
 
 export interface IBankAccountTransactionsSanitizer {
     initWithAccount(account: BankAccount): void
@@ -73,21 +72,8 @@ export class BankAccountTransactionsSanitizer implements IBankAccountTransaction
 
         const newGroup: BankAccountTransactionsGroup = {
             ...group,
-            transactions: [],
             invalidTransactions: []
         }
-
-        group.transactions.forEach((transaction) => {
-            if (this.transactionsIds[transaction.transactionId]) {
-                newGroup.invalidTransactions?.push({
-                    ...transaction,
-                    invalidReason: InvalidTransactionReason.duplicate
-                })
-            } else {
-                newGroup.transactions.push(transaction)
-                this.transactionsIds[transaction.transactionId] = {}
-            }
-        })
 
         this.transactionsGroups.push(newGroup)
     }
