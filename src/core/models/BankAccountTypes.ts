@@ -34,7 +34,6 @@ export type BankAccountTransactionsGroup = {
     id: string
     dateStart: Date
     dateEnd: Date
-    transactions: BankAccountTransaction[]
     invalidTransactions?: BankAccountInvalidTransaction[]
 }
 

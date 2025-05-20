@@ -13,20 +13,8 @@ import {
 import type { IBankAccountOperations } from './BankAccountOperations'
 import type { IBankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory'
 import type { IBankAccountTransactionsSanitizer } from './BankAccountTransactionsSanitizer'
-import {
-    combineAndSortTransactionsGroup_success_expected,
-    combineAndSortTransactionsGroup_success_getCombinedTransactionsGroup_result,
-    combineAndSortTransactionsGroup_success_input,
-    combineAndSortTransactionsGroup_success_sortTransactionsGroupByStartDateAscending_result
-} from '@services/tests-files/BankAccountLoader/combineAndSorteTransactionsGroup-test-data'
-import { BankAccountTransactionsSanitizer } from './BankAccountTransactionsSanitizer'
-import {
-    sanitizeNewAccounts_accountsById_expected_data,
-    sanitizeNewAccounts_existingAccount,
-    sanitizeNewAccounts_newAccounts,
-    sanitizeNewAccounts_transactionsGroups_account_123456789,
-    sanitizeNewAccounts_transactionsGroups_account_987654321
-} from '@services/tests-files/BankAccountLoader/sanitize-test-data'
+import { combineAndSortTransactionsGroup_success_expected } from '@services/tests-files/BankAccountLoader/combineAndSorteTransactionsGroup-test-data'
+import { sanitizeNewAccounts_accountsById_expected_data } from '@services/tests-files/BankAccountLoader/sanitize-test-data'
 import { accountsById_test_data } from '@services/tests-files/BankAccountLoader/accountsById-test-data'
 import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
 import type { IStreamFactory } from '@services/StreamFactory'
@@ -199,102 +187,6 @@ describe('BankAccountLoader', async () => {
             expect(bankAccountLoader.rawAccountsLoadedById).toEqual(loadedAccountsExpectedValue)
         })
     })
-
-    describe('combineAndSortTransactionsGroup', async () => {
-        test('success path', async () => {
-            bankAccountLoader.rawAccountsLoadedById = combineAndSortTransactionsGroup_success_input
-
-            vi.spyOn(bankAccountOperations, 'getCombinedTransactionsGroup').mockReturnValue(
-                combineAndSortTransactionsGroup_success_getCombinedTransactionsGroup_result
-            )
-            vi.spyOn(
-                bankAccountOperations,
-                'sortTransactionsGroupByStartDateAscending'
-            ).mockReturnValue(
-                combineAndSortTransactionsGroup_success_sortTransactionsGroupByStartDateAscending_result
-            )
-
-            const result = bankAccountLoader.combineAndSortTransactionsGroups()
-
-            expect(result).toEqual(combineAndSortTransactionsGroup_success_expected)
-        })
-    })
-
-    // describe('sanitizeNewAccounts', async () => {
-    //     // test('success path', async () => {
-    //     const sanitizer_123456789: BankAccountTransactionsSanitizer = {
-    //         accountId: '123456789',
-    //         transactionsIds: {},
-    //         rejectedGroups: [],
-    //         initWithAccount: (account: BankAccount) => {},
-    //         getTransactionsIdsForAccount: (account: BankAccount) => {
-    //             return {}
-    //         },
-    //         addTransactionsGroup: (group: BankAccountTransactionsGroup) => {},
-    //         transactionsGroups: sanitizeNewAccounts_transactionsGroups_account_123456789
-    //     } as BankAccountTransactionsSanitizer
-
-    //     const sanitizer_987654321: BankAccountTransactionsSanitizer = {
-    //         accountId: '987654321',
-    //         transactionsIds: {},
-    //         rejectedGroups: [],
-    //         initWithAccount: (account: BankAccount) => {},
-    //         getTransactionsIdsForAccount: (account: BankAccount) => {
-    //             return {}
-    //         },
-    //         addTransactionsGroup: (group: BankAccountTransactionsGroup) => {},
-    //         transactionsGroups: sanitizeNewAccounts_transactionsGroups_account_987654321
-    //     } as BankAccountTransactionsSanitizer
-
-    //     const factoryCreateSpy = vi
-    //         .spyOn(bankAccountTransactionsSanitizerFactory, 'create')
-    //         .mockReturnValueOnce(sanitizer_123456789)
-    //         .mockReturnValueOnce(sanitizer_987654321)
-
-    //     const sanitizer_123456789_addTransactionsGroupSpy = vi.spyOn(
-    //         sanitizer_123456789,
-    //         'addTransactionsGroup'
-    //     )
-    //     const sanitizer_987654321_addTransactionsGroupSpy = vi.spyOn(
-    //         sanitizer_987654321,
-    //         'addTransactionsGroup'
-    //     )
-
-    //     const result = bankAccountLoader.sanitizeNewAccounts(
-    //         sanitizeNewAccounts_existingAccount,
-    //         sanitizeNewAccounts_newAccounts
-    //     )
-
-    //     expect(factoryCreateSpy).toHaveBeenCalledTimes(2)
-    //     expect(factoryCreateSpy).toHaveBeenNthCalledWith(
-    //         1,
-    //         sanitizeNewAccounts_existingAccount['123456789']
-    //     )
-    //     expect(factoryCreateSpy).toHaveBeenNthCalledWith(2, undefined)
-
-    //     expect(sanitizer_123456789_addTransactionsGroupSpy).toHaveBeenCalledTimes(2)
-    //     expect(sanitizer_123456789_addTransactionsGroupSpy).toHaveBeenNthCalledWith(
-    //         1,
-    //         sanitizeNewAccounts_transactionsGroups_account_123456789[1]
-    //     )
-    //     expect(sanitizer_123456789_addTransactionsGroupSpy).toHaveBeenNthCalledWith(
-    //         2,
-    //         sanitizeNewAccounts_transactionsGroups_account_123456789[2]
-    //     )
-
-    //     expect(sanitizer_987654321_addTransactionsGroupSpy).toHaveBeenCalledTimes(2)
-    //     expect(sanitizer_987654321_addTransactionsGroupSpy).toHaveBeenNthCalledWith(
-    //         1,
-    //         sanitizeNewAccounts_transactionsGroups_account_987654321[0]
-    //     )
-    //     expect(sanitizer_987654321_addTransactionsGroupSpy).toHaveBeenNthCalledWith(
-    //         2,
-    //         sanitizeNewAccounts_transactionsGroups_account_987654321[1]
-    //     )
-
-    //     expect(result).toEqual(sanitizeNewAccounts_accountsById_expected_data)
-    //     // });
-    // })
 
     describe('sanitize', async () => {
         test('success path', async () => {
