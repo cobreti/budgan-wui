@@ -3,8 +3,6 @@ import { computed, type ComputedRef, type Ref, ref } from 'vue'
 import type {
     BankAccount,
     BankAccountsDictionary,
-    BankAccountTransaction,
-    BankAccountTransactionsGroup,
     TransactionIdsTable
 } from '@models/BankAccountTypes'
 
@@ -53,18 +51,13 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
         })
 
         const totalTransactionsPerAccount: ComputedRef<{ [key: string]: number }> = computed(() => {
-            return Object.values(accounts.value)
-                .map((account) => {
-                    const count = account.transactionsGroups
-                        .map((transactionsGroup) => {
-                            return transactionsGroup.transactions.length
-                        })
-                        .reduce((acc, count) => acc + count, 0)
-                    return { [account.accountId]: count }
-                })
-                .reduce((acc, count) => {
-                    return { ...acc, ...count }
-                }, {})
+            return Object.values(accounts.value).reduce(
+                (acc, account) => {
+                    acc[account.accountId] = account.transactions.length
+                    return acc
+                },
+                {} as { [key: string]: number }
+            )
         })
 
         const totalTransactionIdsPerAccount = computed(() => {
@@ -96,21 +89,16 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
             return undefined
         }
 
-        function sanitizeTransactionsGroup(
-            accountTransactionsIds: TransactionIdsTable,
-            transactionsGroup: BankAccountTransactionsGroup
-        ) {
-            const newTransactions = transactionsGroup.transactions.filter((transaction) => {
-                return !(transaction.transactionId in accountTransactionsIds)
-            })
-
-            return {
-                ...transactionsGroup,
-                dateStart: transactionsGroup.dateStart,
-                dateEnd: transactionsGroup.dateEnd,
-                transactions: newTransactions
-            } as BankAccountTransactionsGroup
-        }
+        // function sanitizeTransactionsGroup(
+        //     accountTransactionsIds: TransactionIdsTable,
+        //     transactionsGroup: BankAccountTransactionsGroup
+        // ) {
+        //     return {
+        //         ...transactionsGroup,
+        //         dateStart: transactionsGroup.dateStart,
+        //         dateEnd: transactionsGroup.dateEnd
+        //     } as BankAccountTransactionsGroup
+        // }
 
         function addWithBankAccount(account: BankAccount, accountId?: string) {
             const targetAccountId = accountId || account.accountId

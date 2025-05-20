@@ -122,8 +122,7 @@ export class OfxToBankAccount implements IOfxToBankAccount {
                     name: `${document.startDate?.toDateString()} - ${document.endDate?.toDateString()}`,
                     id: this.idGenerator.generateId(),
                     dateStart: document.startDate,
-                    dateEnd: document.endDate,
-                    transactions: bankAccountTransactions
+                    dateEnd: document.endDate
                 }
             ]
         }
