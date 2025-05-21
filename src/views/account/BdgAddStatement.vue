@@ -14,26 +14,20 @@
                     class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2"
                     :class="{ 'd-none': statementPresent }"
                 >
-                    <div class="d-flex flex-row">
+                    <div class="d-flex flex-row mb-2">
                         <div class="d-flex flex-column justify-center mr-4 mb-4">
                             <label for="statement-file-input"> Bank statement file </label>
                         </div>
                         <v-file-input
                             id="statement-file-input"
-                            class=""
+                            class="mr-4"
                             v-model="ofxFileName"
                             :disabled="addStatementStore.loading"
                             @update:modelValue="onFileNameUpdated"
                             accept=".csv"
                             :multiple="true"
                         ></v-file-input>
-                    </div>
-                    
-                    <!-- Directory selection option -->
-                    <div class="d-flex flex-row mb-2">
-                        <div class="d-flex flex-column justify-center mr-4 mb-4">
-                            <label> Or select directory </label>
-                        </div>
+                        
                         <v-btn 
                             @click="selectDirectory"
                             class="mr-2"
