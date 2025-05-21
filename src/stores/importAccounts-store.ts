@@ -32,7 +32,19 @@ export const useImportAccountsStore = defineStore<string, ImportAccountsStore>('
           }
         }
 
-        accounts.value = loadedAccounts;
+        // Merge new accounts with existing ones instead of replacing them
+        for (const accountId in loadedAccounts) {
+          if (!accounts.value[accountId]) {
+            // Add new account
+            accounts.value[accountId] = loadedAccounts[accountId];
+          } else {
+            // Merge with existing account - append transactions
+            for (const transaction of loadedAccounts[accountId].transactions) {
+              accounts.value[accountId].transactions.push(transaction);
+            }
+          }
+        }
+        
         resolve();
       }
 
