@@ -52,6 +52,7 @@
                             style="display: none"
                             @change="handleDirectorySelection"
                         />
+                    </div>
                 </v-card>
                 <v-card class="action-card" v-show="statementPresent">
                     <div class="d-flex flex-column align-content-center ma-5">
