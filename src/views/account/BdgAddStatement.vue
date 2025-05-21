@@ -16,15 +16,15 @@
                 >
                     <div class="d-flex flex-row">
                         <div class="d-flex flex-column justify-center mr-4 mb-4">
-                            <label for="ofx-file-input"> OFX file </label>
+                            <label for="statement-file-input"> Bank statement file </label>
                         </div>
                         <v-file-input
-                            id="ofx-file-input"
+                            id="statement-file-input"
                             class=""
                             v-model="ofxFileName"
                             :disabled="addStatementStore.loading"
                             @update:modelValue="onFileNameUpdated"
-                            accept=".ofx,.csv"
+                            accept=".csv"
                             :multiple="true"
                         ></v-file-input>
                     </div>
