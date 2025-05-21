@@ -165,28 +165,7 @@
 
         for (const id in bankAccountLoader.accountsById) {
             const account = bankAccountLoader.accountsById[id]
-            
-            if (!addStatementStore.accountExists(id)) {
-                // If this is a new account, just add it
-                addStatementStore.setBankAccount(account)
-            } else {
-                // If the account already exists, merge the transactions
-                const existingAccount = addStatementStore.getAccountById(id)
-                if (existingAccount) {
-                    // Append new transactions to existing account
-                    for (const transaction of account.transactions) {
-                        existingAccount.transactions.push(transaction)
-                    }
-                    
-                    // Append new transaction groups
-                    for (const group of account.transactionsGroups) {
-                        existingAccount.transactionsGroups.push(group)
-                    }
-                    
-                    // Update the account in the store
-                    addStatementStore.setBankAccount(existingAccount)
-                }
-            }
+            addStatementStore.setBankAccount(account)
         }
 
         addStatementStore.clearLoadingFileStatus()
