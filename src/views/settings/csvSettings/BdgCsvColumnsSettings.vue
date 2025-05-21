@@ -20,29 +20,8 @@
                 v-model="csvFileName"
                 @update:modelValue="onFileNameUpdated"
                 accept=".csv"
-                :multiple="true"
+                :multiple="false"
             ></v-file-input>
-        </div>
-        
-        <!-- Directory selection option -->
-        <div class="controls-container">
-            <v-btn 
-                @click="selectDirectory"
-                class="mb-4"
-            >
-                Select Directory
-            </v-btn>
-            <span v-if="directoryName" class="directory-name ml-2">{{ directoryName }}</span>
-            
-            <!-- Hidden input for directory selection -->
-            <input
-                ref="directoryInput"
-                type="file"
-                webkitdirectory
-                directory
-                style="display: none"
-                @change="handleDirectorySelection"
-            />
         </div>
 
         <v-row class="mb-4">
@@ -115,13 +94,6 @@
         color: #4a4a4a;
         text-align: center;
     }
-    
-    .directory-name {
-        display: flex;
-        align-items: center;
-        font-size: 0.9em;
-        color: rgba(0, 0, 0, 0.6);
-    }
 </style>
 
 <script setup lang="ts">
@@ -149,8 +121,6 @@
     })
 
     const csvFileName = defineModel<File[]>()
-    const directoryInput = ref<HTMLInputElement | null>(null)
-    const directoryName = ref<string>('')
 
     const csvColumns: { [key: string]: CSVColumnContent } = {
         'card number': CSVColumnContent.CARD_NUMBER,
@@ -264,47 +234,9 @@
 
             csvHeaderIndex.value = -1
             selectedColumn.value = -1
-            
-            // Clear directory name if set
-            directoryName.value = ''
         } else {
             csvContentPreview.value = null
             csvPreviewStore.clearCsvContentPreview()
-        }
-    }
-    
-    function selectDirectory() {
-        if (directoryInput.value) {
-            directoryInput.value.click()
-        }
-    }
-    
-    async function handleDirectorySelection(event: Event) {
-        const target = event.target as HTMLInputElement
-        if (target.files && target.files.length > 0) {
-            // Convert FileList to array
-            const filesArray = Array.from(target.files)
-            
-            // Filter to only include CSV files
-            const csvFiles = filesArray.filter(file => file.name.toLowerCase().endsWith('.csv'))
-            
-            // Get directory name from the first file's path
-            if (filesArray.length > 0) {
-                const path = filesArray[0].webkitRelativePath
-                directoryName.value = path.split('/')[0] || 'Selected Directory'
-            }
-            
-            if (csvFiles.length > 0) {
-                // We only process the first CSV file for preview
-                await onFileNameUpdated(csvFiles[0])
-                
-                // Clear file input to avoid confusion
-                if (csvFileName.value) {
-                    csvFileName.value = []
-                }
-            } else {
-                console.error('No CSV files found in the selected directory')
-            }
         }
     }
 </script>
