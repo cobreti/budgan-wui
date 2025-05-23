@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { useAddStatementStore, type Statement } from '../add-statement-store'
+import { useAddStatementStore } from '../add-statement-store'
+import type { Statement } from '@models/StatementTypes'
 import type { BankAccount } from '@models/BankAccountTypes'
 
 // Mock BankAccount data

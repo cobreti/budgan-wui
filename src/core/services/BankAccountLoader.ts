@@ -4,6 +4,7 @@ import { type IOfxToBankAccount } from './OfxToBankAccount'
 import { inject, injectable } from 'inversify'
 import { ServicesTypes } from './types'
 import type { BankAccount, BankAccountsDictionary } from '@models/BankAccountTypes'
+import type { Statement } from '@models/StatementTypes'
 import type { IBankAccountOperations } from './BankAccountOperations'
 import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory'
 import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
@@ -12,14 +13,6 @@ import type { ICsvParser } from '@services/CsvParser'
 import { type CSVColumnContentMapping } from '@models/csvDocument'
 
 export type BankAccountListById = { [id: string]: BankAccount[] }
-
-export type Statement = {
-    account: BankAccount
-    filename: string
-    startDate: Date
-    endDate: Date
-    numberOfTransactions: number
-}
 
 export interface IBankAccountLoader {
     loadingFileStarted: BankAccountLoader_LoadingFileStarted | undefined
