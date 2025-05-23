@@ -1,62 +1,94 @@
-import {defineStore} from 'pinia';
-import { computed, ref, type Ref } from 'vue'
-import type {BankAccount, BankAccountsDictionary} from '@models/BankAccountTypes';
+import { defineStore } from 'pinia'
+import { ref, type Ref } from 'vue'
+import type { BankAccount } from '@models/BankAccountTypes'
+
+export type Statement = {
+    account: BankAccount
+    filename: string
+    startDate: Date
+    endDate: Date
+    numberOfTransactions: number
+}
+
+export type StatementsDictionary = { [key: string]: Statement }
 
 export type AddStatementStore = {
-    loading: Ref<boolean>;
-    accounts: Ref<BankAccountsDictionary>;
-    accountsIds: Ref<string[]>;
-    clear: () => void;
-    setLoadingFile: (filename: string) => void;
-    clearLoadingFileStatus: () => void;
-    setBankAccount: (account: BankAccount) => void;
-    accountExists: (id: string) => boolean;
-    getAccountById: (id: string) => BankAccount | undefined;
-};
+    loading: Ref<boolean>
+    statements: Ref<StatementsDictionary>
+    clear: () => void
+    setLoadingFile: (filename: string) => void
+    clearLoadingFileStatus: () => void
+    setStatement: (statement: Statement) => void
+    removeStatement: (id: string) => void
+    statementExists: (id: string) => boolean
+    getStatementById: (id: string) => Statement | undefined
+    getAccountById: (id: string) => BankAccount | undefined
+    getAllStatements: () => Statement[]
+}
 
-export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement',  () => {
+export const useAddStatementStore = defineStore<string, AddStatementStore>('addStatement', () => {
+    const statements = ref<StatementsDictionary>({})
 
-    const accounts = ref<BankAccountsDictionary>({});
-
-    const accountsIds = computed(() => Object.keys(accounts.value));
-
-    const loading = ref<boolean>(false);
+    const loading = ref<boolean>(false)
 
     function clear() {
-        loading.value = false;
-        accounts.value = {};
+        loading.value = false
+        statements.value = {}
     }
 
     function setLoadingFile(filename: string) {
-        loading.value = true;
+        loading.value = true
     }
 
     function clearLoadingFileStatus() {
-        loading.value = false;
+        loading.value = false
     }
 
-    function setBankAccount(account: BankAccount) {
+    function setStatement(statement: Statement) {
+        // Create a more unique ID that includes timestamp to avoid conflicts
+        const timestamp = Date.now()
+        const statementId = `${statement.account.accountId}_${statement.filename}_${timestamp}`
+        statements.value[statementId] = statement
+    }
 
-        accounts.value[account.accountId] = account;
+    function removeStatement(id: string) {
+        if (id in statements.value) {
+            delete statements.value[id]
+        }
+    }
+
+    function getAllStatements(): Statement[] {
+        return Object.values(statements.value)
     }
 
     function getAccountById(id: string): BankAccount | undefined {
-        return accounts.value[id];
+        for (const statement of Object.values(statements.value)) {
+            if (statement.account.accountId === id) {
+                return statement.account
+            }
+        }
+        return undefined
     }
 
-    function accountExists(id: string):boolean {
-        return id in accounts.value;
+    function statementExists(id: string): boolean {
+        return id in statements.value
+    }
+
+    function getStatementById(id: string): Statement | undefined {
+        return statements.value[id]
     }
 
     return {
         loading,
-        accounts,
-        accountsIds,
+        statements,
         clear,
         setLoadingFile,
         clearLoadingFileStatus,
-        setBankAccount,
-        accountExists,
-        getAccountById
+        setStatement,
+        removeStatement,
+        statementExists,
+        getStatementById,
+        getAccountById,
+        getAllStatements
     }
-});
+})
