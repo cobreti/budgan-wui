@@ -146,60 +146,31 @@
             return
         }
 
-        // Process each file separately to create individual statements
-        for (const file of filesArray) {
-            // Create a fresh bank account loader for each file
-            const bankAccountLoader = container.get<IBankAccountLoader>(
-                ServicesTypes.BankAccountLoader
-            )
+        // Create a fresh bank account loader for the files
+        const bankAccountLoader = container.get<IBankAccountLoader>(ServicesTypes.BankAccountLoader)
 
-            if (!bankAccountLoader) {
-                throw new Error('No BankAccountLoader service found')
-            }
-
-            bankAccountLoader.loadingFileStarted = (fileName: string) => {
-                addStatementStore.setLoadingFile(fileName)
-            }
-
-            // Load each file individually
-            await bankAccountLoader.loadWithAccount(
-                targetAccount.value,
-                csvSettings.columnsMapping,
-                [file] // Process one file at a time
-            )
-
-            // Sanitize after loading each file
-            bankAccountLoader.sanitize(bankAccountStore.accounts)
-
-            // Create a statement for this specific file
-            for (const id in bankAccountLoader.accountsById) {
-                const account = bankAccountLoader.accountsById[id]
-
-                if (account.transactions.length > 0) {
-                    // Calculate date range from transactions in this file
-                    const transactions = account.transactions
-                    const startDate = new Date(
-                        Math.min(...transactions.map((t) => t.dateInscription.getTime()))
-                    )
-                    const endDate = new Date(
-                        Math.max(...transactions.map((t) => t.dateInscription.getTime()))
-                    )
-
-                    const statement = {
-                        account: {
-                            ...targetAccount.value,
-                            transactions: account.transactions,
-                            transactionsGroups: account.transactionsGroups
-                        },
-                        filename: file.name,
-                        startDate: startDate,
-                        endDate: endDate,
-                        numberOfTransactions: account.transactions.length
-                    }
-                    addStatementStore.setStatement(statement)
-                }
-            }
+        if (!bankAccountLoader) {
+            throw new Error('No BankAccountLoader service found')
         }
+
+        bankAccountLoader.loadingFileStarted = (fileName: string) => {
+            addStatementStore.setLoadingFile(fileName)
+        }
+
+        // Load all files and get statements directly
+        const statements = await bankAccountLoader.loadWithAccount(
+            targetAccount.value,
+            csvSettings.columnsMapping,
+            filesArray
+        )
+
+        // Sanitize after loading all files
+        bankAccountLoader.sanitize(bankAccountStore.accounts)
+
+        // Add all statements to the store
+        statements.forEach((statement) => {
+            addStatementStore.setStatement(statement)
+        })
 
         addStatementStore.clearLoadingFileStatus()
     }

@@ -13,19 +13,28 @@ import { type CSVColumnContentMapping } from '@models/csvDocument'
 
 export type BankAccountListById = { [id: string]: BankAccount[] }
 
+export type Statement = {
+    account: BankAccount
+    filename: string
+    startDate: Date
+    endDate: Date
+    numberOfTransactions: number
+}
+
 export interface IBankAccountLoader {
     loadingFileStarted: BankAccountLoader_LoadingFileStarted | undefined
     accountLoaded: BankAccountLoader_AccountLoaded | undefined
 
-    load(files: File[]): Promise<void>
+    load(files: File[]): Promise<Statement[]>
     loadWithAccount(
         account: BankAccount,
         mapping: CSVColumnContentMapping,
         files: File[]
-    ): Promise<void>
+    ): Promise<Statement[]>
     sanitize(accounts: BankAccountsDictionary): void
 
     get accountsById(): BankAccountsDictionary
+    get statements(): Statement[]
 }
 
 export type BankAccountLoader_LoadingFileStarted = (filename: string) => void
@@ -36,6 +45,7 @@ export type BankAccountLoader_AccountLoadError = (filename: string, error: unkno
 export class BankAccountLoader implements IBankAccountLoader {
     rawAccountsLoadedById: BankAccountListById = {}
     sanitizedAccountsById: BankAccountsDictionary = {}
+    private statementsArray: Statement[] = []
 
     loadingFileStarted: BankAccountLoader_LoadingFileStarted | undefined
     accountLoaded: BankAccountLoader_AccountLoaded | undefined
@@ -56,7 +66,13 @@ export class BankAccountLoader implements IBankAccountLoader {
         return this.sanitizedAccountsById
     }
 
-    public async load(files: File[]) {
+    get statements(): Statement[] {
+        return this.statementsArray
+    }
+
+    public async load(files: File[]): Promise<Statement[]> {
+        this.statementsArray = []
+
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name)
 
@@ -72,18 +88,28 @@ export class BankAccountLoader implements IBankAccountLoader {
                 accountsForId.push(account)
                 this.rawAccountsLoadedById[accountId] = accountsForId
 
+                // Create a statement for this file only if there are transactions
+                if (account.transactions.length > 0) {
+                    const statement = this.createStatementFromAccount(account, file.name)
+                    this.statementsArray.push(statement)
+                }
+
                 this.accountLoaded && this.accountLoaded(account)
             } catch (error) {
                 this.accountLoadError && this.accountLoadError(file.name, error)
             }
         }
+
+        return this.statementsArray
     }
 
     public async loadWithAccount(
         account: BankAccount,
         csvMapping: CSVColumnContentMapping,
         files: File[]
-    ) {
+    ): Promise<Statement[]> {
+        this.statementsArray = []
+
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name)
 
@@ -99,10 +125,42 @@ export class BankAccountLoader implements IBankAccountLoader {
                 accountsForId.push(resultAccount)
                 this.rawAccountsLoadedById[accountId] = accountsForId
 
+                // Create a statement for this file only if there are transactions
+                if (resultAccount.transactions.length > 0) {
+                    const statement = this.createStatementFromAccount(resultAccount, file.name)
+                    this.statementsArray.push(statement)
+                }
+
                 this.accountLoaded && this.accountLoaded(resultAccount)
             } catch (error) {
                 this.accountLoadError && this.accountLoadError(file.name, error)
             }
+        }
+
+        return this.statementsArray
+    }
+
+    private createStatementFromAccount(account: BankAccount, filename: string): Statement {
+        if (account.transactions.length === 0) {
+            throw new Error('Cannot create statement from account with no transactions')
+        }
+
+        const transactions = account.transactions
+        const startDate = new Date(
+            Math.min(...transactions.map((t) => t.dateInscription.getTime()))
+        )
+        const endDate = new Date(Math.max(...transactions.map((t) => t.dateInscription.getTime())))
+
+        return {
+            account: {
+                ...account,
+                transactions: account.transactions,
+                transactionsGroups: account.transactionsGroups
+            },
+            filename: filename,
+            startDate: startDate,
+            endDate: endDate,
+            numberOfTransactions: account.transactions.length
         }
     }
 
