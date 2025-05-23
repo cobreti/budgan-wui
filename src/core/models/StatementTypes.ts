@@ -1,4 +1,4 @@
-import type { BankAccount } from './BankAccountTypes'
+import type { BankAccount, BankAccountInvalidTransaction } from './BankAccountTypes'
 
 export type Statement = {
     account: BankAccount
@@ -6,6 +6,7 @@ export type Statement = {
     startDate: Date
     endDate: Date
     numberOfTransactions: number
+    duplicateTransactions: BankAccountInvalidTransaction[]
 }
 
 export type StatementsDictionary = { [key: string]: Statement }
