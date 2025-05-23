@@ -27,8 +27,8 @@
                             accept=".csv"
                             :multiple="true"
                         ></v-file-input>
-                        
-                        <v-btn 
+
+                        <v-btn
                             @click="selectDirectory"
                             class="mr-2"
                             :disabled="addStatementStore.loading"
@@ -36,7 +36,7 @@
                             Select Directory
                         </v-btn>
                         <span v-if="directoryName" class="directory-name">{{ directoryName }}</span>
-                        
+
                         <!-- Hidden input for directory selection -->
                         <input
                             ref="directoryInput"
@@ -52,9 +52,9 @@
                     <div class="d-flex flex-column align-content-center ma-5">
                         <v-expansion-panels class="elevation-0">
                             <bdg-account-added
-                                v-for="id in accountsIds"
+                                v-for="id in statementIds"
                                 :key="id"
-                                :accountId="id"
+                                :statementId="id"
                             ></bdg-account-added>
                         </v-expansion-panels>
                     </div>
@@ -79,7 +79,7 @@
         position: relative;
         min-height: 10em;
     }
-    
+
     .directory-name {
         display: flex;
         align-items: center;
@@ -105,7 +105,7 @@
     const bankAccountStore = useBankAccountsStore()
     const csvSettingsStore = useCsvSettingsStore()
     const route = useRoute()
-    
+
     // For directory selection
     const directoryInput = ref<HTMLInputElement | null>(null)
     const directoryFiles = ref<File[]>([])
@@ -115,8 +115,8 @@
         return route.params.id as string
     })
 
-    const accountsIds = computed(() => {
-        return addStatementStore.accountsIds
+    const statementIds = computed(() => {
+        return Object.keys(addStatementStore.statements)
     })
 
     const targetAccount = computed(() => {
@@ -124,7 +124,7 @@
     })
 
     const statementPresent = computed(() => {
-        return accountsIds.value.length > 0
+        return statementIds.value.length > 0
     })
 
     async function onFileNameUpdated(files: File[] | File) {
@@ -146,26 +146,59 @@
             return
         }
 
-        const bankAccountLoader = container.get<IBankAccountLoader>(ServicesTypes.BankAccountLoader)
+        // Process each file separately to create individual statements
+        for (const file of filesArray) {
+            // Create a fresh bank account loader for each file
+            const bankAccountLoader = container.get<IBankAccountLoader>(
+                ServicesTypes.BankAccountLoader
+            )
 
-        if (!bankAccountLoader) {
-            throw new Error('No BankAccountLoader service found')
-        }
+            if (!bankAccountLoader) {
+                throw new Error('No BankAccountLoader service found')
+            }
 
-        bankAccountLoader.loadingFileStarted = (fileName: string) => {
-            addStatementStore.setLoadingFile(fileName)
-        }
+            bankAccountLoader.loadingFileStarted = (fileName: string) => {
+                addStatementStore.setLoadingFile(fileName)
+            }
 
-        await bankAccountLoader.loadWithAccount(
-            targetAccount.value,
-            csvSettings.columnsMapping,
-            filesArray
-        )
-        bankAccountLoader.sanitize(bankAccountStore.accounts)
+            // Load each file individually
+            await bankAccountLoader.loadWithAccount(
+                targetAccount.value,
+                csvSettings.columnsMapping,
+                [file] // Process one file at a time
+            )
 
-        for (const id in bankAccountLoader.accountsById) {
-            const account = bankAccountLoader.accountsById[id]
-            addStatementStore.setBankAccount(account)
+            // Sanitize after loading each file
+            bankAccountLoader.sanitize(bankAccountStore.accounts)
+
+            // Create a statement for this specific file
+            for (const id in bankAccountLoader.accountsById) {
+                const account = bankAccountLoader.accountsById[id]
+
+                if (account.transactions.length > 0) {
+                    // Calculate date range from transactions in this file
+                    const transactions = account.transactions
+                    const startDate = new Date(
+                        Math.min(...transactions.map((t) => t.dateInscription.getTime()))
+                    )
+                    const endDate = new Date(
+                        Math.max(...transactions.map((t) => t.dateInscription.getTime()))
+                    )
+
+                    const statement = {
+                        account: {
+                            ...targetAccount.value,
+                            transactions: account.transactions,
+                            transactionsGroups: account.transactionsGroups
+                        },
+                        filename: file.name,
+                        startDate: startDate,
+                        endDate: endDate,
+                        numberOfTransactions: account.transactions.length
+                    }
+                    addStatementStore.setStatement(statement)
+                }
+            }
         }
 
         addStatementStore.clearLoadingFileStatus()
@@ -182,16 +215,16 @@
         if (target.files && target.files.length > 0) {
             // Convert FileList to array
             const filesArray = Array.from(target.files)
-            
+
             // Filter to only include CSV files
-            const csvFiles = filesArray.filter(file => file.name.toLowerCase().endsWith('.csv'))
-            
+            const csvFiles = filesArray.filter((file) => file.name.toLowerCase().endsWith('.csv'))
+
             // Set directory name for display
             if (filesArray.length > 0) {
                 const path = filesArray[0].webkitRelativePath
                 directoryName.value = path.split('/')[0] || 'Selected Directory'
             }
-            
+
             if (csvFiles.length > 0) {
                 // Process the CSV files
                 onFileNameUpdated(csvFiles)
@@ -213,10 +246,10 @@
     }
 
     function onAdd() {
-        const accounts = addStatementStore.accounts
+        const statements = addStatementStore.statements
 
-        Object.values(accounts).forEach((account) => {
-            bankAccountStore.addWithBankAccount(account, targetAccountId.value)
+        Object.values(statements).forEach((statement) => {
+            bankAccountStore.addWithBankAccount(statement.account, targetAccountId.value)
         })
 
         clear()

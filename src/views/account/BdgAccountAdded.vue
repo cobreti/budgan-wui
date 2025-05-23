@@ -1,36 +1,38 @@
 <template>
     <v-expansion-panel>
         <v-expansion-panel-title>
-            {{ accountId }}
+            {{ statement?.filename || 'Unknown Statement' }} - {{ statement?.account.accountId }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-            <div class="">
+            <div class="" v-if="statement">
                 <div class="d-flex flex-row flex-wrap align-content-space-evenly">
-                    <v-card class="trans-group" v-for="group in transactionsGroups" :key="group.id">
+                    <v-card class="trans-group">
                         <div class="line-content">
                             <span class="title">Filename :</span>
-                            <span class="content">{{ group.filename }}</span>
+                            <span class="content">{{ statement.filename }}</span>
                         </div>
                         <div class="line-content">
                             <span class="title">Date :</span>
                             <span class="content"
-                                >{{ group.dateStart.toDateString() }} -
-                                {{ group.dateEnd.toDateString() }}</span
+                                >{{ statement.startDate.toDateString() }} -
+                                {{ statement.endDate.toDateString() }}</span
                             >
                         </div>
                         <div class="line-content">
                             <span class="title">transactions count :</span>
-                            <span class="content">{{ getTransactionsCount(group.id) }}</span>
+                            <span class="content">{{ statement.numberOfTransactions }}</span>
                         </div>
-                        <div
-                            class="line-content"
-                            v-if="
-                                group.invalidTransactions != undefined &&
-                                group.invalidTransactions.length > 0
-                            "
-                        >
-                            <span class="title">ignored transactions :</span>
-                            <span class="content">{{ group.invalidTransactions.length }}</span>
+                        <div class="line-content">
+                            <span class="title">Account ID :</span>
+                            <span class="content">{{ statement.account.accountId }}</span>
+                        </div>
+                        <div class="line-content">
+                            <span class="title">Account Name :</span>
+                            <span class="content">{{ statement.account.name }}</span>
+                        </div>
+                        <div class="line-content">
+                            <span class="title">Account Type :</span>
+                            <span class="content">{{ statement.account.accountType }}</span>
                         </div>
                     </v-card>
                 </div>
@@ -76,32 +78,12 @@
     import { useAddStatementStore } from '@/stores/add-statement-store'
 
     const props = defineProps<{
-        accountId: string
+        statementId: string
     }>()
 
     const addStatementStore = useAddStatementStore()
 
-    const account = computed(() => {
-        return addStatementStore.accounts[props.accountId]
+    const statement = computed(() => {
+        return addStatementStore.getStatementById(props.statementId)
     })
-
-    const transactionsGroups = computed(() => {
-        return addStatementStore.accounts[props.accountId].transactionsGroups
-    })
-
-    const transactionsCountPerGroup = computed(() => {
-        const counts: { [groupId: string]: number } = {}
-        for (const transaction of account.value.transactions) {
-            const groupId = transaction.transactionGroupId
-            if (counts[groupId] == undefined) {
-                counts[groupId] = 0
-            }
-            counts[groupId]++
-        }
-        return counts
-    })
-
-    function getTransactionsCount(groupId: string): number {
-        return transactionsCountPerGroup.value[groupId] ?? 0
-    }
 </script>
