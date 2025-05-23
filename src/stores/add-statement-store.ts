@@ -22,7 +22,6 @@ export type AddStatementStore = {
     removeStatement: (id: string) => void
     statementExists: (id: string) => boolean
     getStatementById: (id: string) => Statement | undefined
-    getAccountById: (id: string) => BankAccount | undefined
     getAllStatements: () => Statement[]
 }
 
@@ -61,15 +60,6 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         return Object.values(statements.value)
     }
 
-    function getAccountById(id: string): BankAccount | undefined {
-        for (const statement of Object.values(statements.value)) {
-            if (statement.account.accountId === id) {
-                return statement.account
-            }
-        }
-        return undefined
-    }
-
     function statementExists(id: string): boolean {
         return id in statements.value
     }
@@ -88,7 +78,6 @@ export const useAddStatementStore = defineStore<string, AddStatementStore>('addS
         removeStatement,
         statementExists,
         getStatementById,
-        getAccountById,
         getAllStatements
     }
 })

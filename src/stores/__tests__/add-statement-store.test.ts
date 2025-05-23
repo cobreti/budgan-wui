@@ -130,19 +130,6 @@ describe('AddStatementStore', () => {
             expect(filenames).toContain('statement3.csv')
         })
 
-        it('should get account by ID', () => {
-            const account1 = store.getAccountById('account-1')
-            expect(account1).toBeDefined()
-            expect(account1?.accountId).toBe('account-1')
-
-            const account2 = store.getAccountById('account-2')
-            expect(account2).toBeDefined()
-            expect(account2?.accountId).toBe('account-2')
-
-            const nonExistent = store.getAccountById('non-existent')
-            expect(nonExistent).toBeUndefined()
-        })
-
         it('should check if statement exists', () => {
             const statementIds = Object.keys(store.statements)
             const firstId = statementIds[0]
