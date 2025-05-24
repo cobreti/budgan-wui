@@ -1,16 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
-import type { BankAccount } from '@models/BankAccountTypes'
-
-export type Statement = {
-    account: BankAccount
-    filename: string
-    startDate: Date
-    endDate: Date
-    numberOfTransactions: number
-}
-
-export type StatementsDictionary = { [key: string]: Statement }
+import type { Statement, StatementsDictionary } from '@models/StatementTypes'
 
 export type AddStatementStore = {
     loading: Ref<boolean>

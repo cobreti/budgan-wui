@@ -106,15 +106,36 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
             const accountTransactionsIds = transactionsIdsIndex.value[targetAccountId] || {}
 
             if (!existingAccount) {
+                // Sort the new account's transactions by date in ascending order
+                account.transactions.sort(
+                    (a, b) => a.dateInscription.getTime() - b.dateInscription.getTime()
+                )
                 accounts.value[targetAccountId] = account
             } else {
+                // Create array of new transactions (excluding duplicates)
+                const newTransactions = []
+
                 for (const transaction of account.transactions) {
                     const transactionId = transaction.transactionId
                     if (transactionId in accountTransactionsIds) {
                         // mark transaction as rejected
                     } else {
-                        existingAccount.transactions.push(transaction)
+                        newTransactions.push(transaction)
                     }
+                }
+
+                // Add new transactions to existing ones
+                if (newTransactions.length > 0) {
+                    // Combine existing and new transactions
+                    const allTransactions = [...existingAccount.transactions, ...newTransactions]
+
+                    // Sort all transactions by date in ascending order
+                    allTransactions.sort(
+                        (a, b) => a.dateInscription.getTime() - b.dateInscription.getTime()
+                    )
+
+                    // Replace the existing transactions array with the sorted one
+                    existingAccount.transactions = allTransactions
                 }
             }
 

@@ -3,7 +3,13 @@ import 'reflect-metadata'
 import { type IOfxToBankAccount } from './OfxToBankAccount'
 import { inject, injectable } from 'inversify'
 import { ServicesTypes } from './types'
-import type { BankAccount, BankAccountsDictionary } from '@models/BankAccountTypes'
+import type {
+    BankAccount,
+    BankAccountsDictionary,
+    BankAccountInvalidTransaction
+} from '@models/BankAccountTypes'
+import { InvalidTransactionReason } from '@models/BankAccountTypes'
+import type { Statement } from '@models/StatementTypes'
 import type { IBankAccountOperations } from './BankAccountOperations'
 import type { BankAccountTransactionsSanitizerFactory } from './BankAccountTransactionsSanitizerFactory'
 import type { ICsvToBankAccount } from '@services/CsvToBankAccount'
@@ -17,15 +23,16 @@ export interface IBankAccountLoader {
     loadingFileStarted: BankAccountLoader_LoadingFileStarted | undefined
     accountLoaded: BankAccountLoader_AccountLoaded | undefined
 
-    load(files: File[]): Promise<void>
+    load(files: File[]): Promise<Statement[]>
     loadWithAccount(
         account: BankAccount,
         mapping: CSVColumnContentMapping,
         files: File[]
-    ): Promise<void>
+    ): Promise<Statement[]>
     sanitize(accounts: BankAccountsDictionary): void
 
     get accountsById(): BankAccountsDictionary
+    get statements(): Statement[]
 }
 
 export type BankAccountLoader_LoadingFileStarted = (filename: string) => void
@@ -36,6 +43,8 @@ export type BankAccountLoader_AccountLoadError = (filename: string, error: unkno
 export class BankAccountLoader implements IBankAccountLoader {
     rawAccountsLoadedById: BankAccountListById = {}
     sanitizedAccountsById: BankAccountsDictionary = {}
+    private statementsArray: Statement[] = []
+    private loadedTransactionIds: Set<string> = new Set<string>() // Track all transaction IDs across statements
 
     loadingFileStarted: BankAccountLoader_LoadingFileStarted | undefined
     accountLoaded: BankAccountLoader_AccountLoaded | undefined
@@ -56,7 +65,14 @@ export class BankAccountLoader implements IBankAccountLoader {
         return this.sanitizedAccountsById
     }
 
-    public async load(files: File[]) {
+    get statements(): Statement[] {
+        return this.statementsArray
+    }
+
+    public async load(files: File[]): Promise<Statement[]> {
+        this.statementsArray = []
+        this.loadedTransactionIds.clear() // Clear tracked transaction IDs for a new load operation
+
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name)
 
@@ -72,18 +88,36 @@ export class BankAccountLoader implements IBankAccountLoader {
                 accountsForId.push(account)
                 this.rawAccountsLoadedById[accountId] = accountsForId
 
+                // Create a statement for this file only if there are transactions
+                if (account.transactions.length > 0) {
+                    const statement = this.createStatementFromAccount(account, file.name)
+                    this.statementsArray.push(statement)
+                }
+
                 this.accountLoaded && this.accountLoaded(account)
             } catch (error) {
                 this.accountLoadError && this.accountLoadError(file.name, error)
             }
         }
+
+        return this.statementsArray
     }
 
     public async loadWithAccount(
         account: BankAccount,
         csvMapping: CSVColumnContentMapping,
         files: File[]
-    ) {
+    ): Promise<Statement[]> {
+        this.statementsArray = []
+        this.loadedTransactionIds.clear() // Clear tracked transaction IDs for a new load operation
+
+        // Pre-populate transaction IDs from the input account to detect duplicates against it
+        if (account.transactions && account.transactions.length > 0) {
+            account.transactions.forEach((transaction) => {
+                this.loadedTransactionIds.add(transaction.transactionId)
+            })
+        }
+
         for (const file of files) {
             this.loadingFileStarted && this.loadingFileStarted(file.name)
 
@@ -99,10 +133,56 @@ export class BankAccountLoader implements IBankAccountLoader {
                 accountsForId.push(resultAccount)
                 this.rawAccountsLoadedById[accountId] = accountsForId
 
+                // Create a statement for this file only if there are transactions
+                if (resultAccount.transactions.length > 0) {
+                    const statement = this.createStatementFromAccount(resultAccount, file.name)
+                    this.statementsArray.push(statement)
+                }
+
                 this.accountLoaded && this.accountLoaded(resultAccount)
             } catch (error) {
                 this.accountLoadError && this.accountLoadError(file.name, error)
             }
+        }
+
+        return this.statementsArray
+    }
+
+    private createStatementFromAccount(account: BankAccount, filename: string): Statement {
+        if (account.transactions.length === 0) {
+            throw new Error('Cannot create statement from account with no transactions')
+        }
+
+        const transactions = account.transactions
+        const startDate = new Date(
+            Math.min(...transactions.map((t) => t.dateInscription.getTime()))
+        )
+        const endDate = new Date(Math.max(...transactions.map((t) => t.dateInscription.getTime())))
+
+        // Detect duplicate transactions
+        const duplicateTransactions = this.detectDuplicateTransactions(account)
+
+        // Create a set of duplicate transaction IDs for quick lookup
+        const duplicateTransactionIds = new Set(
+            duplicateTransactions.map((transaction) => transaction.transactionId)
+        )
+
+        // Filter out duplicates from the transactions array
+        const uniqueTransactions = account.transactions.filter(
+            (transaction) => !duplicateTransactionIds.has(transaction.transactionId)
+        )
+
+        return {
+            account: {
+                ...account,
+                transactions: uniqueTransactions,
+                transactionsGroups: account.transactionsGroups
+            },
+            filename: filename,
+            startDate: startDate,
+            endDate: endDate,
+            numberOfTransactions: uniqueTransactions.length, // Use the count of unique transactions
+            duplicateTransactions: duplicateTransactions
         }
     }
 
@@ -211,5 +291,40 @@ export class BankAccountLoader implements IBankAccountLoader {
         }
 
         return sanitizedAccountsById
+    }
+
+    private detectDuplicateTransactions(account: BankAccount): BankAccountInvalidTransaction[] {
+        const duplicates: BankAccountInvalidTransaction[] = []
+        const localTransactionIds = new Set<string>()
+
+        // Check for duplicate transaction IDs both within this account and across all loaded statements
+        for (let i = 0; i < account.transactions.length; i++) {
+            const transaction = account.transactions[i]
+            const transactionId = transaction.transactionId
+
+            // Check if the transaction ID is a duplicate within this account
+            if (localTransactionIds.has(transactionId)) {
+                // This is a duplicate within the current account
+                duplicates.push({
+                    ...transaction,
+                    invalidReason: InvalidTransactionReason.duplicate
+                })
+            }
+            // Check if the transaction ID is a duplicate from a previously loaded statement
+            else if (this.loadedTransactionIds.has(transactionId)) {
+                // This is a duplicate from a previous statement
+                duplicates.push({
+                    ...transaction,
+                    invalidReason: InvalidTransactionReason.duplicate
+                })
+                localTransactionIds.add(transactionId) // Still add to local set to avoid duplicate flagging
+            } else {
+                // New transaction ID, add to both sets
+                localTransactionIds.add(transactionId)
+                this.loadedTransactionIds.add(transactionId)
+            }
+        }
+
+        return duplicates
     }
 }

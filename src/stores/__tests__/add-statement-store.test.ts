@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { useAddStatementStore, type Statement } from '../add-statement-store'
+import { useAddStatementStore } from '../add-statement-store'
+import type { Statement } from '@models/StatementTypes'
 import type { BankAccount } from '@models/BankAccountTypes'
 
 // Mock BankAccount data
@@ -27,7 +28,8 @@ const mockStatement1: Statement = {
     filename: 'statement1.csv',
     startDate: new Date('2024-01-01'),
     endDate: new Date('2024-01-31'),
-    numberOfTransactions: 10
+    numberOfTransactions: 10,
+    duplicateTransactions: []
 }
 
 const mockStatement2: Statement = {
@@ -35,7 +37,8 @@ const mockStatement2: Statement = {
     filename: 'statement2.csv',
     startDate: new Date('2024-02-01'),
     endDate: new Date('2024-02-29'),
-    numberOfTransactions: 15
+    numberOfTransactions: 15,
+    duplicateTransactions: []
 }
 
 const mockStatement3: Statement = {
@@ -43,7 +46,8 @@ const mockStatement3: Statement = {
     filename: 'statement3.csv',
     startDate: new Date('2024-03-01'),
     endDate: new Date('2024-03-31'),
-    numberOfTransactions: 20
+    numberOfTransactions: 20,
+    duplicateTransactions: []
 }
 
 describe('AddStatementStore', () => {
