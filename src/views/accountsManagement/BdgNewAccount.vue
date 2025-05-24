@@ -35,6 +35,15 @@
                     :item-title="'name'"
                     :rules="csvSettingRules"
                 ></v-select>
+                <div class="text-right mb-4">
+                    <router-link
+                        :to="{ path: '/settings', query: { from: 'newAccount' } }"
+                        class="text-decoration-none"
+                    >
+                        <v-icon small class="mr-1">mdi-cog</v-icon>
+                        Manage CSV Settings
+                    </router-link>
+                </div>
                 <v-btn
                     type="submit"
                     @click="createAccount"
