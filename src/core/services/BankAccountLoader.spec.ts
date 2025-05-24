@@ -348,7 +348,8 @@ describe('BankAccountLoader', async () => {
                 InvalidTransactionReason.duplicate
             )
             expect(statement.filename).toBe('test-file.csv')
-            expect(statement.numberOfTransactions).toBe(2) // All transactions are still included in the count
+            expect(statement.numberOfTransactions).toBe(0) // All transactions are duplicates, so 0 unique transactions
+            expect(statement.account.transactions).toHaveLength(0) // No unique transactions
         })
     })
 
@@ -434,6 +435,8 @@ describe('BankAccountLoader', async () => {
 
             // First statement should have no duplicates as it's processed first
             expect(statements[0].duplicateTransactions).toHaveLength(0)
+            expect(statements[0].account.transactions).toHaveLength(2) // Both original transactions
+            expect(statements[0].numberOfTransactions).toBe(2) // Should match unique transactions
 
             // Second statement should have one duplicate that matches the ID from the first statement
             expect(statements[1].duplicateTransactions).toHaveLength(1)
@@ -441,6 +444,11 @@ describe('BankAccountLoader', async () => {
             expect(statements[1].duplicateTransactions[0].invalidReason).toBe(
                 InvalidTransactionReason.duplicate
             )
+
+            // The duplicate transaction should be filtered out
+            expect(statements[1].account.transactions).toHaveLength(1)
+            expect(statements[1].account.transactions[0].transactionId).toBe('unique-id-2')
+            expect(statements[1].numberOfTransactions).toBe(1) // Should match unique transactions
         })
     })
 
@@ -602,6 +610,11 @@ describe('BankAccountLoader', async () => {
             expect(statements[0].duplicateTransactions[0].invalidReason).toBe(
                 InvalidTransactionReason.duplicate
             )
+
+            // Verify that the numberOfTransactions reflects only unique transactions
+            expect(statements[0].account.transactions).toHaveLength(1)
+            expect(statements[0].account.transactions[0].transactionId).toBe('new-trans-1')
+            expect(statements[0].numberOfTransactions).toBe(1) // Should match unique transactions
         })
     })
 })

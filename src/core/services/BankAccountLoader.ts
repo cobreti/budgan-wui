@@ -162,16 +162,26 @@ export class BankAccountLoader implements IBankAccountLoader {
         // Detect duplicate transactions
         const duplicateTransactions = this.detectDuplicateTransactions(account)
 
+        // Create a set of duplicate transaction IDs for quick lookup
+        const duplicateTransactionIds = new Set(
+            duplicateTransactions.map((transaction) => transaction.transactionId)
+        )
+
+        // Filter out duplicates from the transactions array
+        const uniqueTransactions = account.transactions.filter(
+            (transaction) => !duplicateTransactionIds.has(transaction.transactionId)
+        )
+
         return {
             account: {
                 ...account,
-                transactions: account.transactions,
+                transactions: uniqueTransactions,
                 transactionsGroups: account.transactionsGroups
             },
             filename: filename,
             startDate: startDate,
             endDate: endDate,
-            numberOfTransactions: account.transactions.length,
+            numberOfTransactions: uniqueTransactions.length, // Use the count of unique transactions
             duplicateTransactions: duplicateTransactions
         }
     }
