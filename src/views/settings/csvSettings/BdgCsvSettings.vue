@@ -8,6 +8,6 @@
 <style scoped></style>
 
 <script setup lang="ts">
-    import BdgCsvSettingsMgnt from './BdgCsvSettingsMgnt.vue'
+    import BdgCsvSettingsMgnt from '@/components/settings/csvSettings/BdgCsvSettingsMgnt.vue'
     // import BdgCsvColumnsSettings from './BdgCsvColumnsSettings.vue'
 </script>
