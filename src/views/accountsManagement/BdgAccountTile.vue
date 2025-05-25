@@ -1,5 +1,14 @@
 <template>
-    <v-card class="ma-10">
+    <v-card class="ma-10 position-relative">
+        <v-icon
+            class="delete-icon"
+            color="error"
+            size="small"
+            @click="deleteAccount(props.account.accountId)"
+            title="Delete account"
+        >
+            mdi-delete
+        </v-icon>
         <v-card-title class="cursor-pointer">
             <v-btn
                 class="account-name"
@@ -15,9 +24,6 @@
                     {{ props.account.accountId }}
                 </div>
                 <div class="info-span">{{ props.account.accountType }}</div>
-                <v-btn class="ml-auto" color="red" @click="deleteAccount(props.account.accountId)">
-                    Delete
-                </v-btn>
             </div>
         </v-card-text>
     </v-card>
@@ -40,6 +46,19 @@
     .info-span {
         margin-right: 1em;
         width: 20em;
+    }
+
+    .delete-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .delete-icon:hover {
+        opacity: 1;
     }
 </style>
 
