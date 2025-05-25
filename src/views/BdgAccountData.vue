@@ -3,6 +3,7 @@
         <v-tabs v-model="activeTab" bg-color="primary">
             <v-tab value="export">Export</v-tab>
             <v-tab value="import">Import</v-tab>
+            <v-tab value="clear">Clear Data</v-tab>
         </v-tabs>
 
         <v-window v-model="activeTab">
@@ -16,6 +17,9 @@
             <v-window-item value="import">
                 <BdgImportAccountData />
             </v-window-item>
+            <v-window-item value="clear">
+                <BdgClearStorageData />
+            </v-window-item>
         </v-window>
     </div>
 </template>
@@ -24,6 +28,7 @@
     import { ref, watch, onMounted } from 'vue'
     import BdgExportAccountData from './BdgExportAccountData.vue'
     import BdgImportAccountData from './BdgImportAccountData.vue'
+    import BdgClearStorageData from './BdgClearStorageData.vue'
     import { useBankAccountsStore } from '@/stores/bankAccounts-store'
     import { useRoute, useRouter } from 'vue-router'
 
@@ -37,6 +42,8 @@
     onMounted(() => {
         if (route.query.tab === 'export' && bankAccountsStore.hasAccounts) {
             activeTab.value = 'export'
+        } else if (route.query.tab === 'clear') {
+            activeTab.value = 'clear'
         } else {
             activeTab.value = 'import'
         }
