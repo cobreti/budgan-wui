@@ -73,6 +73,6 @@
     const router = useRouter()
 
     function goBack() {
-        router.go(-1)
+        router.push({ name: 'accounts' })
     }
 </script>
