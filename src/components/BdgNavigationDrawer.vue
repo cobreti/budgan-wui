@@ -10,13 +10,15 @@
                 :to="{ path: '/accounts', replace: true, query: { from: 'sidebar-nav' } }"
             ></v-list-item>
             <v-list-item
-                title="Save"
-                :to="{ path: '/save', replace: true, query: { from: 'sidebar-nav' } }"
-                :hidden="!bankAccountsStore.hasAccounts"
-            ></v-list-item>
-            <v-list-item
-                title="Open"
-                :to="{ path: '/open', replace: true, query: { from: 'sidebar-nav' } }"
+                title="Data"
+                :to="{ 
+                    path: '/account-data', 
+                    replace: true, 
+                    query: { 
+                        from: 'sidebar-nav',
+                        tab: bankAccountsStore.hasAccounts ? 'export' : 'import'
+                    } 
+                }"
             ></v-list-item>
             <v-list-item
                 title="Settings"
