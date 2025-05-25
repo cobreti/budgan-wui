@@ -1,6 +1,10 @@
 <template>
     <div class="d-flex flex-column align-content-start h-100" v-if="account">
         <account-header :bank-account="account">
+            <v-btn flat :to="{ path: 'monthly-transactions' }" class="mr-2">
+                <v-icon size="24" icon="mdi-calendar-month"></v-icon>
+                monthly view
+            </v-btn>
             <v-btn flat :to="{ path: 'add-statement', replace: true }">
                 <v-icon size="24" icon="mdi-file-upload-outline"></v-icon>
                 add statement
