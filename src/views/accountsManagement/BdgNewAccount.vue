@@ -1,9 +1,10 @@
 <template>
     <div>
         <v-toolbar class="pl-5">
-            <a @click="$router.go(-1)">
+            <a @click="navigateBack">
                 <v-icon size="Large" icon="mdi-chevron-left"></v-icon>
             </a>
+            <v-toolbar-title class="ml-2">Create New Account</v-toolbar-title>
         </v-toolbar>
         <div class="ma-5 form">
             <v-form fast-fail @submit.prevent v-model="formValid">
@@ -138,6 +139,12 @@
 
         bankAccountStore.addWithBankAccount(bankAccount)
 
-        router.go(-1)
+        // Navigate to the accounts management page after creating account
+        router.push('/accounts')
+    }
+
+    function navigateBack() {
+        // Navigate to the accounts management page (parent page)
+        router.push('/accounts')
     }
 </script>
