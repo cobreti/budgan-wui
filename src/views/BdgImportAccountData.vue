@@ -31,13 +31,13 @@
 
 <script setup lang="ts">
   import { useImportAccountsStore } from '@/stores/importAccounts-store'
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
   const importAccountsStore = useImportAccountsStore();
   const bankAccountsStore = useBankAccountsStore();
 
-  const files = defineModel<File[]>();
+  const files = ref<File[]>([]);
 
   const canImport = computed(() => {
     return files.value && files.value.length > 0;

@@ -53,8 +53,7 @@
 
     const accountsDataObjectUrl = ref<string>('')
 
-    const filename = defineModel<string>()
-    filename.value = ''
+    const filename = ref<string>('')
 
     const computedFilename = computed(() => {
         if (filename.value == '') return ''

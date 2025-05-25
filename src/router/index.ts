@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@views/BdgHomeView.vue'
-import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 import { accountsManagementRoutes } from '@/router/accountsManagementRoutes'
 import { accountRoutes } from '@/router/accountRoutes'
 import { settingsRoutes } from '@/router/settingsRoutes'
@@ -26,23 +25,10 @@ const router = createRouter({
             component: () => import('@views/BdgAboutView.vue')
         },
         {
-            path: '/save',
-            name: 'save',
-            component: () => import('@views/BdgExportAccountData.vue'),
-            beforeEnter: (to, from, next) => {
-                const bankAccountsStore = useBankAccountsStore()
-
-                if (bankAccountsStore.hasAccounts) {
-                    next()
-                } else {
-                    next({ path: '/' })
-                }
-            }
-        },
-        {
-            path: '/open',
-            name: 'open',
-            component: () => import('@views/BdgImportAccountData.vue')
+            path: '/account-data',
+            name: 'accountData',
+            component: () => import('@views/BdgAccountData.vue'),
+            // Component handles the tab display logic internally
         }
     ]
 })
