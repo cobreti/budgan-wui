@@ -22,63 +22,9 @@
                             <span class="title">transactions count :</span>
                             <span class="content">{{ statement.numberOfTransactions }}</span>
                         </div>
-                        <div class="line-content">
-                            <span class="title">Duplicate transactions :</span>
-                            <span
-                                class="content"
-                                :class="{
-                                    'text-warning': statement.duplicateTransactions.length > 0
-                                }"
-                            >
-                                {{ statement.duplicateTransactions.length }}
-                                <v-btn
-                                    v-if="statement.duplicateTransactions.length > 0"
-                                    x-small
-                                    text
-                                    color="primary"
-                                    class="ml-2"
-                                    @click="showDuplicates = !showDuplicates"
-                                >
-                                    {{ showDuplicates ? 'Hide' : 'Show' }}
-                                </v-btn>
-                            </span>
-                        </div>
-
-                        <v-expand-transition>
-                            <div
-                                v-if="showDuplicates && statement.duplicateTransactions.length > 0"
-                                class="mt-3 mb-3"
-                            >
-                                <v-card variant="outlined" class="pa-2">
-                                    <div class="text-subtitle-2 mb-2">Duplicate Transactions</div>
-                                    <v-list density="compact" class="duplicate-list">
-                                        <v-list-item
-                                            v-for="(
-                                                transaction, index
-                                            ) in statement.duplicateTransactions"
-                                            :key="index"
-                                        >
-                                            <div class="d-flex flex-column">
-                                                <div class="duplicate-item-row">
-                                                    <strong>Date:</strong>
-                                                    {{
-                                                        transaction.dateInscription.toLocaleDateString()
-                                                    }}
-                                                </div>
-                                                <div class="duplicate-item-row">
-                                                    <strong>Amount:</strong>
-                                                    {{ transaction.amount }}
-                                                </div>
-                                                <div class="duplicate-item-row">
-                                                    <strong>Description:</strong>
-                                                    {{ transaction.description }}
-                                                </div>
-                                            </div>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-card>
-                            </div>
-                        </v-expand-transition>
+                        <BdgAccountDuplicatedTransactions
+                            :duplicate-transactions="statement.duplicateTransactions"
+                        />
 
                         <div class="line-content">
                             <span class="title">Account ID :</span>
@@ -147,8 +93,9 @@
 </style>
 
 <script setup lang="ts">
-    import { computed, ref } from 'vue'
+    import { computed } from 'vue'
     import { useAddStatementStore } from '@/stores/add-statement-store'
+    import BdgAccountDuplicatedTransactions from '@/components/account/BdgAccountDuplicatedTransactions.vue'
 
     const props = defineProps<{
         statementId: string
@@ -159,6 +106,4 @@
     const statement = computed(() => {
         return addStatementStore.getStatementById(props.statementId)
     })
-
-    const showDuplicates = ref(false)
 </script>
