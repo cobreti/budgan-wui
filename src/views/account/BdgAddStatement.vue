@@ -89,7 +89,7 @@
 </style>
 
 <script setup lang="ts">
-    import AccountHeader from '@views/account/BdgAccountHeader.vue'
+    import AccountHeader from '@components/account/BdgAccountHeader.vue'
     import BdgAccountAdded from '@views/account/BdgAccountAdded.vue'
     import { computed, defineModel, ref } from 'vue'
     import { useAddStatementStore } from '@/stores/add-statement-store'
