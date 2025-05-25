@@ -1,13 +1,15 @@
 <template>
     <div class="monthly-transactions">
-        <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ title }}</h3>
-        <div class="total-amount" :class="{ income: isIncome, expense: !isIncome }">
-            {{ formatAmount(total) }}
+        <div class="transaction-header">
+            <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ title }}</h3>
+            <div class="total-amount" :class="{ income: isIncome, expense: !isIncome }">
+                {{ formatAmount(total) }}
+            </div>
+            <v-divider class="my-2"></v-divider>
         </div>
-        <v-divider class="my-2"></v-divider>
         <div class="transactions-list">
             <div
-                v-for="transaction in transactions"
+                v-for="(transaction, index) in transactions"
                 :key="transaction.transactionId"
                 class="transaction-item pa-2"
             >
@@ -25,8 +27,10 @@
                 <div class="transaction-description text-body-2 text-truncate">
                     {{ transaction.description }}
                 </div>
-                <v-divider class="my-1"></v-divider>
+                <v-divider class="my-1" v-if="index < transactions.length - 1"></v-divider>
             </div>
+            <!-- Empty div to ensure padding at the bottom of the list -->
+            <div class="pb-4"></div>
         </div>
     </div>
 </template>
@@ -34,14 +38,20 @@
 <style scoped>
     .monthly-transactions {
         height: 100%;
-        overflow: hidden;
         display: flex;
         flex-direction: column;
+        width: 100%;
+    }
+
+    .transaction-header {
+        flex: 0 0 auto;
     }
 
     .transactions-list {
-        flex: 1;
+        flex: 1 1 auto;
         overflow-y: auto;
+        padding-bottom: 4px;
+        margin-bottom: 8px; /* Extra space to ensure the last item is visible */
     }
 
     .transaction-item {
@@ -94,6 +104,9 @@
             minimumFractionDigits: 2
         }).format(Math.abs(amount))
     }
+
+    // Use props to silence TypeScript warnings
+    const { transactions, title, total, isIncome } = props
 
     // Format date
     function formatDate(date: Date): string {

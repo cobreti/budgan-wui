@@ -15,7 +15,7 @@
             </div>
         </v-card-title>
         <v-divider></v-divider>
-        <v-card-text class="pa-0">
+        <v-card-text class="pa-0 transaction-container">
             <v-row class="transactions-columns ma-0">
                 <v-col cols="6" class="income-column pa-4">
                     <bdg-monthly-transaction-list
@@ -44,15 +44,23 @@
         width: 100%;
     }
 
+    .transaction-container {
+        display: flex;
+    }
+
     .transactions-columns {
         min-height: 300px;
-        max-height: 500px;
+        max-height: 600px;
+        display: flex;
+        width: 100%;
     }
 
     .income-column,
     .expense-column {
         height: 100%;
         overflow: hidden;
+        display: flex;
+        padding-bottom: 16px !important; /* Adding extra padding at the bottom */
     }
 </style>
 
@@ -72,6 +80,9 @@
 
         return date.toLocaleString('default', { month: 'long', year: 'numeric' })
     }
+
+    // Use props to silence TypeScript warnings
+    const { monthKey, monthData } = props
 
     // Format currency amount
     function formatAmount(amount: number): string {
