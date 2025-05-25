@@ -98,7 +98,7 @@
 
 <script setup lang="ts">
     import { computed, onMounted, ref, type Ref } from 'vue'
-    import { useCsvPreviewStore } from './csvPreview-store'
+    import { useCsvPreviewStore } from '@/stores/csvPreview-store'
     import { CSVColumnContent } from '@/core/models/csvDocument'
     import { container } from '@/core/setupInversify'
     import type { IStreamFactory } from '@services/StreamFactory'
