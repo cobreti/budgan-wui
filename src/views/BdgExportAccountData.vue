@@ -43,6 +43,7 @@
     import { useBankAccountsStore } from '@/stores/bankAccounts-store'
     import { useExportAccountsStore } from '@/stores/exportAccounts-store'
     import { onBeforeRouteLeave } from 'vue-router'
+    import { JsonReplacer } from '@/core/utils/json-utils'
 
     const bankAccountsStore = useBankAccountsStore()
     const exportAccountsStore = useExportAccountsStore()
@@ -70,8 +71,9 @@
     const selectionUnwatch = watchEffect(async () => {
         accountsDataObjectUrl.value = ''
         exportAccountsStore.getSaveBankAccountDataForAllAccounts(selection.value)
+        exportAccountsStore.getCsvSettings()
 
-        const json = JSON.stringify(exportAccountsStore.exportContent)
+        const json = JSON.stringify(exportAccountsStore.exportContent, JsonReplacer)
         const blob = new Blob([json], { type: 'application/json' })
         accountsDataObjectUrl.value = URL.createObjectURL(blob)
     })
