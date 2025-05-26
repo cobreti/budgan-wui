@@ -5,6 +5,7 @@ import type {
     BankAccountsDictionary,
     TransactionIdsTable
 } from '@models/BankAccountTypes'
+import { JsonReplacer, JsonReviver } from '@/core/utils/json-utils'
 
 type BankAccountsTransactionIdsIndex = { [accountId: string]: TransactionIdsTable }
 
@@ -21,23 +22,6 @@ export type BankAccountsStore = {
     clear: () => void
     getTransactionsIdsForAccountId: (accountId: string) => TransactionIdsTable
     removeAccount: (accountId: string) => void
-}
-
-const dateUUID = '7f5e8a12-09b3-4dfc-a726-89ed4731cb56'
-
-function AccountReplacer(this: any, key: string, value: any): any {
-    if (this[key] instanceof Date) {
-        return { type: dateUUID, value: this[key].toISOString() }
-    }
-    return value
-}
-
-function AccountReviver(key: string, value: any): any {
-    if (typeof value === 'object' && value['type'] === dateUUID) {
-        return new Date(value.value)
-    }
-
-    return value
 }
 
 export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
@@ -191,10 +175,10 @@ export const useBankAccountsStore = defineStore<string, BankAccountsStore>(
             storage: localStorage,
             serializer: {
                 serialize: (state) => {
-                    return JSON.stringify(state, AccountReplacer)
+                    return JSON.stringify(state, JsonReplacer)
                 },
                 deserialize: (value) => {
-                    return JSON.parse(value, AccountReviver)
+                    return JSON.parse(value, JsonReviver)
                 }
             },
             afterRestore(context) {}
