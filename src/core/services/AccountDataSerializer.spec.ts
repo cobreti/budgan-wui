@@ -47,7 +47,7 @@ describe('AccountDataSerializer', () => {
     })
 
     describe('BankAccounts serialization', () => {
-        it('should export BankAccounts store data to JSON', () => {
+        it('should save BankAccounts store data to JSON', () => {
             // Setup mocked store data
             const testAccount: BankAccount = {
                 name: 'Test Account',
@@ -77,20 +77,20 @@ describe('AccountDataSerializer', () => {
             bankAccountsStore.accounts = { 'test-account-1': testAccount }
             bankAccountsStore.transactionsIdsIndex = { 'test-account-1': { 'trans-1': {} } }
 
-            // Export data
-            const exported = serializer.exportBankAccountsData()
+            // Save data
+            const saved = serializer.saveBankAccountsData()
 
             // Should be a JSON string
-            expect(typeof exported).toBe('string')
+            expect(typeof saved).toBe('string')
 
             // Verify JSON contains expected data
-            const parsed = JSON.parse(exported)
+            const parsed = JSON.parse(saved)
             expect(parsed).toHaveProperty('accounts')
             expect(parsed).toHaveProperty('transactionsIdsIndex')
             expect(parsed.accounts).toHaveProperty('test-account-1')
         })
 
-        it('should import BankAccounts data into store', () => {
+        it('should load BankAccounts data into store', () => {
             // Create test data
             const jsonData = JSON.stringify({
                 accounts: {
@@ -134,8 +134,8 @@ describe('AccountDataSerializer', () => {
                 }
             })
 
-            // Import the data
-            serializer.importBankAccountsData(jsonData)
+            // Load the data
+            serializer.loadBankAccountsData(jsonData)
 
             // Verify store methods were called correctly
             expect(bankAccountsStore.clear).toHaveBeenCalled()
@@ -144,7 +144,7 @@ describe('AccountDataSerializer', () => {
     })
 
     describe('CSVSettings serialization', () => {
-        it('should export CSVSettings store data to JSON', () => {
+        it('should save CSVSettings store data to JSON', () => {
             // Setup mock data
             csvSettingsStore.settings = [
                 {
@@ -162,20 +162,20 @@ describe('AccountDataSerializer', () => {
                 }
             ]
 
-            // Export data
-            const exported = serializer.exportCsvSettingsData()
+            // Save data
+            const saved = serializer.saveCsvSettingsData()
 
             // Should be a JSON string
-            expect(typeof exported).toBe('string')
+            expect(typeof saved).toBe('string')
 
             // Verify JSON contains expected data
-            const parsed = JSON.parse(exported)
+            const parsed = JSON.parse(saved)
             expect(Array.isArray(parsed)).toBe(true)
             expect(parsed.length).toBe(1)
             expect(parsed[0].id).toBe('settings-1')
         })
 
-        it('should import CSVSettings data into store', () => {
+        it('should load CSVSettings data into store', () => {
             // Create test data with a single setting
             const jsonData = JSON.stringify([
                 {
@@ -208,10 +208,8 @@ describe('AccountDataSerializer', () => {
                         [CSVColumnContent.TYPE]: null
                     }
                 }
-            ]
-
-            // Import data
-            serializer.importCsvSettingsData(jsonData)
+            ] // Load data
+            serializer.loadCsvSettingsData(jsonData)
 
             // Verify old settings were removed and new ones added
             expect(csvSettingsStore.removeSetting).toHaveBeenCalledWith('old-setting')
@@ -220,7 +218,7 @@ describe('AccountDataSerializer', () => {
     })
 
     describe('Combined data serialization', () => {
-        it('should export all data (BankAccounts and CSV settings) to JSON', () => {
+        it('should save all data (BankAccounts and CSV settings) to JSON', () => {
             // Setup mocked store data
             const testAccount: BankAccount = {
                 name: 'Test Account',
@@ -265,16 +263,14 @@ describe('AccountDataSerializer', () => {
                         [CSVColumnContent.TYPE]: 5
                     }
                 }
-            ]
-
-            // Export all data
-            const exported = serializer.exportAllData()
+            ] // Save all data
+            const saved = serializer.saveAllData()
 
             // Should be a JSON string
-            expect(typeof exported).toBe('string')
+            expect(typeof saved).toBe('string')
 
             // Verify JSON contains expected data
-            const parsed = JSON.parse(exported)
+            const parsed = JSON.parse(saved)
             expect(parsed).toHaveProperty('accounts')
             expect(parsed).toHaveProperty('transactionsIdsIndex')
             expect(parsed).toHaveProperty('csvSettings')
@@ -284,7 +280,7 @@ describe('AccountDataSerializer', () => {
             expect(parsed.csvSettings[0].id).toBe('settings-1')
         })
 
-        it('should import all data (BankAccounts and CSV settings)', () => {
+        it('should load all data (BankAccounts and CSV settings)', () => {
             // Create test data
             const jsonData = JSON.stringify({
                 accounts: {
@@ -358,18 +354,16 @@ describe('AccountDataSerializer', () => {
                         [CSVColumnContent.TYPE]: null
                     }
                 }
-            ]
+            ] // Spy on the methods that loadAllData will call
+            const loadBankAccountsDataSpy = vi.spyOn(serializer, 'loadBankAccountsData')
+            const loadCsvSettingsDataSpy = vi.spyOn(serializer, 'loadCsvSettingsData')
 
-            // Spy on the methods that importAllData will call
-            const exportBankAccountsDataSpy = vi.spyOn(serializer, 'importBankAccountsData')
-            const exportCsvSettingsDataSpy = vi.spyOn(serializer, 'importCsvSettingsData')
+            // Load all data
+            serializer.loadAllData(jsonData)
 
-            // Import all data
-            serializer.importAllData(jsonData)
-
-            // Verify both import methods were called
-            expect(exportBankAccountsDataSpy).toHaveBeenCalled()
-            expect(exportCsvSettingsDataSpy).toHaveBeenCalled()
+            // Verify both load methods were called
+            expect(loadBankAccountsDataSpy).toHaveBeenCalled()
+            expect(loadCsvSettingsDataSpy).toHaveBeenCalled()
         })
     })
 })

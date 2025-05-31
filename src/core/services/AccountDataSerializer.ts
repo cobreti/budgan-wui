@@ -10,53 +10,53 @@ import { JsonReplacer, JsonReviver } from '@/core/utils/json-utils'
  */
 export interface IAccountDataSerializer {
     /**
-     * Exports BankAccounts store data to JSON string
+     * Saves BankAccounts store data to JSON string
      * @returns JSON string representation of the current BankAccounts store state
      */
-    exportBankAccountsData(): string
+    saveBankAccountsData(): string
 
     /**
-     * Imports BankAccounts data from JSON string into the store
-     * @param jsonString The JSON string to import
+     * Loads BankAccounts data from JSON string into the store
+     * @param jsonString The JSON string to load
      */
-    importBankAccountsData(jsonString: string): void
+    loadBankAccountsData(jsonString: string): void
 
     /**
-     * Exports CSV settings store data to JSON string
+     * Saves CSV settings store data to JSON string
      * @returns JSON string representation of the current CSV settings store state
      */
-    exportCsvSettingsData(): string
+    saveCsvSettingsData(): string
 
     /**
-     * Imports CSV settings data from JSON string into the store
-     * @param jsonString The JSON string to import
+     * Loads CSV settings data from JSON string into the store
+     * @param jsonString The JSON string to load
      */
-    importCsvSettingsData(jsonString: string): void
+    loadCsvSettingsData(jsonString: string): void
 
     /**
-     * Exports all data (BankAccounts and CSV settings) to JSON string
+     * Saves all data (BankAccounts and CSV settings) to JSON string
      * @returns JSON string representation of all store data
      */
-    exportAllData(): string
+    saveAllData(): string
 
     /**
-     * Imports all data (BankAccounts and CSV settings) from JSON string
-     * @param jsonString The JSON string to import
+     * Loads all data (BankAccounts and CSV settings) from JSON string
+     * @param jsonString The JSON string to load
      */
-    importAllData(jsonString: string): void
+    loadAllData(jsonString: string): void
 }
 
 /**
  * Service responsible for serializing and deserializing data from BankAccounts and csvSettings stores.
- * Works directly with the stores to export and import data using JSON format.
+ * Works directly with the stores to save and load data using JSON format.
  */
 @injectable()
 export class AccountDataSerializer implements IAccountDataSerializer {
     /**
-     * Exports BankAccounts store data to JSON string
+     * Saves BankAccounts store data to JSON string
      * @returns JSON string representation of the current BankAccounts store state
      */
-    exportBankAccountsData(): string {
+    saveBankAccountsData(): string {
         const bankAccountsStore = useBankAccountsStore()
         const data = {
             accounts: bankAccountsStore.accounts,
@@ -66,10 +66,10 @@ export class AccountDataSerializer implements IAccountDataSerializer {
     }
 
     /**
-     * Imports BankAccounts data from JSON string into the store
-     * @param jsonString The JSON string to import
+     * Loads BankAccounts data from JSON string into the store
+     * @param jsonString The JSON string to load
      */
-    importBankAccountsData(jsonString: string): void {
+    loadBankAccountsData(jsonString: string): void {
         const bankAccountsStore = useBankAccountsStore()
         const parsedData = JSON.parse(jsonString, JsonReviver) as {
             accounts: BankAccountsDictionary
@@ -79,12 +79,12 @@ export class AccountDataSerializer implements IAccountDataSerializer {
         // Clear existing data
         bankAccountsStore.clear()
 
-        // Import the accounts
+        // Load the accounts
         Object.values(parsedData.accounts).forEach((account) => {
             bankAccountsStore.addWithBankAccount(account)
         })
 
-        // Import transaction IDs index if provided
+        // Load transaction IDs index if provided
         if (parsedData.transactionsIdsIndex) {
             // Since transactionsIdsIndex is populated automatically when adding accounts,
             // we don't need to manually set it
@@ -92,40 +92,40 @@ export class AccountDataSerializer implements IAccountDataSerializer {
     }
 
     /**
-     * Exports CSV settings store data to JSON string
+     * Saves CSV settings store data to JSON string
      * @returns JSON string representation of the current CSV settings store state
      */
-    exportCsvSettingsData(): string {
+    saveCsvSettingsData(): string {
         const csvSettingsStore = useCsvSettingsStore()
         return JSON.stringify(csvSettingsStore.settings, JsonReplacer)
     }
 
     /**
-     * Imports CSV settings data from JSON string into the store
-     * @param jsonString The JSON string to import
+     * Loads CSV settings data from JSON string into the store
+     * @param jsonString The JSON string to load
      */
-    importCsvSettingsData(jsonString: string): void {
+    loadCsvSettingsData(jsonString: string): void {
         const csvSettingsStore = useCsvSettingsStore()
         const settings = JSON.parse(jsonString, JsonReviver) as CSVSettingsList
 
-        // Replace existing settings with imported ones
+        // Replace existing settings with loaded ones
         // First, remove existing settings (clear the array)
         const existingSettings = [...csvSettingsStore.settings]
         existingSettings.forEach((setting) => {
             csvSettingsStore.removeSetting(setting.id)
         })
 
-        // Then add all imported settings
+        // Then add all loaded settings
         settings.forEach((setting) => {
             csvSettingsStore.addSetting(setting)
         })
     }
 
     /**
-     * Exports all data (BankAccounts and CSV settings) to JSON string
+     * Saves all data (BankAccounts and CSV settings) to JSON string
      * @returns JSON string representation of all store data
      */
-    exportAllData(): string {
+    saveAllData(): string {
         const bankAccountsStore = useBankAccountsStore()
         const csvSettingsStore = useCsvSettingsStore()
 
@@ -139,19 +139,19 @@ export class AccountDataSerializer implements IAccountDataSerializer {
     }
 
     /**
-     * Imports all data (BankAccounts and CSV settings) from JSON string
-     * @param jsonString The JSON string to import
+     * Loads all data (BankAccounts and CSV settings) from JSON string
+     * @param jsonString The JSON string to load
      */
-    importAllData(jsonString: string): void {
+    loadAllData(jsonString: string): void {
         const parsedData = JSON.parse(jsonString, JsonReviver) as {
             accounts: BankAccountsDictionary
             transactionsIdsIndex?: { [accountId: string]: TransactionIdsTable }
             csvSettings?: CSVSettingsList
         }
 
-        // Import bank accounts
+        // Load bank accounts
         if (parsedData.accounts) {
-            this.importBankAccountsData(
+            this.loadBankAccountsData(
                 JSON.stringify(
                     {
                         accounts: parsedData.accounts,
@@ -162,9 +162,9 @@ export class AccountDataSerializer implements IAccountDataSerializer {
             )
         }
 
-        // Import CSV settings if available
+        // Load CSV settings if available
         if (parsedData.csvSettings) {
-            this.importCsvSettingsData(JSON.stringify(parsedData.csvSettings, JsonReplacer))
+            this.loadCsvSettingsData(JSON.stringify(parsedData.csvSettings, JsonReplacer))
         }
     }
 }

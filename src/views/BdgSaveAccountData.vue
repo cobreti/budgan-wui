@@ -17,7 +17,7 @@
             </div>
             <div class="ml-2 mt-4">
                 <div class="mb-4 font-weight-black">
-                    All account data and CSV settings will be exported
+                    All account data and CSV settings will be saved
                 </div>
             </div>
             <div class="d-flex flex-row justify-center">
@@ -25,7 +25,7 @@
                     :href="accountsDataObjectUrl"
                     :download="computedFilename"
                     :disabled="!canDownload"
-                    >Export</v-btn
+                    >Save</v-btn
                 >
             </div>
         </v-card>
@@ -67,7 +67,7 @@
             return
         }
 
-        const json = serializer.exportAllData()
+        const json = serializer.saveAllData()
         const blob = new Blob([json], { type: 'application/json' })
         accountsDataObjectUrl.value = URL.createObjectURL(blob)
     }

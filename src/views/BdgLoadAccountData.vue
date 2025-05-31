@@ -14,7 +14,7 @@
                 ></v-file-input>
             </div>
             <div class="d-flex flex-row justify-center">
-                <v-btn @click="onImport" :disabled="!canImport">Import</v-btn>
+                <v-btn @click="onLoad" :disabled="!canLoad">Load</v-btn>
             </div>
         </v-card>
     </div>
@@ -31,23 +31,23 @@
     const serializer = container.get<IAccountDataSerializer>(ServicesTypes.AccountDataSerializer)
     const files = ref<File | undefined>()
 
-    const canImport = computed(() => {
+    const canLoad = computed(() => {
         return !!files.value
     })
 
-    async function onImport() {
+    async function onLoad() {
         if (files.value) {
             try {
                 // Read the file content
                 const fileContent = await readFileAsText(files.value)
 
-                // Use the serializer to import all data (bank accounts and CSV settings)
-                serializer.importAllData(fileContent)
+                // Use the serializer to load all data (bank accounts and CSV settings)
+                serializer.loadAllData(fileContent)
 
                 // Reset the file input
                 files.value = undefined
             } catch (error) {
-                console.error('Error importing accounts data:', error)
+                console.error('Error loading accounts data:', error)
             }
         }
     }
