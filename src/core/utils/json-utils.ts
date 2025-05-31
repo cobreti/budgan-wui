@@ -8,6 +8,10 @@ export function JsonReplacer(this: any, key: string, value: any): any {
 }
 
 export function JsonReviver(key: string, value: any): any {
+    if (value === null || value === undefined) {
+        return value
+    }
+
     if (typeof value === 'object' && value['type'] === dateUUID) {
         return new Date(value.value)
     }

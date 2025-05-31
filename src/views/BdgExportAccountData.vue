@@ -16,11 +16,9 @@
                 ></v-text-field>
             </div>
             <div class="ml-2 mt-4">
-                <div class="mb-4 font-weight-black">Accounts</div>
-                <bdg-accounts-selector
-                    class="ml-2"
-                    v-model:selected-accounts="selection"
-                ></bdg-accounts-selector>
+                <div class="mb-4 font-weight-black">
+                    All account data and CSV settings will be exported
+                </div>
             </div>
             <div class="d-flex flex-row justify-center">
                 <v-btn
@@ -37,50 +35,57 @@
 <style scoped></style>
 
 <script setup lang="ts">
-    import { computed, ref, watchEffect } from 'vue'
-    import BdgAccountsSelector from '@components/account/BdgAccountsSelector.vue'
-    import type { BankAccountsSelection } from '@models/BankAccountSelectorTypes'
-    import { useBankAccountsStore } from '@/stores/bankAccounts-store'
-    import { useExportAccountsStore } from '@/stores/exportAccounts-store'
+    import { computed, ref, watchEffect, onMounted } from 'vue'
+    import { container } from '@/core/setupInversify'
+    import { ServicesTypes } from '@/core/services/types'
+    import type { IAccountDataSerializer } from '@/core/services/AccountDataSerializer'
     import { onBeforeRouteLeave } from 'vue-router'
-    import { JsonReplacer } from '@/core/utils/json-utils'
+    import { useBankAccountsStore } from '@/stores/bankAccounts-store'
 
     const bankAccountsStore = useBankAccountsStore()
-    const exportAccountsStore = useExportAccountsStore()
-
-    const selection = ref<BankAccountsSelection>(
-        Object.values(bankAccountsStore.accounts).map((account) => account.accountId)
-    )
+    const serializer = container.get<IAccountDataSerializer>(ServicesTypes.AccountDataSerializer)
 
     const accountsDataObjectUrl = ref<string>('')
-
     const filename = ref<string>('')
 
     const computedFilename = computed(() => {
         if (filename.value == '') return ''
-
         return `${filename.value}.json`
     })
 
     const canDownload = computed(() => {
         return (
-            filename.value != '' && selection.value.length > 0 && accountsDataObjectUrl.value != ''
+            filename.value != '' &&
+            bankAccountsStore.hasAccounts &&
+            accountsDataObjectUrl.value != ''
         )
     })
 
-    const selectionUnwatch = watchEffect(async () => {
-        accountsDataObjectUrl.value = ''
-        exportAccountsStore.getSaveBankAccountDataForAllAccounts(selection.value)
-        exportAccountsStore.getCsvSettings()
+    function updateDataUrl() {
+        if (!bankAccountsStore.hasAccounts) {
+            accountsDataObjectUrl.value = ''
+            return
+        }
 
-        const json = JSON.stringify(exportAccountsStore.exportContent, JsonReplacer)
+        const json = serializer.exportAllData()
         const blob = new Blob([json], { type: 'application/json' })
         accountsDataObjectUrl.value = URL.createObjectURL(blob)
+    }
+
+    // Update the export data anytime bank accounts change
+    const storeUnwatch = watchEffect(() => {
+        updateDataUrl()
+    })
+
+    onMounted(() => {
+        updateDataUrl()
     })
 
     onBeforeRouteLeave((to, from, next) => {
-        selectionUnwatch()
-        exportAccountsStore.clear()
+        storeUnwatch()
+        if (accountsDataObjectUrl.value) {
+            URL.revokeObjectURL(accountsDataObjectUrl.value)
+        }
         next()
     })
 </script>

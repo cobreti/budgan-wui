@@ -11,7 +11,6 @@
                     v-model="files"
                     accept=".json"
                     :multiple="false"
-                    @change="onFileSelected"
                 ></v-file-input>
             </div>
             <div class="d-flex flex-row justify-center">
@@ -24,51 +23,52 @@
 <style scoped></style>
 
 <script setup lang="ts">
-    import { useImportAccountsStore } from '@/stores/importAccounts-store'
     import { computed, ref } from 'vue'
-    import { useBankAccountsStore } from '@/stores/bankAccounts-store'
+    import { container } from '@/core/setupInversify'
+    import { ServicesTypes } from '@/core/services/types'
+    import type { IAccountDataSerializer } from '@/core/services/AccountDataSerializer'
 
-    const importAccountsStore = useImportAccountsStore()
-    const bankAccountsStore = useBankAccountsStore()
-
-    const files = ref<File[]>([])
+    const serializer = container.get<IAccountDataSerializer>(ServicesTypes.AccountDataSerializer)
+    const files = ref<File | undefined>()
 
     const canImport = computed(() => {
-        return (
-            !!files.value &&
-            Array.isArray(files.value) &&
-            files.value.length > 0 &&
-            !!files.value[0]
-        )
+        return !!files.value
     })
 
-    function onFileSelected(selectedFiles: File | File[]) {
-        // Ensure files reactivity is properly triggered
-        if (selectedFiles) {
-            if (Array.isArray(selectedFiles)) {
-                files.value = [...selectedFiles]
-            } else {
-                files.value = [selectedFiles]
+    async function onImport() {
+        if (files.value) {
+            try {
+                // Read the file content
+                const fileContent = await readFileAsText(files.value)
+
+                // Use the serializer to import all data (bank accounts and CSV settings)
+                serializer.importAllData(fileContent)
+
+                // Reset the file input
+                files.value = undefined
+            } catch (error) {
+                console.error('Error importing accounts data:', error)
             }
-        } else {
-            files.value = []
         }
     }
 
-    async function onImport() {
-        if (files.value && files.value.length > 0) {
-            await importAccountsStore.importAccountFromFile(files.value[0])
+    function readFileAsText(file: File): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
 
-            if (importAccountsStore.hasAccounts) {
-                bankAccountsStore.clear()
-                const accountsIds = Object.keys(importAccountsStore.accounts)
-                accountsIds.forEach((accountId) => {
-                    bankAccountsStore.addWithBankAccount(importAccountsStore.accounts[accountId])
-                })
-                importAccountsStore.clear()
-            } else {
-                console.log('No accounts found in file')
+            reader.onload = () => {
+                try {
+                    resolve(reader.result as string)
+                } catch (e) {
+                    reject(e)
+                }
             }
-        }
+
+            reader.onerror = () => {
+                reject(new Error('Error reading file'))
+            }
+
+            reader.readAsText(file)
+        })
     }
 </script>
