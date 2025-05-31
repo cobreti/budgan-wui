@@ -1,7 +1,5 @@
-
 export const ServicesTypes = {
     OfxParser: 'OfxParser',
-    ExportService: 'ExportService',
     OfxToBankAccount: 'OfxToBankAccount',
     CsvToBankAccount: 'CsvToBankAccount',
     FileReaderFactory: 'FileReaderFactory',
@@ -12,4 +10,5 @@ export const ServicesTypes = {
     BankAccountLoader: 'BankAccountLoader',
     StreamFactory: 'StreamFactory',
     CsvParser: 'CsvParser',
+    AccountDataSerializer: 'AccountDataSerializer'
 }
