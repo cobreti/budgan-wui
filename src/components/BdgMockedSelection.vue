@@ -1,6 +1,8 @@
 <template>
     <v-card class="pa-4 w-100">
-        <v-card-title>Select Demo Data Files</v-card-title>
+        <v-card-title>{{
+            props.singleSelect ? 'Select Demo Data File' : 'Select Demo Data Files'
+        }}</v-card-title>
         <v-card-text>
             <v-row>
                 <v-col cols="12" sm="6">
@@ -30,14 +32,17 @@
                         <v-select
                             v-model="selectedFiles"
                             :items="availableFiles"
-                            label="Select Demo File(s)"
+                            :label="props.singleSelect ? 'Select Demo File' : 'Select Demo File(s)'"
                             :disabled="!availableFiles.length"
-                            multiple
+                            :multiple="!props.singleSelect"
                             chips
-                            hint="You can select multiple files"
-                            persistent-hint
+                            :hint="props.singleSelect ? undefined : 'You can select multiple files'"
+                            :persistent-hint="!props.singleSelect"
                         ></v-select>
-                        <div class="d-flex justify-end mt-1" v-if="availableFiles.length">
+                        <div
+                            class="d-flex justify-end mt-1"
+                            v-if="availableFiles.length && !props.singleSelect"
+                        >
                             <v-btn
                                 variant="text"
                                 size="small"
@@ -48,7 +53,7 @@
                                 Select All
                             </v-btn>
                             <v-btn
-                                v-if="selectedFiles.length > 0"
+                                v-if="Array.isArray(selectedFiles) && selectedFiles.length > 0"
                                 variant="text"
                                 size="small"
                                 density="comfortable"
@@ -63,11 +68,9 @@
             </v-row>
         </v-card-text>
         <v-card-actions>
-            <div v-if="selectedFiles.length" class="file-counter">
+            <div v-if="getSelectedFilesCount() > 0" class="file-counter">
                 <v-chip color="info" size="small">
-                    {{ selectedFiles.length }} file{{
-                        selectedFiles.length > 1 ? 's' : ''
-                    }}
+                    {{ getSelectedFilesCount() }} file{{ getSelectedFilesCount() > 1 ? 's' : '' }}
                     selected
                 </v-chip>
             </div>
@@ -75,20 +78,20 @@
             <v-btn
                 variant="outlined"
                 color="secondary"
-                :disabled="!selectedFiles.length"
+                :disabled="getSelectedFilesCount() === 0"
                 @click="downloadDemoFiles"
                 class="mr-2"
                 prepend-icon="mdi-download"
             >
-                Download Files
+                Download {{ props.singleSelect ? 'File' : 'Files' }}
             </v-btn>
             <v-btn
                 color="primary"
-                :disabled="!selectedFiles.length"
+                :disabled="getSelectedFilesCount() === 0"
                 @click="selectMockedFile"
                 prepend-icon="mdi-check"
             >
-                Use Demo Files
+                Use Demo {{ props.singleSelect ? 'File' : 'Files' }}
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -100,6 +103,7 @@
     const props = defineProps<{
         preselectedCategory?: string
         preselectedLanguage?: string
+        singleSelect?: boolean
     }>()
 
     const emit = defineEmits<{
@@ -120,7 +124,7 @@
     // Selected values
     const selectedCategory = ref<string>(props.preselectedCategory || 'bank-account')
     const selectedLanguage = ref<string>(props.preselectedLanguage || 'en')
-    const selectedFiles = ref<string[]>([])
+    const selectedFiles = ref<string | string[]>(props.singleSelect ? '' : [])
 
     // Define the type for our mocked files structure
     type LanguageFiles = {
@@ -181,32 +185,48 @@
 
     // Check if all files are selected
     const isAllSelected = computed(() => {
+        if (props.singleSelect) {
+            return false // Not applicable in single selection mode
+        }
         return (
             availableFiles.value.length > 0 &&
-            selectedFiles.value.length === availableFiles.value.length
+            (selectedFiles.value as string[]).length === availableFiles.value.length
         )
     })
 
     // Update when selections change
     function updateAvailableFiles() {
-        selectedFiles.value = []
+        selectedFiles.value = props.singleSelect ? '' : []
     }
 
     // Select all available files
     function selectAllFiles() {
-        selectedFiles.value = [...availableFiles.value]
+        if (!props.singleSelect) {
+            selectedFiles.value = [...availableFiles.value] as string[]
+        }
     }
 
     // Clear all selections
     function clearSelection() {
-        selectedFiles.value = []
+        selectedFiles.value = props.singleSelect ? '' : []
+    }
+
+    // Helper function to get the number of selected files
+    function getSelectedFilesCount(): number {
+        if (props.singleSelect) {
+            return selectedFiles.value ? 1 : 0
+        } else {
+            return (selectedFiles.value as string[]).length
+        }
     }
 
     // Function to emit the selected file paths and contents
     async function selectMockedFile() {
-        if (!selectedFiles.value.length) return
+        if (getSelectedFilesCount() === 0) return
 
-        for (const fileName of selectedFiles.value) {
+        // Handle single file selection mode
+        if (props.singleSelect && typeof selectedFiles.value === 'string') {
+            const fileName = selectedFiles.value
             const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
 
             try {
@@ -214,7 +234,7 @@
                 const response = await fetch(filePath)
                 if (!response.ok) {
                     console.error(`Failed to fetch file: ${response.status} ${response.statusText}`)
-                    continue
+                    return
                 }
 
                 const text = await response.text()
@@ -225,13 +245,37 @@
                 console.error('Error fetching file:', error)
             }
         }
-    }
+        // Handle multiple file selection mode
+        else if (Array.isArray(selectedFiles.value)) {
+            for (const fileName of selectedFiles.value) {
+                const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
 
-    // Function to download the selected demo files
+                try {
+                    // Fetch the file content
+                    const response = await fetch(filePath)
+                    if (!response.ok) {
+                        console.error(
+                            `Failed to fetch file: ${response.status} ${response.statusText}`
+                        )
+                        continue
+                    }
+
+                    const text = await response.text()
+                    const file = new File([text], fileName, { type: 'text/csv' })
+
+                    emit('select', filePath, file)
+                } catch (error) {
+                    console.error('Error fetching file:', error)
+                }
+            }
+        }
+    } // Function to download the selected demo files
     async function downloadDemoFiles() {
-        if (!selectedFiles.value.length) return
+        if (getSelectedFilesCount() === 0) return
 
-        for (const fileName of selectedFiles.value) {
+        // Handle single file selection mode
+        if (props.singleSelect && typeof selectedFiles.value === 'string') {
+            const fileName = selectedFiles.value
             const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
 
             try {
@@ -239,7 +283,7 @@
                 const response = await fetch(filePath)
                 if (!response.ok) {
                     console.error(`Failed to fetch file: ${response.status} ${response.statusText}`)
-                    continue
+                    return
                 }
 
                 // Create a blob from the response
@@ -259,6 +303,41 @@
                 URL.revokeObjectURL(downloadLink.href)
             } catch (error) {
                 console.error('Error downloading file:', error)
+            }
+        }
+        // Handle multiple file selection mode
+        else if (Array.isArray(selectedFiles.value)) {
+            for (const fileName of selectedFiles.value) {
+                const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
+
+                try {
+                    // Fetch the file content
+                    const response = await fetch(filePath)
+                    if (!response.ok) {
+                        console.error(
+                            `Failed to fetch file: ${response.status} ${response.statusText}`
+                        )
+                        continue
+                    }
+
+                    // Create a blob from the response
+                    const blob = await response.blob()
+
+                    // Create a temporary anchor element to download the file
+                    const downloadLink = document.createElement('a')
+                    downloadLink.href = URL.createObjectURL(blob)
+                    downloadLink.download = fileName
+
+                    // Append to the document, trigger click, and clean up
+                    document.body.appendChild(downloadLink)
+                    downloadLink.click()
+                    document.body.removeChild(downloadLink)
+
+                    // Release the URL object
+                    URL.revokeObjectURL(downloadLink.href)
+                } catch (error) {
+                    console.error('Error downloading file:', error)
+                }
             }
         }
     }
