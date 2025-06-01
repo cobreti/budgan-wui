@@ -18,7 +18,7 @@
 
                     <v-tabs v-model="activeTab">
                         <v-tab value="upload">Upload File</v-tab>
-                        <v-tab value="mocked">Use Mocked Data</v-tab>
+                        <v-tab value="mocked">Use Demo Data</v-tab>
                     </v-tabs>
 
                     <v-card-text class="content-container">

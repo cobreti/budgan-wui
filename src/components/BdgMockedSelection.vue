@@ -1,13 +1,13 @@
 <template>
     <v-card class="pa-4 w-100">
-        <v-card-title>Select Mocked Data File</v-card-title>
+        <v-card-title>Select Demo Data File</v-card-title>
         <v-card-text>
             <v-row>
                 <v-col cols="12" sm="6">
                     <v-select
                         v-model="selectedCategory"
                         :items="categories"
-                        label="Data Category"
+                        label="Demo Category"
                         item-title="title"
                         item-value="value"
                         @update:model-value="updateAvailableFiles"
@@ -29,7 +29,7 @@
                     <v-select
                         v-model="selectedFile"
                         :items="availableFiles"
-                        label="Select CSV File"
+                        label="Select Demo File"
                         :disabled="!availableFiles.length"
                     ></v-select>
                 </v-col>
@@ -38,7 +38,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" :disabled="!selectedFile" @click="selectMockedFile">
-                Select File
+                Use Demo File
             </v-btn>
         </v-card-actions>
     </v-card>
