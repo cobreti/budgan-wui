@@ -14,20 +14,53 @@
                     class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2"
                     :class="{ 'd-none': statementPresent }"
                 >
-                    <div class="d-flex flex-row mb-2">
-                        <div class="d-flex flex-column justify-center mr-4 mb-4">
-                            <label for="statement-file-input"> Bank statement file </label>
-                        </div>
-                        <v-file-input
-                            id="statement-file-input"
-                            class="mr-4 max-width-50"
-                            v-model="ofxFileName"
-                            :disabled="addStatementStore.loading"
-                            @update:modelValue="onFileNameUpdated"
-                            accept=".csv"
-                            :multiple="true"
-                        ></v-file-input>
-                    </div>
+                    <v-card-title>Import Statement</v-card-title>
+
+                    <v-tabs v-model="activeTab">
+                        <v-tab value="upload">Upload File</v-tab>
+                        <v-tab value="mocked">Use Mocked Data</v-tab>
+                    </v-tabs>
+
+                    <v-card-text class="content-container">
+                        <v-window v-model="activeTab" class="window-height w-100">
+                            <!-- Upload File Tab -->
+                            <v-window-item value="upload" class="w-100">
+                                <div class="d-flex flex-column mb-2 mt-4 full-width-container">
+                                    <div class="mb-2">
+                                        <label for="statement-file-input">
+                                            Bank statement file
+                                        </label>
+                                    </div>
+                                    <v-file-input
+                                        id="statement-file-input"
+                                        class="full-width-input"
+                                        v-model="ofxFileName"
+                                        :disabled="addStatementStore.loading"
+                                        @update:modelValue="onFileNameUpdated"
+                                        accept=".csv"
+                                        :multiple="true"
+                                    ></v-file-input>
+                                </div>
+                            </v-window-item>
+
+                            <!-- Mocked Data Tab -->
+                            <v-window-item value="mocked" class="w-100">
+                                <div class="mt-4 full-width-container">
+                                    <bdg-mocked-selection
+                                        class="full-width-component"
+                                        :preselectedCategory="
+                                            targetAccount.accountType
+                                                ?.toLowerCase()
+                                                .includes('credit')
+                                                ? 'creditcard'
+                                                : 'bank-account'
+                                        "
+                                        @select="onMockedFileSelected"
+                                    ></bdg-mocked-selection>
+                                </div>
+                            </v-window-item>
+                        </v-window>
+                    </v-card-text>
                 </v-card>
                 <v-card class="action-card" v-show="statementPresent">
                     <div class="d-flex flex-column align-content-center ma-5">
@@ -58,18 +91,44 @@
         flex: 1 1 0;
         display: block;
         position: relative;
-        min-height: 10em;
+        min-height: 25em; /* Increased from 10em to 25em to accommodate both input methods */
     }
 
     .max-width-50 {
         max-width: 50%;
+    }
+
+    .content-container {
+        min-height: 20em;
+    }
+
+    .window-height {
+        min-height: 18em;
+        /* display: flex; */
+        width: 100%;
+    }
+
+    /* Ensure full width for input containers */
+    .full-width-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .full-width-input {
+        width: 100%;
+    }
+
+    .full-width-component {
+        width: 100%;
     }
 </style>
 
 <script setup lang="ts">
     import AccountHeader from '@/components/account/BdgAccountHeader.vue'
     import BdgAccountAdded from '@/components/account/BdgAccountAdded.vue'
-    import { computed, defineModel } from 'vue'
+    import BdgMockedSelection from '@/components/BdgMockedSelection.vue'
+    import { computed, defineModel, ref } from 'vue'
     import { useAddStatementStore } from '@/stores/add-statement-store'
     import { useBankAccountsStore } from '@/stores/bankAccounts-store'
     import { container } from '@/core/setupInversify'
@@ -83,6 +142,9 @@
     const bankAccountStore = useBankAccountsStore()
     const csvSettingsStore = useCsvSettingsStore()
     const route = useRoute()
+
+    // Tab selection for file input methods
+    const activeTab = ref('upload')
 
     const targetAccountId = computed(() => {
         return route.params.id as string
@@ -155,6 +217,11 @@
 
     function onDiscard() {
         clear()
+    }
+
+    async function onMockedFileSelected(_filePath: string, fileContent: File) {
+        // Use the file content as if it was uploaded via file input
+        onFileNameUpdated(fileContent)
     }
 
     function onAdd() {
