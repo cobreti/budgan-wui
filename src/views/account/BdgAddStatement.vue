@@ -20,7 +20,7 @@
                         </div>
                         <v-file-input
                             id="statement-file-input"
-                            class="mr-4"
+                            class="mr-4 max-width-50"
                             v-model="ofxFileName"
                             :disabled="addStatementStore.loading"
                             @update:modelValue="onFileNameUpdated"
@@ -59,6 +59,10 @@
         display: block;
         position: relative;
         min-height: 10em;
+    }
+
+    .max-width-50 {
+        max-width: 50%;
     }
 </style>
 
