@@ -1,6 +1,6 @@
 <template>
     <v-card class="pa-4 w-100">
-        <v-card-title>Select Demo Data File</v-card-title>
+        <v-card-title>Select Demo Data Files</v-card-title>
         <v-card-text>
             <v-row>
                 <v-col cols="12" sm="6">
@@ -27,18 +27,25 @@
             <v-row>
                 <v-col cols="12">
                     <v-select
-                        v-model="selectedFile"
+                        v-model="selectedFiles"
                         :items="availableFiles"
-                        label="Select Demo File"
+                        label="Select Demo File(s)"
                         :disabled="!availableFiles.length"
+                        multiple
+                        chips
+                        hint="You can select multiple files"
+                        persistent-hint
                     ></v-select>
                 </v-col>
             </v-row>
         </v-card-text>
         <v-card-actions>
+            <div v-if="selectedFiles.length">
+                {{ selectedFiles.length }} file{{ selectedFiles.length > 1 ? 's' : '' }} selected
+            </div>
             <v-spacer></v-spacer>
-            <v-btn color="primary" :disabled="!selectedFile" @click="selectMockedFile">
-                Use Demo File
+            <v-btn color="primary" :disabled="!selectedFiles.length" @click="selectMockedFile">
+                Use Demo Files
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -70,7 +77,7 @@
     // Selected values
     const selectedCategory = ref<string>(props.preselectedCategory || 'bank-account')
     const selectedLanguage = ref<string>(props.preselectedLanguage || 'en')
-    const selectedFile = ref<string>('')
+    const selectedFiles = ref<string[]>([])
 
     // Define the type for our mocked files structure
     type LanguageFiles = {
@@ -131,28 +138,31 @@
 
     // Update when selections change
     function updateAvailableFiles() {
-        selectedFile.value = ''
+        selectedFiles.value = []
     }
 
-    // Function to emit the selected file path and content
+    // Function to emit the selected file paths and contents
     async function selectMockedFile() {
-        if (!selectedFile.value) return
+        if (!selectedFiles.value.length) return
 
-        const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${selectedFile.value}`
+        for (const fileName of selectedFiles.value) {
+            const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
 
-        try {
-            // Fetch the file content
-            const response = await fetch(filePath)
-            if (!response.ok) {
-                throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`)
+            try {
+                // Fetch the file content
+                const response = await fetch(filePath)
+                if (!response.ok) {
+                    console.error(`Failed to fetch file: ${response.status} ${response.statusText}`)
+                    continue
+                }
+
+                const text = await response.text()
+                const file = new File([text], fileName, { type: 'text/csv' })
+
+                emit('select', filePath, file)
+            } catch (error) {
+                console.error('Error fetching file:', error)
             }
-
-            const text = await response.text()
-            const file = new File([text], selectedFile.value, { type: 'text/csv' })
-
-            emit('select', filePath, file)
-        } catch (error) {
-            console.error('Error fetching file:', error)
         }
     }
 </script>
