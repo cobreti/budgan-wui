@@ -26,25 +26,68 @@
             </v-row>
             <v-row>
                 <v-col cols="12">
-                    <v-select
-                        v-model="selectedFiles"
-                        :items="availableFiles"
-                        label="Select Demo File(s)"
-                        :disabled="!availableFiles.length"
-                        multiple
-                        chips
-                        hint="You can select multiple files"
-                        persistent-hint
-                    ></v-select>
+                    <div class="d-flex flex-column">
+                        <v-select
+                            v-model="selectedFiles"
+                            :items="availableFiles"
+                            label="Select Demo File(s)"
+                            :disabled="!availableFiles.length"
+                            multiple
+                            chips
+                            hint="You can select multiple files"
+                            persistent-hint
+                        ></v-select>
+                        <div class="d-flex justify-end mt-1" v-if="availableFiles.length">
+                            <v-btn
+                                variant="text"
+                                size="small"
+                                density="comfortable"
+                                @click="selectAllFiles"
+                                :disabled="isAllSelected"
+                            >
+                                Select All
+                            </v-btn>
+                            <v-btn
+                                v-if="selectedFiles.length > 0"
+                                variant="text"
+                                size="small"
+                                density="comfortable"
+                                @click="clearSelection"
+                                class="ml-2"
+                            >
+                                Clear
+                            </v-btn>
+                        </div>
+                    </div>
                 </v-col>
             </v-row>
         </v-card-text>
         <v-card-actions>
-            <div v-if="selectedFiles.length">
-                {{ selectedFiles.length }} file{{ selectedFiles.length > 1 ? 's' : '' }} selected
+            <div v-if="selectedFiles.length" class="file-counter">
+                <v-chip color="info" size="small">
+                    {{ selectedFiles.length }} file{{
+                        selectedFiles.length > 1 ? 's' : ''
+                    }}
+                    selected
+                </v-chip>
             </div>
             <v-spacer></v-spacer>
-            <v-btn color="primary" :disabled="!selectedFiles.length" @click="selectMockedFile">
+            <v-btn
+                variant="outlined"
+                color="secondary"
+                :disabled="!selectedFiles.length"
+                @click="downloadDemoFiles"
+                class="mr-2"
+                prepend-icon="mdi-download"
+            >
+                Download Files
+            </v-btn>
+            <v-btn
+                color="primary"
+                :disabled="!selectedFiles.length"
+                @click="selectMockedFile"
+                prepend-icon="mdi-check"
+            >
                 Use Demo Files
             </v-btn>
         </v-card-actions>
@@ -136,8 +179,26 @@
         return files || []
     })
 
+    // Check if all files are selected
+    const isAllSelected = computed(() => {
+        return (
+            availableFiles.value.length > 0 &&
+            selectedFiles.value.length === availableFiles.value.length
+        )
+    })
+
     // Update when selections change
     function updateAvailableFiles() {
+        selectedFiles.value = []
+    }
+
+    // Select all available files
+    function selectAllFiles() {
+        selectedFiles.value = [...availableFiles.value]
+    }
+
+    // Clear all selections
+    function clearSelection() {
         selectedFiles.value = []
     }
 
@@ -165,6 +226,42 @@
             }
         }
     }
+
+    // Function to download the selected demo files
+    async function downloadDemoFiles() {
+        if (!selectedFiles.value.length) return
+
+        for (const fileName of selectedFiles.value) {
+            const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
+
+            try {
+                // Fetch the file content
+                const response = await fetch(filePath)
+                if (!response.ok) {
+                    console.error(`Failed to fetch file: ${response.status} ${response.statusText}`)
+                    continue
+                }
+
+                // Create a blob from the response
+                const blob = await response.blob()
+
+                // Create a temporary anchor element to download the file
+                const downloadLink = document.createElement('a')
+                downloadLink.href = URL.createObjectURL(blob)
+                downloadLink.download = fileName
+
+                // Append to the document, trigger click, and clean up
+                document.body.appendChild(downloadLink)
+                downloadLink.click()
+                document.body.removeChild(downloadLink)
+
+                // Release the URL object
+                URL.revokeObjectURL(downloadLink.href)
+            } catch (error) {
+                console.error('Error downloading file:', error)
+            }
+        }
+    }
 </script>
 
 <style scoped>
@@ -179,5 +276,10 @@
     .v-row {
         width: 100%;
         margin: 0;
+    }
+
+    .file-counter {
+        display: flex;
+        align-items: center;
     }
 </style>

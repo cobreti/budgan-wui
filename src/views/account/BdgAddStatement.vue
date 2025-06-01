@@ -91,7 +91,7 @@
         flex: 1 1 0;
         display: block;
         position: relative;
-        min-height: 25em; /* Increased from 10em to 25em to accommodate both input methods */
+        min-height: 35em; /* Increased from 10em to 25em to accommodate both input methods */
     }
 
     .max-width-50 {
@@ -99,7 +99,7 @@
     }
 
     .content-container {
-        min-height: 20em;
+        min-height: 30em;
     }
 
     .window-height {
