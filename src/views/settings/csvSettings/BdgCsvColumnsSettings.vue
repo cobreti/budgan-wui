@@ -13,15 +13,43 @@
             />
         </div>
         <div class="controls-container">
-            <v-file-input
-                id="csv-file-input"
-                label="Select CSV file"
-                class="csv-file-input"
-                v-model="csvFileName"
-                @update:modelValue="onFileNameUpdated"
-                accept=".csv"
-                :multiple="false"
-            ></v-file-input>
+            <v-card class="csv-input-card">
+                <v-tabs v-model="activeTab">
+                    <v-tab value="upload">Upload File</v-tab>
+                    <v-tab value="mocked">Use Demo Data</v-tab>
+                </v-tabs>
+
+                <v-card-text class="content-container">
+                    <v-window v-model="activeTab" class="window-height w-100">
+                        <!-- Upload File Tab -->
+                        <v-window-item value="upload" class="w-100">
+                            <div class="d-flex flex-column mb-2 mt-4 full-width-container">
+                                <v-file-input
+                                    id="csv-file-input"
+                                    label="Select CSV file"
+                                    class="full-width-input"
+                                    v-model="csvFileName"
+                                    @update:modelValue="onFileNameUpdated"
+                                    accept=".csv"
+                                    :multiple="false"
+                                ></v-file-input>
+                            </div>
+                        </v-window-item>
+
+                        <!-- Demo Data Tab -->
+                        <v-window-item value="mocked" class="w-100">
+                            <div class="mt-4 full-width-container">
+                                <bdg-mocked-selection
+                                    class="full-width-component"
+                                    preselectedCategory="bank-account"
+                                    @select="onMockedFileSelected"
+                                    :singleSelect="true"
+                                ></bdg-mocked-selection>
+                            </div>
+                        </v-window-item>
+                    </v-window>
+                </v-card-text>
+            </v-card>
         </div>
 
         <v-row class="mb-4">
@@ -94,6 +122,35 @@
         color: #4a4a4a;
         text-align: center;
     }
+
+    .csv-input-card {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+
+    .content-container {
+        min-height: 20em;
+    }
+
+    .window-height {
+        min-height: 18em;
+        width: 100%;
+    }
+
+    /* Ensure full width for input containers */
+    .full-width-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .full-width-input {
+        width: 100%;
+    }
+
+    .full-width-component {
+        width: 100%;
+    }
 </style>
 
 <script setup lang="ts">
@@ -105,6 +162,7 @@
     import type { CsvParseResult, ICsvParser } from '@services/CsvParser'
     import { ServicesTypes } from '@services/types'
     import { useRoute, useRouter } from 'vue-router'
+    import BdgMockedSelection from '@/components/BdgMockedSelection.vue'
 
     const router = useRouter()
     const route = useRoute()
@@ -146,6 +204,9 @@
             csvPreviewStore.newSettings()
         }
     })
+
+    // Tab selection for file input methods
+    const activeTab = ref('upload')
 
     const csvRows = computed(() => {
         return csvPreviewStore.csvRows.length > 0
@@ -238,5 +299,11 @@
             csvContentPreview.value = null
             csvPreviewStore.clearCsvContentPreview()
         }
+    }
+
+    // Handler for when a demo file is selected
+    async function onMockedFileSelected(_filePath: string, fileContent: File): Promise<void> {
+        // Use the file content as if it was uploaded via file input
+        await onFileNameUpdated(fileContent)
     }
 </script>
