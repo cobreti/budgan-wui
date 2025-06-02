@@ -118,7 +118,3 @@ All components and views are prefixed with `bdg` (e.g., `BdgAccountData.vue`) to
 - `src/core/models/`: Data models
 - `src/core/services/`: Business logic services
 - `src/stores/`: Pinia stores for state management
-
-## License
-
-[MIT License](LICENSE)
