@@ -1,10 +1,10 @@
-# Budgan-WUI
+# Budgan
 
-Budgan-WUI is a personal finance management application that helps you track your bank accounts, manage transactions, and gain insights into your financial status. Built with modern web technologies, it offers a sleek user interface for monitoring your finances.
+Budgan is a personal finance management application that helps you track your bank accounts, manage transactions, and gain insights into your financial status. Built with modern web technologies, it offers a sleek user interface for monitoring your finances.
 
 ## Project Overview
 
-Budgan-WUI allows you to:
+Budgan allows you to:
 
 - Track multiple bank accounts and credit cards
 - Import transactions from CSV files (bank statements)
@@ -81,7 +81,7 @@ Budgan-WUI allows you to:
 
 ## Technologies Used
 
-Budgan-WUI is built with the following technologies:
+Budgan is built with the following technologies:
 
 ### Frontend
 
