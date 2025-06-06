@@ -83,8 +83,12 @@
         text-align: right;
     }
 
+    :deep(.transaction-row:nth-child(even)) {
+        background-color: rgba(var(--v-theme-surface-variant), 0.3);
+    }
+
     :deep(.transaction-row:nth-child(odd)) {
-        background-color: rgba(var(--v-theme-on-surface-variant), 0.04);
+        background-color: rgba(var(--v-theme-surface), 1);
     }
 </style>
 
