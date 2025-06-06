@@ -55,7 +55,7 @@
     .transaction-table-container {
         flex: 1;
         overflow-y: auto;
-        max-height: calc(100vh - 280px);
+        max-height: calc(100vh - 260px);
     }
 
     .transaction-table {

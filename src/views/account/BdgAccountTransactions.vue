@@ -17,12 +17,6 @@
                     :transactions="transactions"
                 ></account-view-transaction-list>
             </div>
-
-            <div class="footer-container">
-                <v-footer class="footer" elevation="2">
-                    {{ transactions.length }} transactions
-                </v-footer>
-            </div>
         </v-container>
     </div>
 </template>
@@ -46,19 +40,7 @@
 
     .transactions-list-container {
         flex: 1 1 auto;
-        overflow-y: auto;
         min-height: 300px;
-    }
-
-    .footer-container {
-        margin-top: auto;
-        padding-top: 0.5rem;
-    }
-
-    .footer {
-        height: 36px;
-        display: flex;
-        align-items: center;
     }
 </style>
 
