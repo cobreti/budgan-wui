@@ -1,64 +1,72 @@
 <template>
-    <div>
-        <v-toolbar class="pl-5">
-            <a @click="navigateBack">
-                <v-icon size="Large" icon="mdi-chevron-left"></v-icon>
-            </a>
-            <v-toolbar-title class="ml-2">Create New Account</v-toolbar-title>
-        </v-toolbar>
-        <div class="ma-5 form">
-            <v-form fast-fail @submit.prevent v-model="formValid">
-                <v-text-field
-                    label="Account Name"
-                    required
-                    :rules="accountNameRules"
-                    v-model="accountName"
-                ></v-text-field>
-                <v-text-field
-                    label="Account Number"
-                    required
-                    :rules="accountNumberRules"
-                    v-model="accountNumber"
-                ></v-text-field>
-                <v-select
-                    required
-                    label="Account Type"
-                    :items="accountTypes"
-                    :rules="accountTypeRule"
-                    v-model="accountType"
-                ></v-select>
-                <v-select
-                    required
-                    label="CSV Setting"
-                    :items="csvSettings"
-                    v-model="selectedCsvSetting"
-                    :item-value="'id'"
-                    :item-title="'name'"
-                    :rules="csvSettingRules"
-                ></v-select>
-                <div class="text-right mb-4">
-                    <router-link
-                        :to="{ path: '/settings', query: { from: 'newAccount' } }"
-                        class="text-decoration-none"
+    <main>
+        <v-container class="account-container">
+            <v-toolbar class="pl-5">
+                <a @click="navigateBack">
+                    <v-icon size="Large" icon="mdi-chevron-left"></v-icon>
+                </a>
+                <v-toolbar-title class="ml-2">Create New Account</v-toolbar-title>
+            </v-toolbar>
+            <div class="ma-5 form">
+                <v-form fast-fail @submit.prevent v-model="formValid">
+                    <v-text-field
+                        label="Account Name"
+                        required
+                        :rules="accountNameRules"
+                        v-model="accountName"
+                    ></v-text-field>
+                    <v-text-field
+                        label="Account Number"
+                        required
+                        :rules="accountNumberRules"
+                        v-model="accountNumber"
+                    ></v-text-field>
+                    <v-select
+                        required
+                        label="Account Type"
+                        :items="accountTypes"
+                        :rules="accountTypeRule"
+                        v-model="accountType"
+                    ></v-select>
+                    <v-select
+                        required
+                        label="CSV Setting"
+                        :items="csvSettings"
+                        v-model="selectedCsvSetting"
+                        :item-value="'id'"
+                        :item-title="'name'"
+                        :rules="csvSettingRules"
+                    ></v-select>
+                    <div class="text-right mb-4">
+                        <router-link
+                            :to="{ path: '/settings', query: { from: 'newAccount' } }"
+                            class="text-decoration-none"
+                        >
+                            <v-icon small class="mr-1">mdi-cog</v-icon>
+                            Manage CSV Settings
+                        </router-link>
+                    </div>
+                    <v-btn
+                        type="submit"
+                        @click="createAccount"
+                        color="primary"
+                        :disabled="!formValid"
+                        block
+                        >Create Account</v-btn
                     >
-                        <v-icon small class="mr-1">mdi-cog</v-icon>
-                        Manage CSV Settings
-                    </router-link>
-                </div>
-                <v-btn
-                    type="submit"
-                    @click="createAccount"
-                    color="primary"
-                    :disabled="!formValid"
-                    block
-                    >Create Account</v-btn
-                >
-            </v-form>
-        </div>
-    </div>
+                </v-form>
+            </div>
+        </v-container>
+    </main>
 </template>
 
 <style scoped>
+    .account-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
     a {
         cursor: pointer;
     }
