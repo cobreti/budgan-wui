@@ -1,56 +1,81 @@
 <template>
-    <v-table height="100%" fixed-header class="transaction-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                v-for="transaction in props.transactions"
-                :key="transaction.transactionId"
-                class="transaction"
-            >
-                <td>{{ formatDate(transaction.dateInscription) }}</td>
-                <td>{{ transaction.type }}</td>
-                <td>{{ transaction.description }}</td>
-                <td class="text-right">{{ transaction.amount }}</td>
-            </tr>
-        </tbody>
-    </v-table>
+    <v-container fluid class="transaction-list-wrapper pa-0">
+        <v-row>
+            <v-col cols="12">
+                <v-card class="transaction-card">
+                    <v-card-title class="d-flex justify-space-between align-center">
+                        <span>Transactions</span>
+                        <span class="text-body-2"
+                            >{{ props.transactions.length }} transactions</span
+                        >
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <div class="transaction-table-container">
+                        <v-table density="compact" fixed-header class="transaction-table">
+                            <thead>
+                                <tr>
+                                    <th class="date-column">Date</th>
+                                    <th class="type-column">Type</th>
+                                    <th class="description-column">Description</th>
+                                    <th class="amount-column text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="transaction in props.transactions"
+                                    :key="transaction.transactionId"
+                                    class="transaction-row"
+                                >
+                                    <td>{{ formatDate(transaction.dateInscription) }}</td>
+                                    <td>{{ transaction.type }}</td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td class="text-right">{{ transaction.amount }}</td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </div>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <style scoped>
+    .transaction-list-wrapper {
+        height: 100%;
+        width: 100%;
+    }
+
+    .transaction-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .transaction-table-container {
+        flex: 1;
+        overflow-y: auto;
+        max-height: calc(100vh - 280px);
+    }
+
     .transaction-table {
         height: 100%;
-        overflow: auto;
     }
 
     /* Column sizing */
-    :deep(.v-table) {
-        table-layout: fixed;
-    }
-
-    :deep(th:nth-child(1)),
-    :deep(td:nth-child(1)) {
+    :deep(.date-column) {
         width: 15%;
     }
 
-    :deep(th:nth-child(2)),
-    :deep(td:nth-child(2)) {
+    :deep(.type-column) {
         width: 15%;
     }
 
-    :deep(th:nth-child(3)),
-    :deep(td:nth-child(3)) {
+    :deep(.description-column) {
         width: 50%;
     }
 
-    :deep(th:nth-child(4)),
-    :deep(td:nth-child(4)) {
+    :deep(.amount-column) {
         width: 20%;
     }
 
@@ -58,8 +83,8 @@
         text-align: right;
     }
 
-    .transaction:nth-child(odd) {
-        background-color: rgba(var(--v-theme-on-surface-variant));
+    :deep(.transaction-row:nth-child(odd)) {
+        background-color: rgba(var(--v-theme-on-surface-variant), 0.04);
     }
 </style>
 

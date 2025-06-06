@@ -11,11 +11,13 @@
                     add statement
                 </v-btn>
             </account-header>
-            <div class="transactions-list-container ma-2 pa-2">
+
+            <div class="transactions-list-container ma-2">
                 <account-view-transaction-list
                     :transactions="transactions"
                 ></account-view-transaction-list>
             </div>
+
             <div class="footer-container">
                 <v-footer class="footer" elevation="2">
                     {{ transactions.length }} transactions
@@ -42,6 +44,12 @@
         flex: 1;
     }
 
+    .transactions-list-container {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        min-height: 300px;
+    }
+
     .footer-container {
         margin-top: auto;
         padding-top: 0.5rem;
@@ -51,12 +59,6 @@
         height: 36px;
         display: flex;
         align-items: center;
-    }
-
-    .transactions-list-container {
-        flex: 1 1 auto;
-        height: calc(100vh - 210px); /* Subtract header, footer, and margins */
-        overflow: hidden;
     }
 </style>
 
