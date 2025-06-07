@@ -1,98 +1,126 @@
 <template>
-    <div class="d-flex flex-column align-content-start h-100" v-if="account">
-        <account-header :bank-account="account">
-            <v-btn flat :to="{ path: 'transactions' }" class="mr-2">
-                <v-icon size="24" icon="mdi-view-list"></v-icon>
-                list view
-            </v-btn>
-            <v-btn flat :to="{ path: 'add-statement', replace: true }">
-                <v-icon size="24" icon="mdi-file-upload-outline"></v-icon>
-                add statement
-            </v-btn>
-        </account-header>
+    <div v-if="account" class="transaction-page">
+        <v-container class="account-container">
+            <account-header :bank-account="account">
+                <v-btn flat :to="{ path: 'transactions' }" class="mr-2">
+                    <v-icon size="24" icon="mdi-view-list"></v-icon>
+                    list view
+                </v-btn>
+                <v-btn flat :to="{ path: 'add-statement', replace: true }">
+                    <v-icon size="24" icon="mdi-file-upload-outline"></v-icon>
+                    add statement
+                </v-btn>
+            </account-header>
 
-        <div class="monthly-view-container ma-2">
-            <v-container fluid>
-                <v-row>
-                    <v-col cols="12">
-                        <h2 class="text-h4 mb-4">Monthly Transactions</h2>
-                        <v-card class="summary-card mb-6" color="primary" theme="dark">
-                            <v-card-text>
-                                <div class="d-flex justify-space-between align-center">
-                                    <div>
-                                        <div class="text-h6">Total Income</div>
-                                        <div class="text-h4">
-                                            {{ formatAmount(totalIncomeValue) }}
+            <div class="monthly-view-container ma-2">
+                <v-container fluid>
+                    <v-row>
+                        <v-col cols="12">
+                            <h2 class="text-h4 mb-4">Monthly Transactions</h2>
+                            <v-card class="summary-card mb-6" color="primary" theme="dark">
+                                <v-card-text>
+                                    <div class="d-flex justify-space-between align-center">
+                                        <div>
+                                            <div class="text-h6">Total Income</div>
+                                            <div class="text-h4">
+                                                {{ formatAmount(totalIncomeValue) }}
+                                            </div>
+                                        </div>
+                                        <v-divider
+                                            vertical
+                                            class="mx-4"
+                                            style="height: 50px"
+                                        ></v-divider>
+                                        <div>
+                                            <div class="text-h6">Total Expenses</div>
+                                            <div class="text-h4">
+                                                {{ formatAmount(totalExpenseValue) }}
+                                            </div>
+                                        </div>
+                                        <v-divider
+                                            vertical
+                                            class="mx-4"
+                                            style="height: 50px"
+                                        ></v-divider>
+                                        <div>
+                                            <div class="text-h6">Balance</div>
+                                            <div
+                                                class="text-h4"
+                                                :class="{
+                                                    'text-success': totalBalanceValue > 0,
+                                                    'text-error': totalBalanceValue < 0
+                                                }"
+                                            >
+                                                {{ formatAmount(totalBalanceValue) }}
+                                            </div>
                                         </div>
                                     </div>
-                                    <v-divider
-                                        vertical
-                                        class="mx-4"
-                                        style="height: 50px"
-                                    ></v-divider>
-                                    <div>
-                                        <div class="text-h6">Total Expenses</div>
-                                        <div class="text-h4">
-                                            {{ formatAmount(totalExpenseValue) }}
-                                        </div>
-                                    </div>
-                                    <v-divider
-                                        vertical
-                                        class="mx-4"
-                                        style="height: 50px"
-                                    ></v-divider>
-                                    <div>
-                                        <div class="text-h6">Balance</div>
-                                        <div
-                                            class="text-h4"
-                                            :class="{
-                                                'text-success': totalBalanceValue > 0,
-                                                'text-error': totalBalanceValue < 0
-                                            }"
-                                        >
-                                            {{ formatAmount(totalBalanceValue) }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                </v-row>
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
 
-                <div v-if="monthKeys.length === 0" class="text-center py-12">
-                    <v-icon icon="mdi-calendar-month" size="64" color="grey-lighten-1"></v-icon>
-                    <div class="text-h5 mt-4 text-grey-darken-1">No transactions found</div>
-                    <div class="text-body-1 text-grey-darken-1">
-                        Upload a statement to see your monthly transactions
+                    <div v-if="monthKeys.length === 0" class="text-center py-12">
+                        <v-icon icon="mdi-calendar-month" size="64" color="grey-lighten-1"></v-icon>
+                        <div class="text-h5 mt-4 text-grey-darken-1">No transactions found</div>
+                        <div class="text-body-1 text-grey-darken-1">
+                            Upload a statement to see your monthly transactions
+                        </div>
                     </div>
-                </div>
 
-                <template v-else>
-                    <bdg-monthly-transaction-block
-                        v-for="monthKey in monthKeys"
-                        :key="monthKey"
-                        :month-key="monthKey"
-                        :month-data="getMonthData(monthKey)"
-                    ></bdg-monthly-transaction-block>
-                </template>
-            </v-container>
-        </div>
+                    <template v-else>
+                        <bdg-monthly-transaction-block
+                            v-for="monthKey in monthKeys"
+                            :key="monthKey"
+                            :month-key="monthKey"
+                            :month-data="getMonthData(monthKey)"
+                        ></bdg-monthly-transaction-block>
+                    </template>
+                </v-container>
+            </div>
 
-        <v-footer class="footer" elevation="2">
-            {{ totalMonths }} months · {{ totalTransactions }} transactions
-        </v-footer>
+            <div class="footer-container">
+                <v-footer class="footer" elevation="2">
+                    {{ totalMonths }} months · {{ totalTransactions }} transactions
+                </v-footer>
+            </div>
+        </v-container>
     </div>
 </template>
 
 <style scoped>
+    .transaction-page {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 64px); /* Subtract app bar height */
+    }
+
+    .account-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        flex: 1;
+    }
+
+    .footer-container {
+        margin-top: auto;
+        padding-top: 0.5rem;
+    }
+
     .footer {
-        max-height: 2em;
+        height: 36px;
+        display: flex;
+        align-items: center;
     }
 
     .monthly-view-container {
-        flex: 1 1 0;
+        flex: 1 1 auto;
         overflow-y: auto;
-        padding-bottom: 2rem;
+        padding-bottom: 1rem;
+        min-height: 300px;
     }
 
     .summary-card {

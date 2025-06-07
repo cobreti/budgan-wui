@@ -1,88 +1,96 @@
 <template>
-    <div>
-        <account-header :bank-account="targetAccount">
-            <v-btn flat :to="{ path: 'transactions', replace: true }">
-                <!--        <v-icon-->
-                <!--          size="24"-->
-                <!--          icon="mdi-file-upload-outline"></v-icon>-->
-                transactions
-            </v-btn>
-        </account-header>
-        <div class="page-container pa-2">
-            <div class="d-flex flex-column align-content-start h-100">
-                <v-card
-                    class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2"
-                    :class="{ 'd-none': statementPresent }"
-                >
-                    <v-card-title>Import Statement</v-card-title>
+    <main>
+        <v-container class="account-container d-flex flex-column align-content-start h-100">
+            <account-header :bank-account="targetAccount">
+                <v-btn flat :to="{ path: 'transactions', replace: true }">
+                    <!--        <v-icon-->
+                    <!--          size="24"-->
+                    <!--          icon="mdi-file-upload-outline"></v-icon>-->
+                    transactions
+                </v-btn>
+            </account-header>
+            <div class="page-container pa-2">
+                <div class="d-flex flex-column align-content-start h-100">
+                    <v-card
+                        class="file-input-card pt-4 pr-4 pl-4 pb-4 mr-2 mb-2"
+                        :class="{ 'd-none': statementPresent }"
+                    >
+                        <v-card-title>Import Statement</v-card-title>
 
-                    <v-tabs v-model="activeTab">
-                        <v-tab value="upload">Upload File</v-tab>
-                        <v-tab value="mocked">Use Demo Data</v-tab>
-                    </v-tabs>
+                        <v-tabs v-model="activeTab">
+                            <v-tab value="upload">Upload File</v-tab>
+                            <v-tab value="mocked">Use Demo Data</v-tab>
+                        </v-tabs>
 
-                    <v-card-text class="content-container">
-                        <v-window v-model="activeTab" class="window-height w-100">
-                            <!-- Upload File Tab -->
-                            <v-window-item value="upload" class="w-100">
-                                <div class="d-flex flex-column mb-2 mt-4 full-width-container">
-                                    <div class="mb-2">
-                                        <label for="statement-file-input">
-                                            Bank statement file
-                                        </label>
+                        <v-card-text class="content-container">
+                            <v-window v-model="activeTab" class="window-height w-100">
+                                <!-- Upload File Tab -->
+                                <v-window-item value="upload" class="w-100">
+                                    <div class="d-flex flex-column mb-2 mt-4 full-width-container">
+                                        <div class="mb-2">
+                                            <label for="statement-file-input">
+                                                Bank statement file
+                                            </label>
+                                        </div>
+                                        <v-file-input
+                                            id="statement-file-input"
+                                            class="full-width-input"
+                                            v-model="ofxFileName"
+                                            :disabled="addStatementStore.loading"
+                                            @update:modelValue="onFileNameUpdated"
+                                            accept=".csv"
+                                            :multiple="true"
+                                        ></v-file-input>
                                     </div>
-                                    <v-file-input
-                                        id="statement-file-input"
-                                        class="full-width-input"
-                                        v-model="ofxFileName"
-                                        :disabled="addStatementStore.loading"
-                                        @update:modelValue="onFileNameUpdated"
-                                        accept=".csv"
-                                        :multiple="true"
-                                    ></v-file-input>
-                                </div>
-                            </v-window-item>
+                                </v-window-item>
 
-                            <!-- Mocked Data Tab -->
-                            <v-window-item value="mocked" class="w-100">
-                                <div class="mt-4 full-width-container">
-                                    <bdg-mocked-selection
-                                        class="full-width-component"
-                                        :preselectedCategory="
-                                            targetAccount.accountType
-                                                ?.toLowerCase()
-                                                .includes('credit')
-                                                ? 'creditcard'
-                                                : 'bank-account'
-                                        "
-                                        @select="onMockedFileSelected"
-                                    ></bdg-mocked-selection>
-                                </div>
-                            </v-window-item>
-                        </v-window>
-                    </v-card-text>
-                </v-card>
-                <v-card class="action-card" v-show="statementPresent">
-                    <div class="d-flex flex-column align-content-center ma-5">
-                        <v-expansion-panels class="elevation-0">
-                            <bdg-account-added
-                                v-for="id in statementIds"
-                                :key="id"
-                                :statementId="id"
-                            ></bdg-account-added>
-                        </v-expansion-panels>
-                    </div>
-                    <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
-                        <v-btn @click="onAdd">Add</v-btn>
-                        <v-btn @click="onDiscard()">Discard</v-btn>
-                    </v-card-actions>
-                </v-card>
+                                <!-- Mocked Data Tab -->
+                                <v-window-item value="mocked" class="w-100">
+                                    <div class="mt-4 full-width-container">
+                                        <bdg-mocked-selection
+                                            class="full-width-component"
+                                            :preselectedCategory="
+                                                targetAccount.accountType
+                                                    ?.toLowerCase()
+                                                    .includes('credit')
+                                                    ? 'creditcard'
+                                                    : 'bank-account'
+                                            "
+                                            @select="onMockedFileSelected"
+                                        ></bdg-mocked-selection>
+                                    </div>
+                                </v-window-item>
+                            </v-window>
+                        </v-card-text>
+                    </v-card>
+                    <v-card class="action-card" v-show="statementPresent">
+                        <div class="d-flex flex-column align-content-center ma-5">
+                            <v-expansion-panels class="elevation-0">
+                                <bdg-account-added
+                                    v-for="id in statementIds"
+                                    :key="id"
+                                    :statementId="id"
+                                ></bdg-account-added>
+                            </v-expansion-panels>
+                        </div>
+                        <v-card-actions class="d-flex flex-grow-1 flex-row justify-center">
+                            <v-btn @click="onAdd">Add</v-btn>
+                            <v-btn @click="onDiscard()">Discard</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </div>
             </div>
-        </div>
-    </div>
+        </v-container>
+    </main>
 </template>
 
 <style scoped>
+    .account-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
     .page-container {
         height: 100%;
     }
