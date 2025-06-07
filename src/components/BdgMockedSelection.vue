@@ -12,7 +12,7 @@
                         label="Demo Category"
                         item-title="title"
                         item-value="value"
-                        @update:model-value="updateAvailableFiles"
+                        @update:model-value="updateCategoryAndFiles"
                     ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -22,7 +22,7 @@
                         label="Language"
                         item-title="title"
                         item-value="value"
-                        @update:model-value="updateAvailableFiles"
+                        @update:model-value="updateCategoryAndFiles"
                     ></v-select>
                 </v-col>
             </v-row>
@@ -38,6 +38,7 @@
                             chips
                             :hint="props.singleSelect ? undefined : 'You can select multiple files'"
                             :persistent-hint="!props.singleSelect"
+                            @update:model-value="handleSelectionChange"
                         ></v-select>
                         <div
                             class="d-flex justify-end mt-1"
@@ -67,38 +68,11 @@
                 </v-col>
             </v-row>
         </v-card-text>
-        <v-card-actions>
-            <div v-if="getSelectedFilesCount() > 0" class="file-counter">
-                <v-chip color="info" size="small">
-                    {{ getSelectedFilesCount() }} file{{ getSelectedFilesCount() > 1 ? 's' : '' }}
-                    selected
-                </v-chip>
-            </div>
-            <v-spacer></v-spacer>
-            <v-btn
-                variant="outlined"
-                color="secondary"
-                :disabled="getSelectedFilesCount() === 0"
-                @click="downloadDemoFiles"
-                class="mr-2"
-                prepend-icon="mdi-download"
-            >
-                Download {{ props.singleSelect ? 'File' : 'Files' }}
-            </v-btn>
-            <v-btn
-                color="primary"
-                :disabled="getSelectedFilesCount() === 0"
-                @click="selectMockedFile"
-                prepend-icon="mdi-check"
-            >
-                Use Demo {{ props.singleSelect ? 'File' : 'Files' }}
-            </v-btn>
-        </v-card-actions>
     </v-card>
 </template>
 
 <script setup lang="ts">
-    import { ref, computed } from 'vue'
+    import { ref, computed, nextTick } from 'vue'
 
     const props = defineProps<{
         preselectedCategory?: string
@@ -180,6 +154,16 @@
         const language = selectedLanguage.value as keyof LanguageFiles
 
         const files = mockedFiles[category]?.[language]
+
+        // Auto-select first file if available and we're in single mode
+        if (props.singleSelect && files && files.length > 0 && !selectedFiles.value) {
+            // Use nextTick to avoid changing reactive properties during render
+            nextTick(() => {
+                selectedFiles.value = files[0]
+                handleSelectionChange()
+            })
+        }
+
         return files || []
     })
 
@@ -194,9 +178,19 @@
         )
     })
 
-    // Update when selections change
-    function updateAvailableFiles() {
+    // Update when category or language changes
+    async function updateCategoryAndFiles() {
+        // Update available files first
         selectedFiles.value = props.singleSelect ? '' : []
+
+        // Wait for the next tick to ensure files are populated
+        await nextTick()
+
+        // Auto-select the first file if in single-select mode and files are available
+        if (props.singleSelect && availableFiles.value.length > 0) {
+            selectedFiles.value = availableFiles.value[0]
+            await handleSelectionChange()
+        }
     }
 
     // Select all available files
@@ -217,6 +211,13 @@
             return selectedFiles.value ? 1 : 0
         } else {
             return (selectedFiles.value as string[]).length
+        }
+    }
+
+    // Function to handle selection changes and automatically trigger the selection process
+    async function handleSelectionChange() {
+        if (getSelectedFilesCount() > 0) {
+            await selectMockedFile()
         }
     }
 
@@ -269,78 +270,9 @@
                 }
             }
         }
-    } // Function to download the selected demo files
-    async function downloadDemoFiles() {
-        if (getSelectedFilesCount() === 0) return
-
-        // Handle single file selection mode
-        if (props.singleSelect && typeof selectedFiles.value === 'string') {
-            const fileName = selectedFiles.value
-            const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
-
-            try {
-                // Fetch the file content
-                const response = await fetch(filePath)
-                if (!response.ok) {
-                    console.error(`Failed to fetch file: ${response.status} ${response.statusText}`)
-                    return
-                }
-
-                // Create a blob from the response
-                const blob = await response.blob()
-
-                // Create a temporary anchor element to download the file
-                const downloadLink = document.createElement('a')
-                downloadLink.href = URL.createObjectURL(blob)
-                downloadLink.download = fileName
-
-                // Append to the document, trigger click, and clean up
-                document.body.appendChild(downloadLink)
-                downloadLink.click()
-                document.body.removeChild(downloadLink)
-
-                // Release the URL object
-                URL.revokeObjectURL(downloadLink.href)
-            } catch (error) {
-                console.error('Error downloading file:', error)
-            }
-        }
-        // Handle multiple file selection mode
-        else if (Array.isArray(selectedFiles.value)) {
-            for (const fileName of selectedFiles.value) {
-                const filePath = `${mockedDataBasePath}/${selectedCategory.value}/${selectedLanguage.value}/${fileName}`
-
-                try {
-                    // Fetch the file content
-                    const response = await fetch(filePath)
-                    if (!response.ok) {
-                        console.error(
-                            `Failed to fetch file: ${response.status} ${response.statusText}`
-                        )
-                        continue
-                    }
-
-                    // Create a blob from the response
-                    const blob = await response.blob()
-
-                    // Create a temporary anchor element to download the file
-                    const downloadLink = document.createElement('a')
-                    downloadLink.href = URL.createObjectURL(blob)
-                    downloadLink.download = fileName
-
-                    // Append to the document, trigger click, and clean up
-                    document.body.appendChild(downloadLink)
-                    downloadLink.click()
-                    document.body.removeChild(downloadLink)
-
-                    // Release the URL object
-                    URL.revokeObjectURL(downloadLink.href)
-                } catch (error) {
-                    console.error('Error downloading file:', error)
-                }
-            }
-        }
     }
+
+    // Note: Download functionality has been removed as we now use direct selection
 </script>
 
 <style scoped>

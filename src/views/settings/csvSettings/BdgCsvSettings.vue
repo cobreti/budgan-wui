@@ -16,7 +16,7 @@
         display: flex;
         flex-direction: column;
     }
-    
+
     .csv-settings-container {
         max-width: 1000px;
         margin: 0 auto;

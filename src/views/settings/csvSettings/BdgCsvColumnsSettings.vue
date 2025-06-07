@@ -6,7 +6,7 @@
                     <h1 class="h1-header">CSV Columns Settings</h1>
                 </v-col>
             </v-row>
-            
+
             <v-row>
                 <v-col cols="12">
                     <div class="setting-name-container controls-container">
@@ -22,7 +22,7 @@
                     </div>
                 </v-col>
             </v-row>
-            
+
             <v-row>
                 <v-col cols="12">
                     <div class="controls-container">
@@ -36,7 +36,9 @@
                                 <v-window v-model="activeTab" class="window-height w-100">
                                     <!-- Upload File Tab -->
                                     <v-window-item value="upload" class="w-100">
-                                        <div class="d-flex flex-column mb-2 mt-4 full-width-container">
+                                        <div
+                                            class="d-flex flex-column mb-2 mt-4 full-width-container"
+                                        >
                                             <v-file-input
                                                 id="csv-file-input"
                                                 label="Select CSV file"
@@ -67,72 +69,75 @@
                 </v-col>
             </v-row>
 
-        <v-row class="mb-4">
-            <v-col cols="12">
-                <!-- <h2 class="mb-6">Selected row </h2> -->
-                <v-select
-                    v-model="currentRowIndex"
-                    :items="rows"
-                    item-value="lineNumber"
-                    item-title="record"
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    :disabled="!csvContentPresent"
-                />
-            </v-col>            </v-row>
+            <v-row class="mb-4">
+                <v-col cols="12">
+                    <!-- <h2 class="mb-6">Selected row </h2> -->
+                    <v-select
+                        v-model="currentRowIndex"
+                        :items="rows"
+                        item-value="lineNumber"
+                        item-title="record"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        :disabled="!csvContentPresent"
+                    />
+                </v-col>
+            </v-row>
 
             <!-- Header -->
             <v-row>
                 <v-col cols="12">
-                    <h2 class="text-center mt-4 mb-6">Match information with the right CSV column</h2>
+                    <h2 class="text-center mt-4 mb-6">
+                        Match information with the right CSV column
+                    </h2>
                 </v-col>
             </v-row>
 
-        <!-- Matching Section -->
-        <v-row class="mt-4 mb-4">
-            <!-- Matching Constant Tags -->
-            <v-col cols="12">
-                <v-row v-if="settings">
-                    <v-col cols="4" v-for="key in Object.keys(csvColumns)" :key="key">
-                        <h3 class="text-center mb-4">{{ key }}</h3>
-                        <v-select
-                            :items="currentRow"
-                            item-value="key"
-                            item-title="text"
-                            v-model="settings.columnsMapping[csvColumns[key]]"
-                            label="Select a column..."
-                            outlined
-                            dense
-                            clearable
-                            :disabled="!csvContentPresent"
-                        />
-                    </v-col>
-                </v-row>
-            </v-col>
-        </v-row>
+            <!-- Matching Section -->
+            <v-row class="mt-4 mb-4">
+                <!-- Matching Constant Tags -->
+                <v-col cols="12">
+                    <v-row v-if="settings">
+                        <v-col cols="4" v-for="key in Object.keys(csvColumns)" :key="key">
+                            <h3 class="text-center mb-4">{{ key }}</h3>
+                            <v-select
+                                :items="currentRow"
+                                item-value="key"
+                                item-title="text"
+                                v-model="settings.columnsMapping[csvColumns[key]]"
+                                label="Select a column..."
+                                outlined
+                                dense
+                                clearable
+                                :disabled="!csvContentPresent"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-col>
+            </v-row>
 
-        <!-- Matched Results Display -->
-        <v-row v-if="csvContentPresent">
-            <v-col cols="12">
-                <h2 class="text-center mb-4">Matched results</h2>
-                <ul>
-                    <li v-for="index in Object.keys(csvColumns)" :key="index">
-                        {{ index }} →
-                        <strong>{{ getColumnText(index) }}</strong>
-                    </li>
-                </ul>
-            </v-col>
-        </v-row>
+            <!-- Matched Results Display -->
+            <v-row v-if="csvContentPresent">
+                <v-col cols="12">
+                    <h2 class="text-center mb-4">Matched results</h2>
+                    <ul>
+                        <li v-for="index in Object.keys(csvColumns)" :key="index">
+                            {{ index }} →
+                            <strong>{{ getColumnText(index) }}</strong>
+                        </li>
+                    </ul>
+                </v-col>
+            </v-row>
 
-        <v-row class="mt-4">
-            <v-col cols="12" class="d-flex justify-end">
-                <v-btn text class="mr-2" @click="cancel">Cancel</v-btn>
-                <v-btn color="primary" @click="save">Save</v-btn>
-            </v-col>
-        </v-row>
-    </v-container>
-</div>
+            <v-row class="mt-4">
+                <v-col cols="12" class="d-flex justify-end">
+                    <v-btn text class="mr-2" @click="cancel">Cancel</v-btn>
+                    <v-btn color="primary" @click="save">Save</v-btn>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
 </template>
 
 <style scoped>
@@ -140,13 +145,13 @@
         display: flex;
         flex-direction: column;
     }
-    
+
     .csv-columns-container {
         max-width: 1000px;
         margin: 0 auto;
         padding: 1rem;
     }
-    
+
     h1,
     h2 {
         color: #4a4a4a;
@@ -325,6 +330,7 @@
 
             csvHeaderIndex.value = -1
             selectedColumn.value = -1
+            currentRowIndex.value = 0
         } else {
             csvContentPreview.value = null
             csvPreviewStore.clearCsvContentPreview()
