@@ -11,18 +11,23 @@
             ></v-list-item>
             <v-list-item
                 title="Data"
-                :to="{ 
-                    path: '/account-data', 
-                    replace: true, 
-                    query: { 
+                :to="{
+                    path: '/account-data',
+                    replace: true,
+                    query: {
                         from: 'sidebar-nav',
                         tab: bankAccountsStore.hasAccounts ? 'export' : 'import'
-                    } 
+                    }
                 }"
             ></v-list-item>
             <v-list-item
                 title="Settings"
                 :to="{ path: '/settings', replace: true, query: { from: 'sidebar-nav' } }"
+            ></v-list-item>
+            <v-list-item
+                title="AI"
+                :to="{ path: '/ai', replace: true, query: { from: 'sidebar-nav' } }"
+                prepend-icon="mdi-robot"
             ></v-list-item>
         </v-navigation-drawer>
     </div>

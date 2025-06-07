@@ -1,0 +1,213 @@
+<template>
+    <div class="ai-page">
+        <v-container class="ai-container">
+            <v-row>
+                <v-col cols="12">
+                    <h1 class="text-h4 mb-6">AI Assistant</h1>
+
+                    <v-card class="mb-6">
+                        <v-card-title>OpenAI API Settings</v-card-title>
+                        <v-card-text>
+                            <v-text-field
+                                v-model="apiKey"
+                                label="OpenAI API Key"
+                                placeholder="Enter your OpenAI API key"
+                                type="password"
+                                hint="Your API key will be stored locally in your browser"
+                                persistent-hint
+                                @update:model-value="saveApiKey"
+                            ></v-text-field>
+                            <p class="text-caption mt-2">
+                                Don't have an API key?
+                                <a
+                                    href="https://platform.openai.com/account/api-keys"
+                                    target="_blank"
+                                    >Get one from OpenAI</a
+                                >
+                            </p>
+                        </v-card-text>
+                    </v-card>
+
+                    <v-card class="mb-6">
+                        <v-card-title>Chat with AI</v-card-title>
+                        <v-card-text>
+                            <div class="chat-history mb-4" ref="chatHistoryRef">
+                                <template v-if="openAIStore.history.length === 0">
+                                    <div class="text-center pa-4">
+                                        <v-icon size="large" icon="mdi-robot-outline"></v-icon>
+                                        <p class="mt-2">No messages yet. Start a conversation!</p>
+                                    </div>
+                                </template>
+
+                                <div
+                                    v-for="(message, index) in openAIStore.history"
+                                    :key="index"
+                                    class="mb-3"
+                                >
+                                    <v-card
+                                        :color="message.role === 'user' ? 'primary' : 'surface'"
+                                        :class="
+                                            message.role === 'user' ? 'user-message' : 'ai-message'
+                                        "
+                                    >
+                                        <v-card-text>
+                                            <div class="message-header mb-1">
+                                                <strong>{{
+                                                    message.role === 'user' ? 'You' : 'AI Assistant'
+                                                }}</strong>
+                                            </div>
+                                            <div
+                                                class="message-content"
+                                                style="white-space: pre-wrap"
+                                            >
+                                                {{ message.content }}
+                                            </div>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+
+                                <div v-if="openAIStore.loading" class="text-center pa-4">
+                                    <v-progress-circular
+                                        indeterminate
+                                        color="primary"
+                                    ></v-progress-circular>
+                                    <p class="mt-2">AI is thinking...</p>
+                                </div>
+
+                                <div v-if="openAIStore.error" class="text-center pa-4">
+                                    <v-alert
+                                        type="error"
+                                        title="Error"
+                                        :text="openAIStore.error"
+                                    ></v-alert>
+                                </div>
+                            </div>
+
+                            <div class="prompt-input">
+                                <v-textarea
+                                    v-model="prompt"
+                                    label="Enter your prompt"
+                                    placeholder="Type your message here..."
+                                    auto-grow
+                                    rows="3"
+                                    :disabled="openAIStore.loading"
+                                    @keydown.enter.ctrl.prevent="sendPrompt"
+                                ></v-textarea>
+
+                                <div class="d-flex justify-space-between align-center mt-2">
+                                    <div class="text-caption">Press Ctrl+Enter to send</div>
+                                    <div>
+                                        <v-btn
+                                            color="error"
+                                            variant="text"
+                                            :disabled="
+                                                openAIStore.history.length === 0 ||
+                                                openAIStore.loading
+                                            "
+                                            @click="clearHistory"
+                                        >
+                                            Clear History
+                                        </v-btn>
+                                        <v-btn
+                                            color="primary"
+                                            :disabled="
+                                                !prompt.trim() || openAIStore.loading || !apiKey
+                                            "
+                                            @click="sendPrompt"
+                                            :loading="openAIStore.loading"
+                                        >
+                                            Send
+                                        </v-btn>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
+</template>
+
+<style scoped>
+    .ai-page {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 64px); /* Subtract app bar height */
+    }
+
+    .ai-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        flex: 1;
+    }
+
+    .chat-history {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 1rem 0;
+        border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+        border-radius: 8px;
+        background-color: rgba(var(--v-theme-surface-variant), 0.1);
+    }
+
+    .user-message {
+        margin-left: 2rem;
+        margin-right: 0.5rem;
+    }
+
+    .ai-message {
+        margin-right: 2rem;
+        margin-left: 0.5rem;
+    }
+
+    .message-header {
+        opacity: 0.8;
+    }
+</style>
+
+<script setup lang="ts">
+    import { ref, watch, onMounted, nextTick } from 'vue'
+    import { useOpenAIStore } from '@/stores/openAI-store'
+
+    const openAIStore = useOpenAIStore()
+
+    const apiKey = ref(openAIStore.apiKey)
+    const prompt = ref('')
+    const chatHistoryRef = ref<HTMLElement | null>(null)
+
+    function saveApiKey() {
+        openAIStore.setApiKey(apiKey.value)
+    }
+
+    async function sendPrompt() {
+        if (!prompt.value.trim() || !apiKey.value) return
+
+        await openAIStore.sendPrompt(prompt.value)
+        prompt.value = ''
+    }
+
+    function clearHistory() {
+        openAIStore.clearHistory()
+    }
+
+    // Scroll to bottom of chat history when new messages are added
+    watch(
+        () => openAIStore.history.length,
+        async () => {
+            await nextTick()
+            if (chatHistoryRef.value) {
+                chatHistoryRef.value.scrollTop = chatHistoryRef.value.scrollHeight
+            }
+        }
+    )
+
+    // Scroll to bottom when component is mounted
+    onMounted(async () => {
+        await nextTick()
+        if (chatHistoryRef.value) {
+            chatHistoryRef.value.scrollTop = chatHistoryRef.value.scrollHeight
+        }
+    })
+</script>
