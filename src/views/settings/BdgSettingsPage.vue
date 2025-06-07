@@ -1,18 +1,37 @@
 <template>
-    <div>
+    <div class="settings-page">
         <v-toolbar class="pl-5">
             <a v-if="showBackButton" @click="navigateBack">
                 <v-icon size="Large" icon="mdi-chevron-left"></v-icon>
             </a>
             <v-toolbar-title :class="{ 'ml-2': showBackButton }">Settings</v-toolbar-title>
         </v-toolbar>
-        <bdg-csv-settings></bdg-csv-settings>
+        <v-container class="settings-container">
+            <v-row>
+                <v-col cols="12">
+                    <bdg-csv-settings></bdg-csv-settings>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
 <style scoped>
     a {
         cursor: pointer;
+    }
+
+    .settings-page {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 64px); /* Subtract app bar height */
+    }
+
+    .settings-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        flex: 1;
     }
 </style>
 
