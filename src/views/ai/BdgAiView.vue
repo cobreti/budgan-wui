@@ -45,7 +45,7 @@
                         <v-card-title>Financial Data Integration</v-card-title>
                         <v-card-text>
                             <v-switch
-                                v-model="openAIStore.includeAccountData"
+                                v-model="includeAccountData"
                                 color="primary"
                                 label="Include my financial data in AI prompts"
                                 :disabled="!hasAccounts"
@@ -347,6 +347,7 @@
     const openAIStore = useOpenAIStore()
     const bankAccountsStore = useBankAccountsStore()
 
+    const includeAccountData = computed(() => openAIStore.includeAccountData)
     const apiKey = ref(openAIStore.apiKey)
     const prompt = ref('')
     const chatHistoryRef = ref<HTMLElement | null>(null)
