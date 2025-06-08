@@ -7,15 +7,30 @@
                     <v-card class="mb-6">
                         <v-card-title>OpenAI API Settings</v-card-title>
                         <v-card-text>
-                            <v-text-field
-                                v-model="apiKey"
-                                label="OpenAI API Key"
-                                placeholder="Enter your OpenAI API key"
-                                type="password"
-                                hint="Your API key will be stored locally in your browser"
-                                persistent-hint
-                                @update:model-value="saveApiKey"
-                            ></v-text-field>
+                            <v-row>
+                                <v-col cols="12" sm="4">
+                                    <v-select
+                                        v-model="selectedModel"
+                                        :items="openAIStore.availableModels"
+                                        item-title="name"
+                                        item-value="id"
+                                        label="AI Model"
+                                        return-object
+                                        @update:model-value="updateModel"
+                                    ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="8">
+                                    <v-text-field
+                                        v-model="apiKey"
+                                        label="OpenAI API Key"
+                                        placeholder="Enter your OpenAI API key"
+                                        type="password"
+                                        hint="Your API key will be stored locally in your browser"
+                                        persistent-hint
+                                        @update:model-value="saveApiKey"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
                             <p class="text-caption mt-2">
                                 Don't have an API key?
                                 <a
@@ -193,10 +208,22 @@
                                         "
                                     >
                                         <v-card-text>
-                                            <div class="message-header mb-1">
+                                            <div class="message-header mb-1 d-flex align-center">
                                                 <strong>{{
                                                     message.role === 'user' ? 'You' : 'AI Assistant'
                                                 }}</strong>
+                                                <v-chip
+                                                    v-if="
+                                                        message.role === 'assistant' &&
+                                                        message.model
+                                                    "
+                                                    size="x-small"
+                                                    class="ml-2"
+                                                    color="primary"
+                                                    variant="outlined"
+                                                >
+                                                    {{ getModelName(message.model) }}
+                                                </v-chip>
                                             </div>
                                             <div
                                                 class="message-content"
@@ -328,6 +355,10 @@
     const startDate = ref<string | null>(null)
     const endDate = ref<string | null>(null)
     const showAccountPreview = ref(false)
+    const selectedModel = ref(
+        openAIStore.availableModels.find((model) => model.id === openAIStore.selectedModel) ||
+            openAIStore.availableModels[0]
+    )
 
     const hasAccounts = computed(() => {
         return bankAccountsStore.hasAccounts
@@ -382,6 +413,17 @@
 
     function saveApiKey() {
         openAIStore.setApiKey(apiKey.value)
+    }
+
+    function updateModel() {
+        if (selectedModel.value) {
+            openAIStore.setModel(selectedModel.value.id)
+        }
+    }
+
+    const getModelName = (modelId: string): string => {
+        const model = openAIStore.availableModels.find((model) => model.id === modelId)
+        return model ? model.name : modelId
     }
 
     async function sendPrompt() {

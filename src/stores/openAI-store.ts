@@ -5,6 +5,7 @@ import { useBankAccountsStore } from './bankAccounts-store'
 export type OpenAIMessage = {
     role: 'user' | 'assistant' | 'system'
     content: string
+    model?: string
 }
 
 export type AccountDataOption = {
@@ -12,6 +13,12 @@ export type AccountDataOption = {
     maxTransactions: number
     startDate?: Date
     endDate?: Date
+}
+
+export type OpenAIModel = {
+    id: string
+    name: string
+    description: string
 }
 
 export type OpenAIStore = {
@@ -25,7 +32,10 @@ export type OpenAIStore = {
     accountDataOptions: Ref<AccountDataOption>
     availableAccounts: ComputedRef<string[]>
     selectedAccounts: Ref<string[]>
+    availableModels: Ref<OpenAIModel[]>
+    selectedModel: Ref<string>
     setApiKey: (key: string) => void
+    setModel: (modelId: string) => void
     sendPrompt: (prompt: string) => Promise<void>
     clearHistory: () => void
     clearResponse: () => void
@@ -51,12 +61,36 @@ export const useOpenAIStore = defineStore<string, OpenAIStore>(
             maxTransactions: 10
         })
 
+        // Available OpenAI models
+        const availableModels = ref<OpenAIModel[]>([
+            {
+                id: 'gpt-3.5-turbo',
+                name: 'GPT-3.5 Turbo',
+                description: 'Fast and efficient for most tasks'
+            },
+            {
+                id: 'gpt-4o',
+                name: 'GPT-4o',
+                description: 'More capable for complex financial analysis'
+            },
+            {
+                id: 'gpt-4-turbo',
+                name: 'GPT-4 Turbo',
+                description: 'Latest model with enhanced reasoning'
+            }
+        ])
+        const selectedModel = ref<string>('gpt-3.5-turbo')
+
         const availableAccounts = computed<string[]>(() => {
             return Object.values(bankAccountsStore.accounts).map((account) => account.accountId)
         })
 
         function setApiKey(key: string) {
             apiKey.value = key
+        }
+
+        function setModel(modelId: string) {
+            selectedModel.value = modelId
         }
 
         function clearHistory() {
@@ -206,7 +240,7 @@ If the user asks for budgeting advice, make personalized suggestions based on th
                         Authorization: `Bearer ${apiKey.value}`
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4o-mini',
+                        model: selectedModel.value,
                         messages: messages,
                         temperature: 0.7
                     })
@@ -221,7 +255,8 @@ If the user asks for budgeting advice, make personalized suggestions based on th
                 const assistantResponse = data.choices[0]?.message?.content || ''
                 history.value.push({
                     role: 'assistant',
-                    content: assistantResponse
+                    content: assistantResponse,
+                    model: selectedModel.value
                 })
 
                 // Store the response in our state
@@ -245,7 +280,10 @@ If the user asks for budgeting advice, make personalized suggestions based on th
             accountDataOptions,
             availableAccounts,
             selectedAccounts,
+            availableModels,
+            selectedModel,
             setApiKey,
+            setModel,
             sendPrompt,
             clearHistory,
             clearResponse,
@@ -261,7 +299,8 @@ If the user asks for budgeting advice, make personalized suggestions based on th
                 'history',
                 'includeAccountData',
                 'selectedAccounts',
-                'accountDataOptions'
+                'accountDataOptions',
+                'selectedModel'
             ]
         }
     }
