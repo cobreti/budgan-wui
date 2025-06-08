@@ -3,6 +3,7 @@ import HomeView from '@views/BdgHomeView.vue'
 import { accountsManagementRoutes } from '@/router/accountsManagementRoutes'
 import { accountRoutes } from '@/router/accountRoutes'
 import { settingsRoutes } from '@/router/settingsRoutes'
+import { aiRoutes } from '@/router/aiRoutes'
 import { setupRouteTracking } from '@/router/routeTracker'
 
 const router = createRouter({
@@ -11,6 +12,7 @@ const router = createRouter({
         ...accountsManagementRoutes,
         ...accountRoutes,
         ...settingsRoutes,
+        ...aiRoutes,
         {
             path: '/',
             name: 'home',
@@ -27,7 +29,7 @@ const router = createRouter({
         {
             path: '/account-data',
             name: 'accountData',
-            component: () => import('@views/BdgAccountData.vue'),
+            component: () => import('@views/BdgAccountData.vue')
             // Component handles the tab display logic internally
         }
     ]
