@@ -157,7 +157,7 @@ export const useOpenAIStore = defineStore<string, OpenAIStore>(
                 if (accountData) {
                     messages.push({
                         role: 'system',
-                        content: `You are a financial assistant integrated into a personal finance management app called Budgan-WUI. 
+                        content: `You are a financial assistant integrated into a personal finance management app called Budgan. 
 The user has shared their financial account information with you. Use this data to provide personalized financial advice and insights when relevant to their questions.
 
 When analyzing transactions:
@@ -206,7 +206,7 @@ If the user asks for budgeting advice, make personalized suggestions based on th
                         Authorization: `Bearer ${apiKey.value}`
                     },
                     body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
+                        model: 'gpt-4o-mini',
                         messages: messages,
                         temperature: 0.7
                     })
