@@ -25,7 +25,7 @@
                                         label="OpenAI API Key"
                                         placeholder="Enter your OpenAI API key"
                                         type="password"
-                                        hint="Your API key will be stored locally in your browser"
+                                        hint="Your API key isn't stored anywhere."
                                         persistent-hint
                                         @update:model-value="saveApiKey"
                                     ></v-text-field>
