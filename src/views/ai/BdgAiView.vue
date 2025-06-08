@@ -183,7 +183,7 @@
                         <v-card-title>Chat with AI</v-card-title>
                         <v-card-text>
                             <div class="chat-history mb-4" ref="chatHistoryRef">
-                                <template v-if="openAIStore.history.length === 0">
+                                <div v-if="openAIStore.history.length === 0">
                                     <div class="text-center pa-4">
                                         <v-icon size="large" icon="mdi-robot-outline"></v-icon>
                                         <p class="mt-2">No messages yet. Start a conversation!</p>
@@ -195,7 +195,7 @@
                                             balances.
                                         </p>
                                     </div>
-                                </template>
+                                </div>
                                 <div
                                     v-for="(message, index) in openAIStore.history"
                                     :key="index"
