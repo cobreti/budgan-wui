@@ -64,22 +64,22 @@ export const useOpenAIStore = defineStore<string, OpenAIStore>('openAI', () => {
         {
             id: 'gpt-3.5-turbo',
             name: 'GPT-3.5 Turbo',
-            description: 'Fast and efficient for most tasks'
+            description: 'Fast and efficient for most tasks ($0.5/1M input, $1.5/1M output)'
         },
         {
             id: 'gpt-4o-mini',
             name: 'GPT-4o Mini',
-            description: 'Balanced performance and capabilities'
+            description: 'Balanced performance and capabilities ($1/1M input, $3/1M output)'
         },
         {
             id: 'gpt-4o',
             name: 'GPT-4o',
-            description: 'More capable for complex financial analysis'
+            description: 'More capable for complex financial analysis ($5/1M input, $15/1M output)'
         },
         {
             id: 'gpt-4-turbo',
             name: 'GPT-4 Turbo',
-            description: 'Latest model with enhanced reasoning'
+            description: 'Latest model with enhanced reasoning ($10/1M input, $30/1M output)'
         }
     ])
     const selectedModel = ref<string>('gpt-3.5-turbo')
