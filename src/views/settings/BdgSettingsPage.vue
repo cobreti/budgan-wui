@@ -5,7 +5,7 @@
         </v-toolbar>
         <v-container class="settings-container">
             <v-row>
-                <v-col cols="3">
+                <v-col cols="12">
                     <v-list nav>
                         <v-list-item
                             v-for="item in subPages"
@@ -15,9 +15,6 @@
                             @click="goToSubPage(item)"
                         />
                     </v-list>
-                </v-col>
-                <v-col cols="9">
-                    <router-view />
                 </v-col>
             </v-row>
         </v-container>
@@ -55,7 +52,7 @@ const router = useRouter()
 const route = useRoute()
 
 const subPages = [
-    { key: 'global', title: 'Global Settings', icon: 'mdi-earth', route: '/settings/global' },
+    { key: 'workspace', title: 'Workspace Settings', icon: 'mdi-earth', route: '/settings/workspace' },
     { key: 'csv', title: 'CSV Settings', icon: 'mdi-file-delimited', route: '/settings/csv' }
 ]
 

@@ -5,9 +5,9 @@ export const settingsRoutes = [
         component: () => import('@views/settings/BdgSettingsPage.vue')
     },
     {
-        path: '/settings/global',
-        name: 'settings-global',
-        component: () => import('@views/settings/BdgGlobalSettings.vue')
+        path: '/settings/workspace',
+        name: 'settings-workspace',
+        component: () => import('@views/settings/BdgWorkspaceSettings.vue')
     },
     {
         path: '/settings/csv',
