@@ -1,10 +1,6 @@
 import { defineStore } from 'pinia'
 import { type Ref, ref } from 'vue'
-
-export type AppSettings = {
-  drawerVisible: boolean;
-  version: string;
-}
+import type { AppSettings } from '@/core/models/AppSettings'
 
 
 export type AppSettingsStore = {
@@ -38,4 +34,3 @@ export const useAppSettingsStore = defineStore<string, AppSettingsStore>('appSet
     storage: sessionStorage
   },
 });
-
