@@ -1,5 +1,3 @@
-// filepath: src/core/models/AppSettings.ts
-
 export interface AppSettings {
   drawerVisible: boolean;
   version: string;

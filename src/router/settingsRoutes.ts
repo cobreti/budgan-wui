@@ -5,6 +5,16 @@ export const settingsRoutes = [
         component: () => import('@views/settings/BdgSettingsPage.vue')
     },
     {
+        path: '/settings/global',
+        name: 'settings-global',
+        component: () => import('@views/settings/BdgGlobalSettings.vue')
+    },
+    {
+        path: '/settings/csv',
+        name: 'settings-csv',
+        component: () => import('@views/settings/csvSettings/BdgCsvSettings.vue')
+    },
+    {
         path: '/settings/csvsettings/new',
         name: 'new-csv-settings',
         component: () => import('@views/settings/csvSettings/BdgCsvColumnsSettings.vue')
