@@ -3,7 +3,7 @@
         <v-container class="account-container">
             <v-row>
                 <v-col cols="12">
-                    <v-toolbar>
+                    <v-toolbar color="primary">
                         <v-btn flat :to="{ path: '/accounts/new' }">New Account</v-btn>
                     </v-toolbar>
                 </v-col>

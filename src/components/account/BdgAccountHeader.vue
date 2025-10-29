@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar>
+    <v-toolbar color="primary">
         <div class="dflex w-100 flex-row flex-content justify-space-between">
             <div class="mr-4 ml-4 d-flex flex-row">
                 <div class="back-button mr-2">
