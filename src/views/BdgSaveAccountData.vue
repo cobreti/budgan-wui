@@ -2,6 +2,9 @@
     <div>
         <v-card class="d-flex flex-column ma-2 pa-2">
             <div class="d-flex flex-row mb-2">
+                <v-btn icon="mdi-folder-open" class="folder-selection" @click="chooseFolder()"
+                    >Choose Folder</v-btn
+                >
                 <v-text-field
                     class="filename-input"
                     label="Name"
@@ -32,7 +35,11 @@
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+    .folder-selection {
+        margin-right: 5em;
+    }
+</style>
 
 <script setup lang="ts">
     import { computed, ref, watchEffect, onMounted } from 'vue'
@@ -70,6 +77,15 @@
         const json = serializer.saveAllData()
         const blob = new Blob([json], { type: 'application/json' })
         accountsDataObjectUrl.value = URL.createObjectURL(blob)
+    }
+
+    async function chooseFolder() {
+        const folder = await window.showDirectoryPicker()
+        const fileHandle = await folder.getFileHandle('text.json', { create: true })
+        const writable = await fileHandle.createWritable()
+        await writable.write(JSON.stringify(serializer.saveAllData(), null, 2).replace(/\\"/g, '"'))
+        await writable.close()
+        console.log('test')
     }
 
     // Update the export data anytime bank accounts change
