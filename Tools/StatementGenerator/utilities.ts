@@ -1,5 +1,13 @@
-import type { Parameters } from './parameters'
+import type { Parameters } from './parameters.ts'
+import { cardNumbers} from './data/card-numbers.ts'
+import { type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
 
+//
+//  generate random dates based on the parameters
+//  between startDate and endDate
+//  linesCount is the number of dates to generate
+//
+//
 export function generateRandomDates(params: Parameters): Date[] {
     const dates: Date[] = []
     const startTime = params.startDate.getTime()
@@ -13,4 +21,27 @@ export function generateRandomDates(params: Parameters): Date[] {
     }
 
     return dates
+}
+
+//
+// select a random card number from the list
+//
+export function selectRandomCardNumber() : string {
+    return cardNumbers[Math.floor(Math.random() * cardNumbers.length)]
+}
+
+
+//
+// select random descriptions from the list
+//
+
+export function selectRandomDescriptions(params: Parameters): TransactionDescription[] {
+    const descriptions: TransactionDescription[] = []
+
+    for (let i = 0; i < params.linesCount; i++) {
+        const randomIndex = Math.floor(Math.random() * transactionDescriptions.length)
+        descriptions.push(transactionDescriptions[randomIndex])
+    }
+
+    return descriptions
 }

@@ -3,7 +3,7 @@ export enum AmountOperationType {
     Expanse
 }
 
-type TransactionDescription = {
+export type TransactionDescription = {
     description: string
     type: string
     amountOperationType: AmountOperationType
