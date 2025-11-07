@@ -1,4 +1,4 @@
-export const enum ColumnsTypes {
+export const enum ColumnsType {
     CARD_NUMBER = 1,
     DATE_INSCRIPTION = 2,
     DATE_TRANSACTION = 3,
@@ -10,7 +10,11 @@ export const enum ColumnsTypes {
 export type Parameters = {
     startDate: Date
     endDate: Date
+    minAmount?: number,
+    maxAmount?: number,
     linesCount: number
     fileHeader: string | null
-    columns: Array<{ type: ColumnsTypes; header: string }>
+    columns: Array<ColumnsType>
 }
+
+export type StatementByColumns = {[key in ColumnsType]?: string[] };

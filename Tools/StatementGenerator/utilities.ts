@@ -1,4 +1,4 @@
-import type { Parameters } from './parameters.ts'
+import { type Parameters } from './types.ts'
 import { cardNumbers} from './data/card-numbers.ts'
 import { type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
 
@@ -44,4 +44,21 @@ export function selectRandomDescriptions(params: Parameters): TransactionDescrip
     }
 
     return descriptions
+}
+
+
+//
+//
+//
+export function generateAmounts(params: Parameters) : number[] {
+    const amounts: number[] = []
+    const min = params.minAmount ?? 0
+    const max = params.maxAmount ?? Number.MAX_SAFE_INTEGER
+
+    for (let i = 0; i < params.linesCount; i++) {
+        const randomAmount = Math.random() * (max - min) + min
+        amounts.push(Math.round(randomAmount * 100) / 100)
+    }
+
+    return amounts
 }
