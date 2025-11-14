@@ -1,6 +1,6 @@
 import { ColumnsType, type Parameters, type StatementByColumns } from './types.ts'
 import { cardNumbers} from './data/card-numbers.ts'
-import { type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
+import { AmountOperationType, type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
 import { promises as fs } from 'fs'
 import * as path from 'node:path'
 
@@ -94,9 +94,15 @@ export function generateStatement(params: Parameters): StatementByColumns {
             case ColumnsType.DESCRIPTION:
                 statement[ColumnsType.DESCRIPTION] = descriptions.map((d) => d.description)
                 break
-            case ColumnsType.AMOUNT:
-                statement[ColumnsType.AMOUNT] = generateAmounts(params).map((a) => a.toString())
+            case ColumnsType.AMOUNT: {
+                const amounts = generateAmounts(params)
+                statement[ColumnsType.AMOUNT] = amounts.map((a, i) => {
+                    const isExpense = descriptions[i]?.amountOperationType === AmountOperationType.Expanse
+                    const signed = isExpense ? -Math.abs(a) : Math.abs(a)
+                    return signed.toString()
+                })
                 break
+            }
         }
     })
 
