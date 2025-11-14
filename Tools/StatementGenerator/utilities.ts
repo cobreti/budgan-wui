@@ -1,6 +1,7 @@
 import { ColumnsType, type Parameters, type StatementByColumns } from './types.ts'
 import { cardNumbers} from './data/card-numbers.ts'
-import { AmountOperationType, type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
+import { AmountOperationType, type TransactionDescription } from './types.ts'
+import { transactionDescriptions } from './data/transaction-descriptions.ts'
 import { promises as fs } from 'fs'
 import * as path from 'node:path'
 

@@ -1,13 +1,4 @@
-export enum AmountOperationType {
-    Income,
-    Expanse
-}
-
-export type TransactionDescription = {
-    description: string
-    type: string
-    amountOperationType: AmountOperationType
-}
+import { AmountOperationType, type TransactionDescription } from '../types.ts'
 
 export const transactionDescriptions : TransactionDescription[] = [
   { description: "[PO] Amazon.com Purchase", type: "Purchase", amountOperationType: AmountOperationType.Expanse },
