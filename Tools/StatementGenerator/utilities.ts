@@ -1,6 +1,8 @@
 import { ColumnsType, type Parameters, type StatementByColumns } from './types.ts'
 import { cardNumbers} from './data/card-numbers.ts'
 import { type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
+import { promises as fs } from 'fs'
+import * as path from 'node:path'
 
 //
 //  generate random dates based on the parameters
@@ -100,3 +102,48 @@ export function generateStatement(params: Parameters): StatementByColumns {
 
     return statement
 }
+
+//
+// Save a statement as a CSV file to the given filepath.
+// - Uses the order of columns specified in params.columns for each row
+// - Writes params.fileHeader as the first line when provided (non-null)
+// - Escapes fields per CSV rules (double quotes when needed, doubled inner quotes)
+//
+export async function saveStatementAsCsv(
+    filepath: string,
+    params: Parameters,
+    statement: StatementByColumns
+): Promise<void> {
+    // Helper to escape a CSV field per RFC 4180
+    const escapeCsv = (val: string): string => {
+        const needsQuoting = /[",\n\r]/.test(val) || val.startsWith(' ') || val.endsWith(' ')
+        const escaped = val.replace(/"/g, '""')
+        return needsQuoting ? `"${escaped}"` : escaped
+    }
+
+    const rowsCount = params.linesCount
+    const colOrder = params.columns
+
+    // Build CSV lines
+    const lines: string[] = []
+
+    if (params.fileHeader) {
+        lines.push(params.fileHeader)
+    }
+
+    for (let i = 0; i < rowsCount; i++) {
+        const rowValues = colOrder.map((col) => {
+            const colArray = statement[col] ?? []
+            const value = colArray[i] ?? ''
+            return escapeCsv(String(value))
+        })
+        lines.push(rowValues.join(','))
+    }
+
+    const csv = lines.join('\n') + '\n'
+
+    // Ensure directory exists and write file
+    await fs.mkdir(path.dirname(filepath), { recursive: true })
+    await fs.writeFile(filepath, csv, { encoding: 'utf8' })
+}
+
