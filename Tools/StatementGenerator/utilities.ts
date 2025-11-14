@@ -1,4 +1,4 @@
-import { type Parameters } from './types.ts'
+import { ColumnsType, type Parameters, type StatementByColumns } from './types.ts'
 import { cardNumbers} from './data/card-numbers.ts'
 import { type TransactionDescription, transactionDescriptions } from './data/transaction-descriptions.ts'
 
@@ -48,7 +48,7 @@ export function selectRandomDescriptions(params: Parameters): TransactionDescrip
 
 
 //
-//
+//  Generate random amounts between minAmount and maxAmount with 2 decimals
 //
 export function generateAmounts(params: Parameters) : number[] {
     const amounts: number[] = []
@@ -61,4 +61,42 @@ export function generateAmounts(params: Parameters) : number[] {
     }
 
     return amounts
+}
+
+
+//
+//  Generate a statement structure with the specified number of entries based on the parameters
+//
+export function generateStatement(params: Parameters): StatementByColumns {
+    const statement: StatementByColumns = {}
+
+    const dates = generateRandomDates(params)
+    const cardNumber = selectRandomCardNumber()
+    const descriptions = selectRandomDescriptions(params)
+
+    params.columns.forEach((column) => {
+        switch (column) {
+            case ColumnsType.DATE_INSCRIPTION:
+                statement[ColumnsType.DATE_INSCRIPTION] = dates.map((date) =>
+                    date.toLocaleDateString('en-CA')
+                )
+                break
+            case ColumnsType.DATE_TRANSACTION:
+                statement[ColumnsType.DATE_TRANSACTION] = dates.map((date) =>
+                    date.toLocaleDateString('en-CA')
+                )
+                break
+            case ColumnsType.CARD_NUMBER:
+                statement[ColumnsType.CARD_NUMBER] = Array(params.linesCount).fill(cardNumber)
+                break
+            case ColumnsType.DESCRIPTION:
+                statement[ColumnsType.DESCRIPTION] = descriptions.map((d) => d.description)
+                break
+            case ColumnsType.AMOUNT:
+                statement[ColumnsType.AMOUNT] = generateAmounts(params).map((a) => a.toString())
+                break
+        }
+    })
+
+    return statement
 }
