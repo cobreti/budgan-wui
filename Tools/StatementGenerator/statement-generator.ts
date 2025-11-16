@@ -1,8 +1,8 @@
-import { parameters } from "./parameters.ts";
+import { parameters } from "./core/parameters.ts";
 import {
     generateStatement,
     saveStatementAsCsv
-} from './utilities.ts'
+} from './core/utilities.ts'
 
 console.log("Statement Generator tools starting");
 

@@ -1,4 +1,4 @@
-import { AmountOperationType, type TransactionDescription } from '../types.ts'
+import { AmountOperationType, type TransactionDescription } from '../core/types.ts'
 
 export const transactionDescriptions : TransactionDescription[] = [
   { description: "[PO] Amazon.com Purchase", type: "Purchase", amountOperationType: AmountOperationType.Expanse },
