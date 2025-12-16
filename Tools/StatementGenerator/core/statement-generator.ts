@@ -168,4 +168,115 @@ export class StatementGenerator {
 
         return this;
     }
+
+    //
+    //  Manually add a statement row by specifying column/value pairs
+    //
+    //  Requirements from issue:
+    //  - Method name: addStatementRow
+    //  - Accept a single array of entries; each entry contains a column type and a value
+    //  - Date columns must be stored using en-CA format
+    //  - Amount must be auto-signed based on DESCRIPTION's amountOperationType
+    //  - Do not touch linesCount (it is only for random generation)
+    //  - Throw on mismatch (e.g., AMOUNT requires DESCRIPTION context; unknown column; duplicate columns)
+    //  - Append values into statementByColumns
+    public addStatementRow(
+        entries: Array<{ column: ColumnsType; value: string | number | Date }>
+    ): StatementGenerator {
+        if (!Array.isArray(entries) || entries.length === 0) {
+            throw new Error('addStatementRow: entries must be a non-empty array')
+        }
+
+        // Ensure the internal structure exists
+        if (!this.statementByColumns) {
+            this.statementByColumns = {}
+        }
+
+        // Track provided fields and detect duplicates
+        const seen = new Set<ColumnsType>()
+
+        // We'll need description metadata for amount signing logic
+        let descriptionMeta: TransactionDescription | undefined
+        let pendingAmount: number | string | Date | undefined
+
+        // First pass: normalize and validate inputs, capture description and amount
+        for (const e of entries) {
+            const { column } = e
+            if (seen.has(column)) {
+                throw new Error(`addStatementRow: duplicate column provided: ${column}`)
+            }
+            seen.add(column)
+
+            switch (column) {
+                case ColumnsType.DATE_INSCRIPTION:
+                case ColumnsType.DATE_TRANSACTION: {
+                    // Accept Date or string; store as en-CA string
+                    const d = e.value
+                    const asString = d instanceof Date ? d.toLocaleDateString('en-CA') : String(d)
+                    const arr = this.statementByColumns[column] ?? (this.statementByColumns[column] = [])
+                    arr.push(asString)
+                    break
+                }
+                case ColumnsType.CARD_NUMBER: {
+                    const arr = this.statementByColumns[ColumnsType.CARD_NUMBER] ?? (this.statementByColumns[ColumnsType.CARD_NUMBER] = [])
+                    arr.push(String(e.value))
+                    break
+                }
+                case ColumnsType.DESCRIPTION: {
+                    const descText = String(e.value)
+                    // push the text to the DESCRIPTION column
+                    const descCol = this.statementByColumns[ColumnsType.DESCRIPTION] ?? (this.statementByColumns[ColumnsType.DESCRIPTION] = [])
+                    descCol.push(descText)
+
+                    // try to find metadata for amount sign
+                    const trimmed = descText.trim()
+                    descriptionMeta = transactionDescriptions.find(td => td.description.trim() === trimmed)
+                    break
+                }
+                case ColumnsType.AMOUNT: {
+                    pendingAmount = e.value
+                    // defer push until we compute sign (needs description)
+                    break
+                }
+                default:
+                    throw new Error(`addStatementRow: unsupported column: ${column}`)
+            }
+        }
+
+        // If AMOUNT was provided, we must have DESCRIPTION metadata to decide the sign
+        if (seen.has(ColumnsType.AMOUNT)) {
+            if (!seen.has(ColumnsType.DESCRIPTION)) {
+                throw new Error('addStatementRow: AMOUNT provided but DESCRIPTION is missing')
+            }
+            if (pendingAmount === undefined) {
+                throw new Error('addStatementRow: AMOUNT value missing')
+            }
+
+            const n = Number(pendingAmount)
+            if (Number.isNaN(n)) {
+                throw new Error('addStatementRow: AMOUNT must be a number')
+            }
+
+            const isExpense = descriptionMeta?.amountOperationType === AmountOperationType.Expanse
+            const signed = isExpense ? -Math.abs(n) : Math.abs(n)
+
+            const amtCol = this.statementByColumns[ColumnsType.AMOUNT] ?? (this.statementByColumns[ColumnsType.AMOUNT] = [])
+            amtCol.push(signed.toString())
+        }
+
+        this.linesCount ++;
+
+        return this
+    }
+
+    // Helper to compute the max number of rows currently accumulated
+    private _currentRowCount(): number {
+        const cols = Object.keys(this.statementByColumns ?? {}) as unknown as ColumnsType[]
+        let max = 0
+        for (const c of cols) {
+            const arr = this.statementByColumns![c]
+            if (arr && arr.length > max) max = arr.length
+        }
+        return max
+    }
 }
