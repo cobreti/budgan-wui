@@ -181,7 +181,7 @@ export class StatementGenerator {
     //  - Throw on mismatch (e.g., AMOUNT requires DESCRIPTION context; unknown column; duplicate columns)
     //  - Append values into statementByColumns
     public addStatementRow(
-        entries: Array<{ column: ColumnsType; value: string | number | Date }>
+        entries: Array<{ column: ColumnsType; value?: string | number | Date }>
     ): StatementGenerator {
         if (!Array.isArray(entries) || entries.length === 0) {
             throw new Error('addStatementRow: entries must be a non-empty array')
@@ -211,6 +211,9 @@ export class StatementGenerator {
                 case ColumnsType.DATE_INSCRIPTION:
                 case ColumnsType.DATE_TRANSACTION: {
                     // Accept Date or string; store as en-CA string
+                    if (e.value === undefined || e.value === null) {
+                        throw new Error('addStatementRow: date value missing')
+                    }
                     const d = e.value
                     const asString = d instanceof Date ? d.toLocaleDateString('en-CA') : String(d)
                     const arr = this.statementByColumns[column] ?? (this.statementByColumns[column] = [])
@@ -219,10 +222,21 @@ export class StatementGenerator {
                 }
                 case ColumnsType.CARD_NUMBER: {
                     const arr = this.statementByColumns[ColumnsType.CARD_NUMBER] ?? (this.statementByColumns[ColumnsType.CARD_NUMBER] = [])
-                    arr.push(String(e.value))
+                    // If value not specified, fall back to currently selected card number
+                    let value = e.value
+                    if (value === undefined || value === null || String(value).trim() === '') {
+                        if (!this.cardNumber || String(this.cardNumber).trim() === '') {
+                            throw new Error('addStatementRow: CARD_NUMBER value missing and no selected card number available')
+                        }
+                        value = this.cardNumber
+                    }
+                    arr.push(String(value))
                     break
                 }
                 case ColumnsType.DESCRIPTION: {
+                    if (e.value === undefined || e.value === null) {
+                        throw new Error('addStatementRow: DESCRIPTION value missing')
+                    }
                     const descText = String(e.value)
                     // push the text to the DESCRIPTION column
                     const descCol = this.statementByColumns[ColumnsType.DESCRIPTION] ?? (this.statementByColumns[ColumnsType.DESCRIPTION] = [])
@@ -267,16 +281,5 @@ export class StatementGenerator {
         this.linesCount ++;
 
         return this
-    }
-
-    // Helper to compute the max number of rows currently accumulated
-    private _currentRowCount(): number {
-        const cols = Object.keys(this.statementByColumns ?? {}) as unknown as ColumnsType[]
-        let max = 0
-        for (const c of cols) {
-            const arr = this.statementByColumns![c]
-            if (arr && arr.length > max) max = arr.length
-        }
-        return max
     }
 }

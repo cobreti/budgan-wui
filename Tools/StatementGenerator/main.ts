@@ -1,7 +1,6 @@
 import { StatementGenerator } from './core/statement-generator.ts'
 import { ColumnsType } from './core/types.ts'
 import { transactionDescriptions } from './data/transaction-descriptions.ts'
-import { cardNumbers } from './data/card-numbers.ts'
 
 console.log('Statement Generator tools starting')
 
@@ -25,8 +24,7 @@ new StatementGenerator()
     .generateStatement()
     .addStatementRow([
         {
-            column: ColumnsType.CARD_NUMBER,
-            value: cardNumbers[1]
+            column: ColumnsType.CARD_NUMBER
         },
         {
             column: ColumnsType.DESCRIPTION,
