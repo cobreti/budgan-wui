@@ -68,13 +68,17 @@ export class StatementGenerator {
         return this;
     }
 
-    public selectRandomDescriptions(): StatementGenerator {
+    public selectRandomDescriptions(excludeDescriptions?: string[]): StatementGenerator {
 
         this.descriptions = [];
 
+        const excludeSet = new Set((excludeDescriptions ?? []).map((s) => s.trim()))
+        const pool = transactionDescriptions.filter((td) => !excludeSet.has(td.description.trim()))
+        const effectivePool = pool.length > 0 ? pool : transactionDescriptions
+
         for (let i = 0; i < this.linesCount; i++) {
-            const randomIndex = Math.floor(Math.random() * transactionDescriptions.length)
-            this.descriptions.push(transactionDescriptions[randomIndex])
+            const randomIndex = Math.floor(Math.random() * effectivePool.length)
+            this.descriptions.push(effectivePool[randomIndex])
         }
 
         return this;
