@@ -10,13 +10,13 @@ new StatementGenerator()
     .setDateRange(new Date(2024, 0, 1), new Date(2024, 11, 31))
     .setLinesCount(10)
     .setAmountRange(10, 1000)
-    .setColumns(
+    .setColumns([
         ColumnsType.CARD_NUMBER,
         ColumnsType.DESCRIPTION,
         ColumnsType.DATE_TRANSACTION,
         ColumnsType.DATE_INSCRIPTION,
         ColumnsType.AMOUNT
-    )
+    ])
     .generateAmounts()
     .generateRandomDates()
     .selectRandomCardNumber()

@@ -37,7 +37,7 @@ export class StatementGenerator {
         return this;
     }
 
-    public setColumns(...columns: ColumnsType[]): StatementGenerator {
+    public setColumns(columns: ColumnsType[]): StatementGenerator {
         this.columns = columns;
         return this;
     }
