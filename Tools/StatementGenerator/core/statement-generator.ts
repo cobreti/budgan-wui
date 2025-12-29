@@ -100,6 +100,7 @@ export class StatementGenerator {
 
     public generateStatement(): StatementGenerator {
         this.statementByColumns = {};
+        this.linesCount = this.dates.length;
 
         this.columns.forEach((column) => {
             switch (column) {
@@ -144,21 +145,31 @@ export class StatementGenerator {
         const rowsCount = this.linesCount
         const colOrder = this.columns
 
-        // Build CSV lines
-        const lines: string[] = []
-
-        // if (params.fileHeader) {
-        //     lines.push(params.fileHeader)
-        // }
-
+        // Build row objects to facilitate sorting
+        const rows: string[][] = []
         for (let i = 0; i < rowsCount; i++) {
             const rowValues = colOrder.map((col) => {
                 const colArray = this.statementByColumns[col] ?? []
-                const value = colArray[i] ?? ''
-                return escapeCsv(String(value))
+                return colArray[i] ?? ''
             })
-            lines.push(rowValues.join(','))
+            // Only add rows that have at least one non-empty value
+            if (rowValues.some(val => val !== '')) {
+                rows.push(rowValues)
+            }
         }
+
+        // Sort rows by date if DATE_TRANSACTION column exists
+        const dateColIndex = colOrder.indexOf(ColumnsType.DATE_TRANSACTION)
+        if (dateColIndex !== -1) {
+            rows.sort((a, b) => {
+                const dateA = new Date(a[dateColIndex])
+                const dateB = new Date(b[dateColIndex])
+                return dateA.getTime() - dateB.getTime()
+            })
+        }
+
+        // Build CSV lines with escaped values
+        const lines = rows.map(row => row.map(val => escapeCsv(String(val))).join(','))
 
         const csv = lines.join('\n') + '\n'
 
@@ -177,7 +188,6 @@ export class StatementGenerator {
     //  - Accept a single array of entries; each entry contains a column type and a value
     //  - Date columns must be stored using en-CA format
     //  - Amount must be auto-signed based on DESCRIPTION's amountOperationType
-    //  - Do not touch linesCount (it is only for random generation)
     //  - Throw on mismatch (e.g., AMOUNT requires DESCRIPTION context; unknown column; duplicate columns)
     //  - Append values into statementByColumns
     public addStatementRow(
@@ -278,7 +288,51 @@ export class StatementGenerator {
             amtCol.push(signed.toString())
         }
 
-        this.linesCount ++;
+        this.linesCount++
+
+        return this
+    }
+
+    /**
+     * Adds a recurring transaction for each month within the generator's date range.
+     * @param description The transaction description (should match one in transactionDescriptions for correct signing)
+     * @param amount The base amount for the transaction
+     * @param dayOfMonth The day of the month the transaction occurs (1-31)
+     */
+    public addRecurringTransactions(
+        description: string,
+        amount: number,
+        dayOfMonth: number
+    ): StatementGenerator {
+        const current = new Date(this.startDate)
+        current.setHours(0, 0, 0, 0)
+
+        while (current <= this.endDate) {
+            const transactionDate = new Date(current.getFullYear(), current.getMonth(), dayOfMonth)
+
+            // Ensure transaction date is within the current month and the overall range
+            if (
+                transactionDate.getMonth() === current.getMonth() &&
+                transactionDate >= this.startDate &&
+                transactionDate <= this.endDate
+            ) {
+                const entries: Array<{ column: ColumnsType; value?: string | number | Date }> = [
+                    { column: ColumnsType.DESCRIPTION, value: description },
+                    { column: ColumnsType.AMOUNT, value: amount },
+                    { column: ColumnsType.DATE_TRANSACTION, value: transactionDate },
+                    { column: ColumnsType.DATE_INSCRIPTION, value: transactionDate }
+                ]
+
+                if (this.columns.includes(ColumnsType.CARD_NUMBER)) {
+                    entries.push({ column: ColumnsType.CARD_NUMBER })
+                }
+
+                this.addStatementRow(entries)
+            }
+
+            // Move to the next month
+            current.setMonth(current.getMonth() + 1)
+        }
 
         return this
     }

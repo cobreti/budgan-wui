@@ -22,27 +22,9 @@ new StatementGenerator()
     .selectRandomCardNumber()
     .selectRandomDescriptions([transactionDescriptions[3].description])
     .generateStatement()
-    .addStatementRow([
-        {
-            column: ColumnsType.CARD_NUMBER
-        },
-        {
-            column: ColumnsType.DESCRIPTION,
-            value: transactionDescriptions[3].description
-        },
-        {
-            column: ColumnsType.DATE_TRANSACTION,
-            value: new Date(2024, 1, 1)
-        },
-        {
-            column: ColumnsType.DATE_INSCRIPTION,
-            value: new Date(2024, 1, 1)
-        },
-        {
-            column: ColumnsType.AMOUNT,
-            value: 100
-        }
-    ])
+    .addRecurringTransactions("[PO] Netflix Subscription", 15.99, 15)
+    .addRecurringTransactions("[DD] Payroll Deposit - Acme Corp", 2500, 1)
+    .addRecurringTransactions("[FE] Monthly Maintenance Fee", 5.00, 28)
     .saveStatement(outFile)
     .then(() => console.log('Statement saved successfully'))
     .catch((error) => console.error('Error generating statement:', error))
