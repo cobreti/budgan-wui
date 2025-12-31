@@ -21,10 +21,28 @@ new StatementGenerator()
     .generateRandomDates()
     .selectRandomCardNumber()
     .selectRandomDescriptions([transactionDescriptions[3].description])
+    .addRecurringTransactions(
+        [
+            { column: ColumnsType.DESCRIPTION, value: '[PO] Netflix Subscription' },
+            { column: ColumnsType.AMOUNT, value: 15.99 }
+        ],
+        15
+    )
+    .addRecurringTransactions(
+        [
+            { column: ColumnsType.DESCRIPTION, value: '[DD] Payroll Deposit - Acme Corp' },
+            { column: ColumnsType.AMOUNT, value: 2500 }
+        ],
+        1
+    )
+    .addRecurringTransactions(
+        [
+            { column: ColumnsType.DESCRIPTION, value: '[FE] Monthly Maintenance Fee' },
+            { column: ColumnsType.AMOUNT, value: 5.0 }
+        ],
+        28
+    )
     .generateStatement()
-    .addRecurringTransactions("[PO] Netflix Subscription", 15.99, 15)
-    .addRecurringTransactions("[DD] Payroll Deposit - Acme Corp", 2500, 1)
-    .addRecurringTransactions("[FE] Monthly Maintenance Fee", 5.00, 28)
     .saveStatement(outFile)
     .then(() => console.log('Statement saved successfully'))
     .catch((error) => console.error('Error generating statement:', error))

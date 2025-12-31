@@ -99,37 +99,54 @@ export class StatementGenerator {
     }
 
     public generateStatement(): StatementGenerator {
-        this.statementByColumns = {};
-        this.linesCount = this.dates.length;
+        if (!this.statementByColumns) {
+            this.statementByColumns = {}
+        }
+
+        const randomLinesCount = this.dates.length;
 
         this.columns.forEach((column) => {
+            if (!this.statementByColumns![column]) {
+                this.statementByColumns![column] = []
+            }
+            const arr = this.statementByColumns![column]!
+
+            // Ensure array is padded to current linesCount before appending random data
+            while (arr.length < this.linesCount) {
+                arr.push('')
+            }
+
             switch (column) {
                 case ColumnsType.DATE_INSCRIPTION:
-                    this.statementByColumns[ColumnsType.DATE_INSCRIPTION] = this.dates.map((date) =>
-                        date.toLocaleDateString('en-CA')
+                    this.dates.forEach((date) =>
+                        arr.push(date.toLocaleDateString('en-CA'))
                     )
                     break
                 case ColumnsType.DATE_TRANSACTION:
-                    this.statementByColumns[ColumnsType.DATE_TRANSACTION] = this.dates.map((date) =>
-                        date.toLocaleDateString('en-CA')
+                    this.dates.forEach((date) =>
+                        arr.push(date.toLocaleDateString('en-CA'))
                     )
                     break
                 case ColumnsType.CARD_NUMBER:
-                    this.statementByColumns[ColumnsType.CARD_NUMBER] = Array(this.linesCount).fill(this.cardNumber)
+                    for (let i = 0; i < randomLinesCount; i++) {
+                        arr.push(this.cardNumber)
+                    }
                     break
                 case ColumnsType.DESCRIPTION:
-                    this.statementByColumns[ColumnsType.DESCRIPTION] = this.descriptions.map((d) => d.description)
+                    this.descriptions.forEach((d) => arr.push(d.description))
                     break
                 case ColumnsType.AMOUNT: {
-                    this.statementByColumns[ColumnsType.AMOUNT] = this.amounts.map((a, i) => {
+                    this.amounts.forEach((a, i) => {
                         const isExpense = this.descriptions[i]?.amountOperationType === AmountOperationType.Expanse
                         const signed = isExpense ? -Math.abs(a) : Math.abs(a)
-                        return signed.toString()
+                        arr.push(signed.toString())
                     })
                     break
                 }
             }
         });
+
+        this.linesCount = this.statementByColumns[this.columns[0]]?.length ?? 0
 
         return this;
     }
@@ -209,7 +226,7 @@ export class StatementGenerator {
         let descriptionMeta: TransactionDescription | undefined
         let pendingAmount: number | string | Date | undefined
 
-        // First pass: normalize and validate inputs, capture description and amount
+        // First pass: validate and capture metadata
         for (const e of entries) {
             const { column } = e
             if (seen.has(column)) {
@@ -217,57 +234,16 @@ export class StatementGenerator {
             }
             seen.add(column)
 
-            switch (column) {
-                case ColumnsType.DATE_INSCRIPTION:
-                case ColumnsType.DATE_TRANSACTION: {
-                    // Accept Date or string; store as en-CA string
-                    if (e.value === undefined || e.value === null) {
-                        throw new Error('addStatementRow: date value missing')
-                    }
-                    const d = e.value
-                    const asString = d instanceof Date ? d.toLocaleDateString('en-CA') : String(d)
-                    const arr = this.statementByColumns[column] ?? (this.statementByColumns[column] = [])
-                    arr.push(asString)
-                    break
-                }
-                case ColumnsType.CARD_NUMBER: {
-                    const arr = this.statementByColumns[ColumnsType.CARD_NUMBER] ?? (this.statementByColumns[ColumnsType.CARD_NUMBER] = [])
-                    // If value not specified, fall back to currently selected card number
-                    let value = e.value
-                    if (value === undefined || value === null || String(value).trim() === '') {
-                        if (!this.cardNumber || String(this.cardNumber).trim() === '') {
-                            throw new Error('addStatementRow: CARD_NUMBER value missing and no selected card number available')
-                        }
-                        value = this.cardNumber
-                    }
-                    arr.push(String(value))
-                    break
-                }
-                case ColumnsType.DESCRIPTION: {
-                    if (e.value === undefined || e.value === null) {
-                        throw new Error('addStatementRow: DESCRIPTION value missing')
-                    }
-                    const descText = String(e.value)
-                    // push the text to the DESCRIPTION column
-                    const descCol = this.statementByColumns[ColumnsType.DESCRIPTION] ?? (this.statementByColumns[ColumnsType.DESCRIPTION] = [])
-                    descCol.push(descText)
-
-                    // try to find metadata for amount sign
-                    const trimmed = descText.trim()
-                    descriptionMeta = transactionDescriptions.find(td => td.description.trim() === trimmed)
-                    break
-                }
-                case ColumnsType.AMOUNT: {
-                    pendingAmount = e.value
-                    // defer push until we compute sign (needs description)
-                    break
-                }
-                default:
-                    throw new Error(`addStatementRow: unsupported column: ${column}`)
+            if (column === ColumnsType.DESCRIPTION) {
+                const descText = String(e.value)
+                const trimmed = descText.trim()
+                descriptionMeta = transactionDescriptions.find(td => td.description.trim() === trimmed)
+            } else if (column === ColumnsType.AMOUNT) {
+                pendingAmount = e.value
             }
         }
 
-        // If AMOUNT was provided, we must have DESCRIPTION metadata to decide the sign
+        // Validate AMOUNT requires DESCRIPTION
         if (seen.has(ColumnsType.AMOUNT)) {
             if (!seen.has(ColumnsType.DESCRIPTION)) {
                 throw new Error('addStatementRow: AMOUNT provided but DESCRIPTION is missing')
@@ -275,18 +251,48 @@ export class StatementGenerator {
             if (pendingAmount === undefined) {
                 throw new Error('addStatementRow: AMOUNT value missing')
             }
-
-            const n = Number(pendingAmount)
-            if (Number.isNaN(n)) {
+            if (Number.isNaN(Number(pendingAmount))) {
                 throw new Error('addStatementRow: AMOUNT must be a number')
             }
-
-            const isExpense = descriptionMeta?.amountOperationType === AmountOperationType.Expanse
-            const signed = isExpense ? -Math.abs(n) : Math.abs(n)
-
-            const amtCol = this.statementByColumns[ColumnsType.AMOUNT] ?? (this.statementByColumns[ColumnsType.AMOUNT] = [])
-            amtCol.push(signed.toString())
         }
+
+        // Second pass: fill in the columns
+        this.columns.forEach(col => {
+            const arr = this.statementByColumns![col] ?? (this.statementByColumns![col] = [])
+            
+            // Ensure array is padded to current linesCount if it was missing from previous manual additions
+            while (arr.length < this.linesCount) {
+                arr.push('')
+            }
+
+            if (col === ColumnsType.AMOUNT && seen.has(ColumnsType.AMOUNT)) {
+                const n = Number(pendingAmount)
+                const isExpense = descriptionMeta?.amountOperationType === AmountOperationType.Expanse
+                const signed = isExpense ? -Math.abs(n) : Math.abs(n)
+                arr.push(signed.toString())
+            } else if (col === ColumnsType.DATE_INSCRIPTION || col === ColumnsType.DATE_TRANSACTION) {
+                const entry = entries.find(e => e.column === col)
+                if (entry) {
+                    const d = entry.value
+                    const asString = d instanceof Date ? d.toLocaleDateString('en-CA') : String(d)
+                    arr.push(asString)
+                } else {
+                    arr.push('')
+                }
+            } else if (col === ColumnsType.CARD_NUMBER) {
+                const entry = entries.find(e => e.column === col)
+                let value = entry?.value
+                if (value === undefined || value === null || String(value).trim() === '') {
+                    value = this.cardNumber
+                }
+                arr.push(String(value))
+            } else if (col === ColumnsType.DESCRIPTION) {
+                const entry = entries.find(e => e.column === col)
+                arr.push(entry ? String(entry.value) : '')
+            } else if (!seen.has(col)) {
+                arr.push('')
+            }
+        })
 
         this.linesCount++
 
@@ -295,13 +301,11 @@ export class StatementGenerator {
 
     /**
      * Adds a recurring transaction for each month within the generator's date range.
-     * @param description The transaction description (should match one in transactionDescriptions for correct signing)
-     * @param amount The base amount for the transaction
+     * @param entries The transaction entries (similar to addStatementRow)
      * @param dayOfMonth The day of the month the transaction occurs (1-31)
      */
     public addRecurringTransactions(
-        description: string,
-        amount: number,
+        entries: Array<{ column: ColumnsType; value?: string | number | Date }>,
         dayOfMonth: number
     ): StatementGenerator {
         const current = new Date(this.startDate)
@@ -316,18 +320,21 @@ export class StatementGenerator {
                 transactionDate >= this.startDate &&
                 transactionDate <= this.endDate
             ) {
-                const entries: Array<{ column: ColumnsType; value?: string | number | Date }> = [
-                    { column: ColumnsType.DESCRIPTION, value: description },
-                    { column: ColumnsType.AMOUNT, value: amount },
-                    { column: ColumnsType.DATE_TRANSACTION, value: transactionDate },
-                    { column: ColumnsType.DATE_INSCRIPTION, value: transactionDate }
-                ]
+                // Create a copy of entries to avoid modifying the original array
+                const rowEntries = [...entries]
 
-                if (this.columns.includes(ColumnsType.CARD_NUMBER)) {
-                    entries.push({ column: ColumnsType.CARD_NUMBER })
-                }
+                // Add or override date columns
+                const dateCols = [ColumnsType.DATE_TRANSACTION, ColumnsType.DATE_INSCRIPTION]
+                dateCols.forEach(col => {
+                    const index = rowEntries.findIndex(e => e.column === col)
+                    if (index !== -1) {
+                        rowEntries[index] = { column: col, value: transactionDate }
+                    } else {
+                        rowEntries.push({ column: col, value: transactionDate })
+                    }
+                })
 
-                this.addStatementRow(entries)
+                this.addStatementRow(rowEntries)
             }
 
             // Move to the next month
