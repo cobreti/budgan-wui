@@ -8,7 +8,7 @@ const [outFile] = process.argv.slice(2)
 
 new StatementGenerator()
     .setDateRange(new Date(2024, 0, 1), new Date(2024, 11, 31))
-    .setLinesCount(10)
+    .setRandomLinesCount(10)
     .setAmountRange(10, 1000)
     .setColumns([
         ColumnsType.CARD_NUMBER,

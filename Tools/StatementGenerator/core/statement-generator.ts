@@ -14,7 +14,8 @@ export class StatementGenerator {
     private minAmount?: number = 10;
     private maxAmount?: number = 1000;
     private columns: ColumnsType[] = [];
-    private linesCount: number = 10;
+    private randomLinesCount: number = 10;
+    private totalLinesCount: number = 0;
 
     //
     //  Generated statement data
@@ -42,8 +43,8 @@ export class StatementGenerator {
         return this;
     }
 
-    public setLinesCount(count: number): StatementGenerator {
-        this.linesCount = count;
+    public setRandomLinesCount(count: number): StatementGenerator {
+        this.randomLinesCount = count;
         return this;
     }
 
@@ -53,7 +54,7 @@ export class StatementGenerator {
 
         this.dates = [];
 
-        for (let i = 0; i < this.linesCount; i++) {
+        for (let i = 0; i < this.randomLinesCount; i++) {
             const randomTime = startTime + Math.random() * (endTime - startTime)
             const tempDate = new Date(randomTime)
             tempDate.setHours(0, 0, 0, 0)
@@ -76,7 +77,7 @@ export class StatementGenerator {
         const pool = transactionDescriptions.filter((td) => !excludeSet.has(td.description.trim()))
         const effectivePool = pool.length > 0 ? pool : transactionDescriptions
 
-        for (let i = 0; i < this.linesCount; i++) {
+        for (let i = 0; i < this.randomLinesCount; i++) {
             const randomIndex = Math.floor(Math.random() * effectivePool.length)
             this.descriptions.push(effectivePool[randomIndex])
         }
@@ -90,7 +91,7 @@ export class StatementGenerator {
 
         this.amounts = [];
 
-        for (let i = 0; i < this.linesCount; i++) {
+        for (let i = 0; i < this.randomLinesCount; i++) {
             const randomAmount = Math.random() * (max - min) + min
             this.amounts.push(Math.round(randomAmount * 100) / 100)
         }
@@ -111,8 +112,8 @@ export class StatementGenerator {
             }
             const arr = this.statementByColumns![column]!
 
-            // Ensure array is padded to current linesCount before appending random data
-            while (arr.length < this.linesCount) {
+            // Ensure array is padded to current totalLinesCount before appending random data
+            while (arr.length < this.totalLinesCount) {
                 arr.push('')
             }
 
@@ -146,7 +147,7 @@ export class StatementGenerator {
             }
         });
 
-        this.linesCount = this.statementByColumns[this.columns[0]]?.length ?? 0
+        this.totalLinesCount = this.statementByColumns[this.columns[0]]?.length ?? 0
 
         return this;
     }
@@ -159,7 +160,7 @@ export class StatementGenerator {
             return needsQuoting ? `"${escaped}"` : escaped
         }
 
-        const rowsCount = this.linesCount
+        const rowsCount = this.totalLinesCount
         const colOrder = this.columns
 
         // Build row objects to facilitate sorting
@@ -260,8 +261,8 @@ export class StatementGenerator {
         this.columns.forEach(col => {
             const arr = this.statementByColumns![col] ?? (this.statementByColumns![col] = [])
             
-            // Ensure array is padded to current linesCount if it was missing from previous manual additions
-            while (arr.length < this.linesCount) {
+            // Ensure array is padded to current totalLinesCount if it was missing from previous manual additions
+            while (arr.length < this.totalLinesCount) {
                 arr.push('')
             }
 
@@ -294,7 +295,7 @@ export class StatementGenerator {
             }
         })
 
-        this.linesCount++
+        this.totalLinesCount++
 
         return this
     }
