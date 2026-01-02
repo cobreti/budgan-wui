@@ -1,4 +1,4 @@
-import { AmountOperationType, ColumnsType, type StatementByColumns, type TransactionDescription } from './types.ts'
+import { AmountOperationType, ColumnHeaders, ColumnsType, type StatementByColumns, type TransactionDescription } from './types.ts'
 import { cardNumbers } from '../data/card-numbers.ts'
 import { transactionDescriptions } from '../data/transaction-descriptions.ts'
 import { promises as fs } from 'fs'
@@ -16,6 +16,7 @@ export class StatementGenerator {
     private columns: ColumnsType[] = [];
     private randomLinesCount: number = 10;
     private totalLinesCount: number = 0;
+    private includeHeader: boolean = false;
 
     //
     //  Generated statement data
@@ -45,6 +46,11 @@ export class StatementGenerator {
 
     public setRandomLinesCount(count: number): StatementGenerator {
         this.randomLinesCount = count;
+        return this;
+    }
+
+    public setIncludeHeader(include: boolean): StatementGenerator {
+        this.includeHeader = include;
         return this;
     }
 
@@ -189,7 +195,15 @@ export class StatementGenerator {
         // Build CSV lines with escaped values
         const lines = rows.map(row => row.map(val => escapeCsv(String(val))).join(','))
 
-        const csv = lines.join('\n') + '\n'
+        // Add header row if enabled
+        const csvLines: string[] = []
+        if (this.includeHeader) {
+            const headerRow = colOrder.map(col => escapeCsv(ColumnHeaders[col])).join(',')
+            csvLines.push(headerRow)
+        }
+        csvLines.push(...lines)
+
+        const csv = csvLines.join('\n') + '\n'
 
         // Ensure directory exists and write file
         await fs.mkdir(path.dirname(filepath), { recursive: true })

@@ -7,6 +7,14 @@ export const enum ColumnsType {
     TYPE = 6
 }
 
+export const ColumnHeaders: Record<ColumnsType, string> = {
+    [ColumnsType.CARD_NUMBER]: 'CARD_NUMBER',
+    [ColumnsType.DATE_INSCRIPTION]: 'DATE_INSCRIPTION',
+    [ColumnsType.DATE_TRANSACTION]: 'DATE_TRANSACTION',
+    [ColumnsType.AMOUNT]: 'AMOUNT',
+    [ColumnsType.DESCRIPTION]: 'DESCRIPTION',
+    [ColumnsType.TYPE]: 'TYPE'
+}
 
 export type StatementByColumns = { [key in ColumnsType]?: string[] };
 

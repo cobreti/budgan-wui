@@ -7,7 +7,8 @@ console.log('Statement Generator tools starting')
 const [outFile] = process.argv.slice(2)
 
 new StatementGenerator()
-    .setDateRange(new Date(2024, 0, 1), new Date(2024, 11, 31))
+    .setDateRange(new Date(2024, 0, 1), new Date(2024, 2, 31))
+    .setIncludeHeader(true)
     .setRandomLinesCount(10)
     .setAmountRange(10, 1000)
     .setColumns([
