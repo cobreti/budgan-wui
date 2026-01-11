@@ -5,7 +5,7 @@ import {
     type BankAccountTransactionsGroup,
     InvalidTransactionReason
 } from '@models/BankAccountTypes'
-import { CSVColumnContent, type CSVColumnContentMapping } from '@models/csvDocument'
+import { CSVColumnContent } from '@models/csvDocument'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import {
     LoadMultipleAccountsTest_Expected,
