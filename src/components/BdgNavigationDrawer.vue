@@ -7,6 +7,11 @@
                 prepend-icon="mdi-home"
             ></v-list-item>
             <v-list-item
+                title="Workspace"
+                :to="{ path: '/workspace', replace: true, query: { from: 'sidebar-nav' } }"
+                prepend-icon="mdi-folder-account"
+            ></v-list-item>
+            <v-list-item
                 title="Accounts"
                 :to="{ path: '/accounts', replace: true, query: { from: 'sidebar-nav' } }"
                 prepend-icon="mdi-bank"

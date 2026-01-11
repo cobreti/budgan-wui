@@ -3,6 +3,7 @@ import HomeView from '@views/BdgHomeView.vue'
 import { accountsManagementRoutes } from '@/router/accountsManagementRoutes'
 import { accountRoutes } from '@/router/accountRoutes'
 import { settingsRoutes } from '@/router/settingsRoutes'
+import { workspaceRoutes } from '@/router/workspaceRoutes'
 import { aiRoutes } from '@/router/aiRoutes'
 import { setupRouteTracking } from '@/router/routeTracker'
 
@@ -12,6 +13,7 @@ const router = createRouter({
         ...accountsManagementRoutes,
         ...accountRoutes,
         ...settingsRoutes,
+        ...workspaceRoutes,
         ...aiRoutes,
         {
             path: '/',
