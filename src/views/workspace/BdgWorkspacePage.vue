@@ -13,12 +13,16 @@
                         <v-card-title>Current Workspace</v-card-title>
                         <v-card-text>
                             <div v-if="workspaceStore.handle" class="d-flex align-center">
-                                <v-icon icon="mdi-folder" class="mr-2" color="primary"></v-icon>
-                                <span class="text-h6">{{ workspaceStore.handle.name }}</span>
+                                <v-icon
+                                    :icon="workspaceStore.handle.kind === 'directory' ? 'mdi-folder' : 'mdi-file'"
+                                    class="mr-2"
+                                    color="primary"
+                                ></v-icon>
+                                <span class="text-h6">{{ workspaceStore.path }}</span>
                             </div>
                             <div v-else>
                                 <v-alert type="info" variant="tonal">
-                                    No workspace selected. Please select a folder to start.
+                                    No workspace selected. Please select a file or create a new one.
                                 </v-alert>
                             </div>
                         </v-card-text>
@@ -32,8 +36,11 @@
                             >
                                 Clear Workspace
                             </v-btn>
-                            <v-btn color="primary" @click="selectWorkspace">
-                                {{ workspaceStore.handle ? 'Change Workspace' : 'Select Workspace' }}
+                            <v-btn color="secondary" variant="outlined" class="mr-2" @click="createWorkspace">
+                                Create New Workspace
+                            </v-btn>
+                            <v-btn color="primary" variant="outlined" @click="selectWorkspace">
+                                Select Workspace
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -48,20 +55,59 @@
 
     const workspaceStore = useWorkspaceStore()
 
+
     async function selectWorkspace() {
         try {
-            const handle = await (window as any).showDirectoryPicker()
-            workspaceStore.setHandle(handle)
+            const [handle] = await (window as any).showOpenFilePicker({
+                types: [
+                    {
+                        description: 'Budgan Workspace File',
+                        accept: {
+                            'application/octet-stream': ['.bdg']
+                        }
+                    }
+                ]
+            })
+            updateStoreWithHandle(handle)
         } catch (error) {
-            if ((error as Error).name === 'AbortError') {
-                return
-            }
-            console.error('Failed to select directory:', error)
+            handleError(error, 'Failed to select workspace')
         }
     }
 
+    async function createWorkspace() {
+        try {
+            const handle = await (window as any).showSaveFilePicker({
+                types: [
+                    {
+                        description: 'Budgan Workspace File',
+                        accept: {
+                            'application/octet-stream': ['.bdg']
+                        }
+                    }
+                ]
+            })
+            updateStoreWithHandle(handle)
+        } catch (error) {
+            handleError(error, 'Failed to create workspace')
+        }
+    }
+
+    function updateStoreWithHandle(handle: any) {
+        // Attempt to get a full/native path if the environment provides it; fall back to name
+        const fullPath: string =
+            handle?.path ?? handle?.fsPath ?? handle?.nativePath ?? handle?.fullPath ?? handle.name
+        workspaceStore.setHandle(handle, fullPath)
+    }
+
+    function handleError(error: unknown, message: string) {
+        if ((error as Error).name === 'AbortError') {
+            return
+        }
+        console.error(message + ':', error)
+    }
+
     function clearWorkspace() {
-        workspaceStore.setHandle(null)
+        workspaceStore.setHandle(null, null)
     }
 </script>
 
