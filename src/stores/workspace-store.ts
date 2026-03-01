@@ -1,27 +1,24 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
+import type { Workspace } from '@/core/modules/Workspace/Workspace'
 
 export type WorkspaceStore = {
-    handle: Ref<FileSystemHandle | null>
-    path: Ref<string | null>
-    setHandle: (handle: FileSystemHandle | null, path?: string | null) => void
+    workspace: Ref<Workspace | null>
+    setWorkspace: (workspace: Workspace | null) => void
 }
 
 export const useWorkspaceStore = defineStore<string, WorkspaceStore>(
     'workspace',
     () => {
-        const handle = ref<FileSystemHandle | null>(null)
-        const path = ref<string | null>(null)
+        const workspace = ref<Workspace | null>(null)
 
-        function setHandle(newHandle: FileSystemHandle | null, newPath: string | null = null) {
-            handle.value = newHandle
-            path.value = newPath || (newHandle ? newHandle.name : null)
+        function setWorkspace(newWorkspace: Workspace | null) {
+            workspace.value = newWorkspace
         }
 
         return {
-            handle,
-            path,
-            setHandle
+            workspace,
+            setWorkspace
         }
     }
 )

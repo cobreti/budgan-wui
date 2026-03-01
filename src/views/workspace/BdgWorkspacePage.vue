@@ -12,13 +12,13 @@
                     <v-card variant="outlined" class="pa-4">
                         <v-card-title>Current Workspace</v-card-title>
                         <v-card-text>
-                            <div v-if="workspaceStore.handle" class="d-flex align-center">
+                            <div v-if="workspaceStore.workspace" class="d-flex align-center">
                                 <v-icon
-                                    :icon="workspaceStore.handle.kind === 'directory' ? 'mdi-folder' : 'mdi-file'"
+                                    :icon="workspaceStore.workspace.handle.kind === 'directory' ? 'mdi-folder' : 'mdi-file'"
                                     class="mr-2"
                                     color="primary"
                                 ></v-icon>
-                                <span class="text-h6">{{ workspaceStore.path }}</span>
+                                <span class="text-h6">{{ workspaceStore.workspace.filename || workspaceStore.workspace.handle.name }}</span>
                             </div>
                             <div v-else>
                                 <v-alert type="info" variant="tonal">
@@ -29,7 +29,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn
-                                v-if="workspaceStore.handle"
+                                v-if="workspaceStore.workspace"
                                 color="error"
                                 variant="text"
                                 @click="clearWorkspace"
@@ -52,9 +52,12 @@
 
 <script setup lang="ts">
     import { useWorkspaceStore } from '@/stores/workspace-store'
+    import { container } from '@/core/setupInversify'
+    import { ServicesTypes } from '@/core/services/types'
+    import type { WorkspaceFactory } from '@/core/services/WorkspaceFactory'
 
     const workspaceStore = useWorkspaceStore()
-
+    const workspaceFactory = container.get<WorkspaceFactory>(ServicesTypes.WorkspaceFactory)
 
     async function selectWorkspace() {
         try {
@@ -92,11 +95,9 @@
         }
     }
 
-    function updateStoreWithHandle(handle: any) {
-        // Attempt to get a full/native path if the environment provides it; fall back to name
-        const fullPath: string =
-            handle?.path ?? handle?.fsPath ?? handle?.nativePath ?? handle?.fullPath ?? handle.name
-        workspaceStore.setHandle(handle, fullPath)
+    function updateStoreWithHandle(handle: FileSystemFileHandle) {
+        const workspace = workspaceFactory.create(handle)
+        workspaceStore.setWorkspace(workspace)
     }
 
     function handleError(error: unknown, message: string) {
@@ -107,7 +108,7 @@
     }
 
     function clearWorkspace() {
-        workspaceStore.setHandle(null, null)
+        workspaceStore.setWorkspace(null)
     }
 </script>
 

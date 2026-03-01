@@ -13,6 +13,7 @@ import { CsvToBankAccount } from '@services/CsvToBankAccount'
 import { StreamFactory } from '@services/StreamFactory'
 import { CsvParser } from '@services/CsvParser'
 import { AccountDataSerializer } from '@services/AccountDataSerializer'
+import { WorkspaceFactoryImpl } from '@services/WorkspaceFactoryImpl'
 
 const container = new Container();
 
@@ -28,6 +29,7 @@ container.bind(ServicesTypes.BankAccountLoader).to(BankAccountLoader);
 container.bind(ServicesTypes.StreamFactory).to(StreamFactory).inSingletonScope();
 container.bind(ServicesTypes.CsvParser).to(CsvParser);
 container.bind(ServicesTypes.AccountDataSerializer).to(AccountDataSerializer).inSingletonScope();
+container.bind(ServicesTypes.WorkspaceFactory).to(WorkspaceFactoryImpl).inSingletonScope();
 
 export {
     container

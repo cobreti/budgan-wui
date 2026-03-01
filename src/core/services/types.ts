@@ -10,5 +10,6 @@ export const ServicesTypes = {
     BankAccountLoader: 'BankAccountLoader',
     StreamFactory: 'StreamFactory',
     CsvParser: 'CsvParser',
-    AccountDataSerializer: 'AccountDataSerializer'
+    AccountDataSerializer: 'AccountDataSerializer',
+    WorkspaceFactory: 'WorkspaceFactory'
 }
