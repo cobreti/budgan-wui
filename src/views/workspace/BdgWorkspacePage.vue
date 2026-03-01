@@ -66,12 +66,12 @@
                     {
                         description: 'Budgan Workspace File',
                         accept: {
-                            'application/octet-stream': ['.bdg']
+                            'application/zip': ['.bdg']
                         }
                     }
                 ]
             })
-            updateStoreWithHandle(handle)
+            await updateStoreWithHandle(handle)
         } catch (error) {
             handleError(error, 'Failed to select workspace')
         }
@@ -84,19 +84,20 @@
                     {
                         description: 'Budgan Workspace File',
                         accept: {
-                            'application/octet-stream': ['.bdg']
+                            'application/zip': ['.bdg']
                         }
                     }
                 ]
             })
-            updateStoreWithHandle(handle)
+            await updateStoreWithHandle(handle)
         } catch (error) {
             handleError(error, 'Failed to create workspace')
         }
     }
 
-    function updateStoreWithHandle(handle: FileSystemFileHandle) {
+    async function updateStoreWithHandle(handle: FileSystemFileHandle) {
         const workspace = workspaceFactory.create(handle)
+        await workspace.getContents()
         workspaceStore.setWorkspace(workspace)
     }
 
