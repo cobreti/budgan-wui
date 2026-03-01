@@ -14,7 +14,7 @@
                         <v-card-text>
                             <div v-if="workspaceStore.workspace" class="d-flex align-center">
                                 <v-icon
-                                    :icon="workspaceStore.workspace.handle.kind === 'directory' ? 'mdi-folder' : 'mdi-file'"
+                                    icon="mdi-file"
                                     class="mr-2"
                                     color="primary"
                                 ></v-icon>

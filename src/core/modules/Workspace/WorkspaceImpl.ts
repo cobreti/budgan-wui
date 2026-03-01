@@ -6,6 +6,9 @@ export class WorkspaceImpl implements Workspace {
     constructor(
         public readonly handle: FileSystemFileHandle
     ) {
+        if (handle.kind !== 'file') {
+            throw new Error('Workspace handle must be a file')
+        }
         this.filename = handle.name
     }
 }
